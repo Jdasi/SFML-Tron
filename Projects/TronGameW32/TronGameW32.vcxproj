@@ -82,10 +82,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Code\TronGame.h" />
+    <ClCompile Include="..\..\Code\Game\TronGame.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Code\Game\TronGame.cpp" />
+    <ClInclude Include="..\..\Code\Game\TronGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
