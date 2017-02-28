@@ -342,6 +342,7 @@ paket-files/
 
 # Python Tools for Visual Studio (PTVS)
 
-!Libs/*
-!Libs/*/bin/*
-!Libs/*/lib/*
+# Libs folder
+!/Libs/**/*.dll
+!/Libs/**/*.pdb
+!/Libs/**/*.lib
