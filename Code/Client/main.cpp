@@ -1,24 +1,20 @@
-#include <SFML/Graphics.hpp>
+#define WIN32_LEAN_AND_MEAN
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <windows.h>
+#include <iostream>
+
+#include <Game/TronGame.h>
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
+    // Debug console.
+    AllocConsole();
+    freopen("CONOUT$", "wt", stdout);
+    SetConsoleTitle(L"Debug Console");
 
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
-
-		window.clear();
-		window.draw(shape);
-		window.display();
-	}
+    TronGame game;
+    game.run();
 
 	return 0;
 }
