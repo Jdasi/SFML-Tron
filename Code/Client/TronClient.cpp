@@ -24,6 +24,19 @@ void TronClient::run()
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
+    // Declare and load a font
+    sf::Font font;
+    if (!font.loadFromFile("../../Resources/arial.ttf"))
+    {
+        return;
+    }
+
+    // Create a text
+    sf::Text text("hello", font);
+    text.setCharacterSize(30);
+    text.setStyle(sf::Text::Bold);
+    text.setFillColor(sf::Color::Red);
+
     input_handler = std::make_unique<InputHandler>(*this);
     input_handler->registerKey(sf::Keyboard::Key::Escape, GameAction::QUIT);
 
@@ -56,6 +69,7 @@ void TronClient::run()
 
         window->clear();
         window->draw(shape);
+        window->draw(text);
         window->display();
     }
 
@@ -113,9 +127,9 @@ void TronClient::disconnect()
     }
 }
 
-void TronClient::handlePacket(sf::Packet& packet) const
+void TronClient::handlePacket(sf::Packet& _packet) const
 {
     std::string message;
-    packet >> message;
+    _packet >> message;
     std::cout << message << std::endl;
 }

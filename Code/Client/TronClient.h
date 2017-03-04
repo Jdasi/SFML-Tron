@@ -21,7 +21,7 @@ private:
     void handleEvent(sf::Event& _event);
     bool connect();
     void disconnect();
-    void handlePacket(sf::Packet& packet) const;
+    void handlePacket(sf::Packet& _packet) const;
 
     std::unique_ptr<sf::RenderWindow> window;
     std::unique_ptr<TronGame> tron_game;
