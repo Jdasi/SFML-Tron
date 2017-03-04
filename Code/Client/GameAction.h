@@ -13,3 +13,9 @@ enum GameAction
     INTERACT,
     SPECIAL
 };
+
+enum ActionState
+{
+    PRESSED,
+    RELEASED
+};

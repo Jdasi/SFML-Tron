@@ -3,15 +3,16 @@
 #include <SFML/Graphics.hpp>
 
 #include "InputHandler.h"
+#include "TronClient.h"
 
-InputHandler::InputHandler(sf::RenderWindow& _window, TronGame& _tron_game)
-    : window(_window)
-    , tron_game(_tron_game)
+// Pass in the client which the InputHandler is attached to.
+InputHandler::InputHandler(TronClient& _attached_client)
+    : tron_client(_attached_client)
     , controllers_connected(0)
 {
 }
 
-bool InputHandler::handle_input(sf::Event& _event)
+bool InputHandler::handleInput(sf::Event& _event)
 {
     bool event_handled = false;
 
@@ -25,7 +26,7 @@ bool InputHandler::handle_input(sf::Event& _event)
 
         case sf::Event::JoystickDisconnected:
         {
-
+            --controllers_connected;
         } break;
 
         case sf::Event::JoystickMoved:
@@ -36,25 +37,25 @@ bool InputHandler::handle_input(sf::Event& _event)
         case sf::Event::KeyPressed:
         {
             event_handled = true;
-            check_bindings(_event);
+            checkKeyBindings(_event);
         } break;
 
         case sf::Event::KeyReleased:
         {
             event_handled = true;
-            check_bindings(_event);
+            checkKeyBindings(_event);
         } break;
 
         case sf::Event::MouseButtonPressed:
         {
             event_handled = true;
-            check_bindings(_event);
+            checkKeyBindings(_event);
         } break;
 
         case sf::Event::MouseButtonReleased:
         {
             event_handled = true;
-            check_bindings(_event);
+            checkKeyBindings(_event);
         } break;
 
         case sf::Event::MouseMoved:
@@ -65,13 +66,13 @@ bool InputHandler::handle_input(sf::Event& _event)
         case sf::Event::MouseWheelMoved:
         {
             event_handled = true;
-            check_bindings(_event);
+            checkKeyBindings(_event);
         } break;
 
         case sf::Event::MouseWheelScrolled:
         {
             event_handled = true;
-            check_bindings(_event);
+            checkKeyBindings(_event);
         } break;
 
         default: {}
@@ -80,8 +81,9 @@ bool InputHandler::handle_input(sf::Event& _event)
     return event_handled;
 }
 
-void InputHandler::register_key(sf::Keyboard::Key _key, GameAction _game_action)
+void InputHandler::registerKey(sf::Keyboard::Key _key, GameAction _game_action)
 {
+    // Don't do anything with already existing entries.
     auto entry = key_bindings.find(_key);
     if (entry != key_bindings.end())
     {
@@ -91,21 +93,22 @@ void InputHandler::register_key(sf::Keyboard::Key _key, GameAction _game_action)
     key_bindings.emplace(_key, _game_action);    
 }
 
-void InputHandler::check_bindings(sf::Event& _event)
+void InputHandler::checkKeyBindings(sf::Event& _event)
 {
+    // Determine the state of the TBD GameAction.
+    ActionState action_state = ActionState::PRESSED;
+    if (_event.type == sf::Event::KeyReleased)
+    {
+        action_state = ActionState::RELEASED;
+    }
+
+    // Only continue if the key code exists in the map.
     auto entry = key_bindings.find(_event.key.code);
     if (entry == key_bindings.end())
     {
         return;
     }
 
-    switch (entry->second)
-    {
-        case GameAction::QUIT:
-        {
-            window.close();
-        } break;
-
-        default: {}
-    }
+    // Inform tron client of the GameAction.
+    tron_client.onCommand(entry->second, action_state);
 }

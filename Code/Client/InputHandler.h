@@ -9,22 +9,21 @@ namespace sf
     class Event;
 }
 
-class TronGame;
+class TronClient;
 
 class InputHandler
 {
 public:
-    InputHandler(sf::RenderWindow& _window, TronGame& _tron_game);
+    explicit InputHandler(TronClient& _attached_client);
     ~InputHandler() = default;
 
-    bool handle_input(sf::Event& _event);
-    void register_key(sf::Keyboard::Key _key, GameAction _game_action);
+    bool handleInput(sf::Event& _event);
+    void registerKey(sf::Keyboard::Key _key, GameAction _game_action);
 
 private:
-    void check_bindings(sf::Event& _event);
+    void checkKeyBindings(sf::Event& _event);
 
-    sf::RenderWindow& window;
-    TronGame& tron_game;
+    TronClient& tron_client;
     std::map<sf::Keyboard::Key, GameAction> key_bindings;
 
     int controllers_connected;

@@ -110,6 +110,11 @@ void TronServer::receiveMessage()
             std::string message;
             packet >> message;
 
+            if (message == "disconnectme")
+            {
+                return handleDisconnect(sender);
+            }
+
             std::cout << message << std::endl;
 
             for (auto& user : users)

@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <atomic>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
@@ -14,10 +15,12 @@ public:
     ~TronClient() = default;
 
     void run();
+    void onCommand(GameAction _action, ActionState _action_state);
 
 private:
-    void handle_event(sf::Event& _event) const;
+    void handleEvent(sf::Event& _event);
     bool connect();
+    void disconnect();
     void handlePacket(sf::Packet& packet) const;
 
     std::unique_ptr<sf::RenderWindow> window;
@@ -27,8 +30,8 @@ private:
     sf::IpAddress ip_address;
     unsigned int tcp_port;
     sf::TcpSocket socket;
-    sf::Socket::Status socket_status;
-    bool exit;
+    std::atomic<sf::Socket::Status> socket_status;
+    std::atomic<bool> exit;
     std::string user_name;
 
 };
