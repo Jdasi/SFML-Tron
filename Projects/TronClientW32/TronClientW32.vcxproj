@@ -87,7 +87,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Code\Client\Client.cpp" />
+    <ClCompile Include="..\..\Code\Client\InputHandler.cpp" />
     <ClCompile Include="..\..\Code\Client\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Code\Client\Client.h" />
+    <ClInclude Include="..\..\Code\Client\GameAction.h" />
+    <ClInclude Include="..\..\Code\Client\InputHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

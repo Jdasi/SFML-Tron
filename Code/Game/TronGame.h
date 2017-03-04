@@ -1,7 +1,4 @@
 #pragma once
-#include <memory>
-
-#include "InputHandler.h"
 
 namespace sf
 {
@@ -11,15 +8,12 @@ namespace sf
 class TronGame
 {
 public:
-	TronGame();
+	TronGame() = default;
 	~TronGame() = default;
-
-    void run();
 
 	friend sf::Packet& operator <<(sf::Packet& packet, const TronGame& game);
 	friend sf::Packet& operator >>(sf::Packet& packet, const TronGame& game);
 
 private:
-    std::unique_ptr<InputHandler> input_handler_;
 
 };

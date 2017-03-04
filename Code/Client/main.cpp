@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <iostream>
 
-#include <Game/TronGame.h>
+#include "Client.h"
 
 int main()
 {
@@ -13,8 +13,8 @@ int main()
     freopen("CONOUT$", "wt", stdout);
     SetConsoleTitle(L"Debug Console");
 
-    TronGame game;
-    game.run();
+    Client client;
+    client.run();
 
 	return 0;
 }
