@@ -87,12 +87,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Code\Client\Client.cpp" />
+    <ClCompile Include="..\..\Code\Client\TronClient.cpp" />
     <ClCompile Include="..\..\Code\Client\InputHandler.cpp" />
-    <ClCompile Include="..\..\Code\Client\main.cpp" />
+    <ClCompile Include="..\..\Code\Client\main_client.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Code\Client\Client.h" />
+    <ClInclude Include="..\..\Code\Client\TronClient.h" />
     <ClInclude Include="..\..\Code\Client\GameAction.h" />
     <ClInclude Include="..\..\Code\Client\InputHandler.h" />
   </ItemGroup>

@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <iostream>
 
-#include "Client.h"
+#include "TronClient.h"
 
 int main()
 {
@@ -13,7 +13,7 @@ int main()
     freopen("CONOUT$", "wt", stdout);
     SetConsoleTitle(L"Debug Console");
 
-    Client client;
+    TronClient client("127.0.0.1", 53000);
     client.run();
 
 	return 0;
