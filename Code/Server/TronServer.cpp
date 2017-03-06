@@ -72,8 +72,9 @@ void TronServer::listen()
 
 void TronServer::acceptClient()
 {
-    auto new_user = std::make_unique<User>();
-    std::string connection_message("User connected");
+    auto new_user = std::make_unique<User>(connected_clients);
+    std::string connection_message;
+    connection_message.append("[User " + std::to_string(connected_clients) + " connected]");
 
     if (tcp_listener.accept(*new_user->getSocket()) == sf::Socket::Done)
     {
@@ -85,6 +86,7 @@ void TronServer::acceptClient()
         sf::Packet packet;
         setPacketID(packet, PacketID::MESSAGE);
         packet << connection_message;
+
         for (auto& user : users)
         {
             if (user == users[connected_clients])
@@ -120,17 +122,28 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
 
     switch (pid)
     {
-        case PacketID::DISCONNECT:
+        case DISCONNECT:
         {
             handleDisconnect(_sender);
         } break;
 
-        case PacketID::PING:
+        // Send a PONG packet back to _sender to inform their latency.
+        case PING:
         {
-
+            sf::Packet packet;
+            setPacketID(packet, PacketID::PONG);
+            _sender->getSocket()->send(packet);
         } break;
 
-        case PacketID::MESSAGE:
+        case LATENCY:
+        {
+            sf::Uint64 latency;
+            _packet >> latency;
+            _sender->setLatency(latency);
+            std::cout << "User " << static_cast<int>(_sender->getID()) << ": " << latency << "us" << std::endl;
+        } break;
+
+        case MESSAGE:
         {
             std::string msg;
             _packet >> msg;
@@ -144,6 +157,8 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
                 user->getSocket()->send(_packet);
             }
         } break;
+
+        default: {}
     }
 }
 
@@ -175,6 +190,7 @@ void TronServer::handleDisconnect(std::unique_ptr<User>& user)
     std::cout << disconnection_message << std::endl;
 
     sf::Packet packet;
+    setPacketID(packet, PacketID::MESSAGE);
     packet << disconnection_message;
     for (auto& u : users)
     {

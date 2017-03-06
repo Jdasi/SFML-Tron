@@ -5,9 +5,12 @@ enum PacketID
 {
     DISCONNECT,
     PING,
+    PONG,
+    LATENCY,
     MESSAGE
 };
 
+// This function must be called after creating a packet to set its type.
 inline void setPacketID(sf::Packet& _packet, PacketID _id)
 {
     _packet << static_cast<sf::Uint8>(_id);

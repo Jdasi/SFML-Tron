@@ -1,5 +1,5 @@
 #include <iostream>
-#include <future>
+#include <thread>
 
 #include <SFML/Graphics.hpp>
 
@@ -16,6 +16,8 @@ TronClient::TronClient(const std::string& _ip_address, unsigned int _port)
     , tcp_port(_port)
     , socket_status(sf::Socket::Done)
     , exit(false)
+    , waiting_for_pong(false)
+    , latency(0)
 {
 }
 
@@ -25,14 +27,14 @@ void TronClient::run()
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
-    // Declare and load a font
+    // Declare and load a font.
     sf::Font font;
     if (!font.loadFromFile("../../Resources/arial.ttf"))
     {
         return;
     }
 
-    // Create a text
+    // Create text.
     sf::Text text("hello", font);
     text.setCharacterSize(30);
     text.setStyle(sf::Text::Bold);
@@ -46,19 +48,8 @@ void TronClient::run()
         return;
     }
 
-    auto handle = std::async(std::launch::async, [&]
-    {
-        while (socket_status != sf::Socket::Disconnected && !exit)
-        {
-            sf::Packet packet;
-            socket_status = socket.receive(packet);
-
-            if (socket_status == sf::Socket::Done)
-            {
-                handlePacket(packet);
-            }
-        }
-    });
+    std::thread listen_thread(&TronClient::listen, this);
+    std::thread ping_thread(&TronClient::ping, this);
 
     while (window->isOpen() && !exit)
     {
@@ -68,11 +59,16 @@ void TronClient::run()
             handleEvent(event);
         }
 
+        text.setString(std::to_string(latency) + "us");
+
         window->clear();
         window->draw(shape);
         window->draw(text);
         window->display();
     }
+
+    listen_thread.join();
+    ping_thread.join();
 
     window->close();
 }
@@ -118,18 +114,53 @@ bool TronClient::connect()
     return true;
 }
 
+void TronClient::listen()
+{
+    while (socket_status != sf::Socket::Disconnected && !exit)
+    {
+        sf::Packet packet;
+        socket_status = socket.receive(packet);
+
+        if (socket_status == sf::Socket::Done)
+        {
+            handlePacket(packet);
+        }
+    }
+}
+
+void TronClient::ping()
+{
+    while (socket_status != sf::Socket::Disconnected && !exit)
+    {
+        if (waiting_for_pong)
+        {
+            continue;
+        }
+
+        // Ping thread should only occur once a second to minimise network traffic.
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        sf::Packet packet;
+        setPacketID(packet, PacketID::PING);
+
+        ping_sent_point = std::chrono::steady_clock::now();
+        socket_status = socket.send(packet);
+
+        waiting_for_pong = true;
+    }
+}
+
 void TronClient::disconnect()
 {
     sf::Packet packet;
     setPacketID(packet, PacketID::DISCONNECT);
 
-    if (socket.send(packet) == sf::Socket::Done)
+    socket_status = socket.send(packet);
+    if (socket_status == sf::Socket::Done || 
+        socket_status == sf::Socket::Disconnected)
     {
         exit = true;
-        window->close();
     }
-
-    socket.disconnect();
 }
 
 void TronClient::handlePacket(sf::Packet& _packet)
@@ -138,22 +169,32 @@ void TronClient::handlePacket(sf::Packet& _packet)
 
     switch (pid)
     {
-        case PacketID::DISCONNECT:
+        case DISCONNECT:
         {
             disconnect();
         } break;
 
-        case PacketID::PING:
+        // Determine latency to server.
+        case PONG:
         {
+            latency = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - ping_sent_point).count();
 
+            sf::Packet packet;
+            setPacketID(packet, PacketID::LATENCY);
+
+            packet << static_cast<sf::Uint64>(latency);
+            socket_status = socket.send(packet);
+
+            waiting_for_pong = false;
         } break;
 
-        case PacketID::MESSAGE:
+        case MESSAGE:
         {
             std::string str;
             _packet >> str;
             std::cout << str << std::endl;
         } break;
-    }
 
+        default: {}
+    }
 }

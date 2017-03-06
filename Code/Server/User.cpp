@@ -1,8 +1,15 @@
 #include "User.h"
 
-User::User()
+User::User(sf::Uint8 _id)
     : socket(std::make_unique<sf::TcpSocket>())
+    , id(_id)
+    , latency(0)
 {
+}
+
+const sf::Uint8& User::getID() const
+{
+    return id;
 }
 
 const std::string& User::getName() const
@@ -23,4 +30,14 @@ sf::TcpSocket* User::getSocket() const
 void User::resetSocket()
 {
     socket.reset();
+}
+
+const sf::Uint64& User::getLatency() const
+{
+    return latency;
+}
+
+void User::setLatency(sf::Uint64 _latency)
+{
+    latency = _latency;
 }

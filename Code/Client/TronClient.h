@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <atomic>
+#include <chrono>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
@@ -20,6 +21,8 @@ public:
 private:
     void handleEvent(sf::Event& _event);
     bool connect();
+    void listen();
+    void ping();
     void disconnect();
     void handlePacket(sf::Packet& _packet);
 
@@ -31,7 +34,12 @@ private:
     unsigned int tcp_port;
     sf::TcpSocket socket;
     std::atomic<sf::Socket::Status> socket_status;
+    
     std::atomic<bool> exit;
     std::string user_name;
+
+    std::atomic<bool> waiting_for_pong;
+    std::chrono::steady_clock::time_point ping_sent_point;
+    __int64 latency;
 
 };
