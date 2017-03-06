@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <Game/PacketID.h>
 #include "TronServer.h"
 
 TronServer::TronServer()
@@ -60,8 +61,8 @@ void TronServer::listen()
             }
             else
             {
-                // Message received.
-                receiveMessage();
+                // Packet received.
+                receivePacket();
             }
         }
 
@@ -82,6 +83,7 @@ void TronServer::acceptClient()
         users.push_back(std::move(new_user));
 
         sf::Packet packet;
+        setPacketID(packet, PacketID::MESSAGE);
         packet << connection_message;
         for (auto& user : users)
         {
@@ -95,7 +97,7 @@ void TronServer::acceptClient()
     }
 }
 
-void TronServer::receiveMessage()
+void TronServer::receivePacket()
 {
     for (auto& sender : users)
     {
@@ -107,24 +109,41 @@ void TronServer::receiveMessage()
                 return handleDisconnect(sender);
             }
 
-            std::string message;
-            packet >> message;
+            handlePacket(packet, sender);
+        }
+    }
+}
 
-            if (message == "disconnectme")
-            {
-                return handleDisconnect(sender);
-            }
+void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sender)
+{
+    PacketID pid = getPacketID(_packet);
 
-            std::cout << message << std::endl;
+    switch (pid)
+    {
+        case PacketID::DISCONNECT:
+        {
+            handleDisconnect(_sender);
+        } break;
+
+        case PacketID::PING:
+        {
+
+        } break;
+
+        case PacketID::MESSAGE:
+        {
+            std::string msg;
+            _packet >> msg;
+            std::cout << msg << std::endl;
 
             for (auto& user : users)
             {
-                if (user->getSocket() == sender->getSocket())
+                if (user->getSocket() == _sender->getSocket())
                     continue;
 
-                user->getSocket()->send(packet);
+                user->getSocket()->send(_packet);
             }
-        }
+        } break;
     }
 }
 

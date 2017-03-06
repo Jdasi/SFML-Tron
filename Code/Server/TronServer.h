@@ -19,7 +19,8 @@ private:
     bool bindServerPort();
     void listen();
     void acceptClient();
-    void receiveMessage();
+    void receivePacket();
+    void handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sender);
 
     void garbageCollectClients();
     void handleDisconnect(std::unique_ptr<User>& user);

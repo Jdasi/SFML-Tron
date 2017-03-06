@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <Game/TronGame.h>
+#include <Game/PacketID.h>
 #include "TronClient.h"
 #include "InputHandler.h"
 #include "GameAction.h"
@@ -111,25 +112,48 @@ bool TronClient::connect()
 
     std::cout << "Connected to server: " << ip_address << std::endl;
 
+    sf::Packet packet;
+    packet >> "Test";
+
     return true;
 }
 
 void TronClient::disconnect()
 {
-    std::string msg("disconnectme");
     sf::Packet packet;
-    packet << msg;
+    setPacketID(packet, PacketID::DISCONNECT);
 
     if (socket.send(packet) == sf::Socket::Done)
     {
         exit = true;
         window->close();
     }
+
+    socket.disconnect();
 }
 
-void TronClient::handlePacket(sf::Packet& _packet) const
+void TronClient::handlePacket(sf::Packet& _packet)
 {
-    std::string message;
-    _packet >> message;
-    std::cout << message << std::endl;
+    PacketID pid = getPacketID(_packet);
+
+    switch (pid)
+    {
+        case PacketID::DISCONNECT:
+        {
+            disconnect();
+        } break;
+
+        case PacketID::PING:
+        {
+
+        } break;
+
+        case PacketID::MESSAGE:
+        {
+            std::string str;
+            _packet >> str;
+            std::cout << str << std::endl;
+        } break;
+    }
+
 }
