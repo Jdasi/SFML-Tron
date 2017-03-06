@@ -12,7 +12,7 @@ int main()
     freopen("CONOUT$", "wt", stdout);
     SetConsoleTitle(L"Debug Console");
 
-    TronClient client("127.0.0.1", 53000);
+    TronClient client("127.0.0.1", 72500);
     client.run();
 
 	return 0;

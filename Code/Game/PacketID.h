@@ -13,6 +13,7 @@ enum PacketID
 // This function must be called after creating a packet to set its type.
 inline void setPacketID(sf::Packet& _packet, PacketID _id)
 {
+    _packet.clear();
     _packet << static_cast<sf::Uint8>(_id);
 }
 

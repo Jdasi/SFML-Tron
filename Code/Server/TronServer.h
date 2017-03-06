@@ -23,7 +23,7 @@ private:
     void handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sender);
 
     void garbageCollectClients();
-    void handleDisconnect(std::unique_ptr<User>& user);
+    void handleDisconnect(std::unique_ptr<User>& _user);
 
     unsigned int tcp_port;
     sf::TcpListener tcp_listener;

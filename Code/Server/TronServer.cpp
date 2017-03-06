@@ -152,7 +152,9 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
             for (auto& user : users)
             {
                 if (user->getSocket() == _sender->getSocket())
+                {
                     continue;
+                }
 
                 user->getSocket()->send(_packet);
             }
@@ -172,32 +174,36 @@ void TronServer::garbageCollectClients()
     users.erase(std::remove_if(
         users.begin(),
         users.end(),
-        [](const std::unique_ptr<User>& user) { return !user->getSocket(); }),
+        [](const std::unique_ptr<User>& _user) { return !_user->getSocket(); }),
         users.end());
 
     clients_dirty = false;
 }
 
-void TronServer::handleDisconnect(std::unique_ptr<User>& user)
+void TronServer::handleDisconnect(std::unique_ptr<User>& _user)
 {
-    socket_selector.remove(*user->getSocket());
-    user->getSocket()->disconnect();
+    socket_selector.remove(*_user->getSocket());
+    _user->getSocket()->disconnect();
 
-    user->resetSocket();
+    _user->resetSocket();
     clients_dirty = true;
 
-    std::string disconnection_message("User disconnected");
+    std::string disconnection_message;
+    disconnection_message.append("[User " + std::to_string(_user->getID()) + " disconnected]"); 
     std::cout << disconnection_message << std::endl;
 
     sf::Packet packet;
     setPacketID(packet, PacketID::MESSAGE);
     packet << disconnection_message;
-    for (auto& u : users)
-    {
-        if (!u->getSocket())
-            continue;
 
-        u->getSocket()->send(packet);
+    for (auto& user : users)
+    {
+        if (!user->getSocket())
+        {
+            continue;
+        }
+
+        user->getSocket()->send(packet);
     }
 
     --connected_clients;

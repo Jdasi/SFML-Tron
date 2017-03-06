@@ -8,6 +8,7 @@
 
 #include <Game/TronGame.h>
 #include "InputHandler.h"
+#include "SimpleTimer.h"
 
 class TronClient
 {
@@ -23,17 +24,21 @@ private:
     bool connect();
     void listen();
     void ping();
-    void disconnect();
+    void shutdown();
     void handlePacket(sf::Packet& _packet);
 
     std::unique_ptr<sf::RenderWindow> window;
     std::unique_ptr<TronGame> tron_game;
     std::unique_ptr<InputHandler> input_handler;
 
+    SimpleTimer timer;
+    float delta_time;
+    float reattempt_timer;
+    float reattempt_threshold;
+
     sf::IpAddress ip_address;
     unsigned int tcp_port;
     sf::TcpSocket socket;
-    std::atomic<sf::Socket::Status> socket_status;
     
     std::atomic<bool> exit;
     std::string user_name;

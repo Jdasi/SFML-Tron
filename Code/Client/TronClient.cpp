@@ -12,9 +12,11 @@
 TronClient::TronClient(const std::string& _ip_address, unsigned int _port)
     : tron_game(std::make_unique<TronGame>())
     , input_handler(nullptr)
+    , delta_time(0)
+    , reattempt_timer(0)
+    , reattempt_threshold(3.0f)
     , ip_address(sf::IpAddress(_ip_address))
     , tcp_port(_port)
-    , socket_status(sf::Socket::Done)
     , exit(false)
     , waiting_for_pong(false)
     , latency(0)
@@ -23,7 +25,8 @@ TronClient::TronClient(const std::string& _ip_address, unsigned int _port)
 
 void TronClient::run()
 {
-    window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1280, 720), "Tron Game");
+    window = std::make_unique<sf::RenderWindow>(sf::VideoMode(800, 600), "Tron Game");
+
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
@@ -53,6 +56,26 @@ void TronClient::run()
 
     while (window->isOpen() && !exit)
     {
+        // Crude delta-time system.
+        delta_time = timer.getTimeDifference();
+        timer.reset();
+
+        // Crude ping-pong reattempt system.
+        if (waiting_for_pong)
+        {
+            reattempt_timer = reattempt_timer + delta_time;
+
+            if (reattempt_timer >= reattempt_threshold)
+            {
+                waiting_for_pong = false;
+                reattempt_timer = 0;
+            }
+        }
+        else
+        {
+            reattempt_timer = 0;
+        }
+
         sf::Event event;
         while (window->pollEvent(event))
         {
@@ -79,7 +102,7 @@ void TronClient::onCommand(GameAction _action, ActionState _action_state)
     {
         if (_action_state == ActionState::PRESSED)
         {
-            disconnect();
+            shutdown();
         }
     }
 }
@@ -94,7 +117,7 @@ void TronClient::handleEvent(sf::Event& _event)
 
     if (_event.type == sf::Event::Closed)
     {
-        disconnect();
+        shutdown();
     }
 }
 
@@ -108,59 +131,67 @@ bool TronClient::connect()
 
     std::cout << "Connected to server: " << ip_address << std::endl;
 
-    sf::Packet packet;
-    packet >> "Test";
-
     return true;
 }
 
 void TronClient::listen()
 {
-    while (socket_status != sf::Socket::Disconnected && !exit)
+    sf::Socket::Status status = sf::Socket::Done;
+    while (status != sf::Socket::Disconnected && !exit)
     {
         sf::Packet packet;
-        socket_status = socket.receive(packet);
+        status = socket.receive(packet);
 
-        if (socket_status == sf::Socket::Done)
+        if (status == sf::Socket::Done)
         {
             handlePacket(packet);
+        }
+        else
+        {
+            exit = true;
         }
     }
 }
 
 void TronClient::ping()
 {
-    while (socket_status != sf::Socket::Disconnected && !exit)
+    sf::Socket::Status status = sf::Socket::Done;
+    while (status != sf::Socket::Disconnected && !exit)
     {
         if (waiting_for_pong)
         {
             continue;
         }
 
-        // Ping thread should only occur once a second to minimise network traffic.
+        // Minimise network traffic.
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         sf::Packet packet;
         setPacketID(packet, PacketID::PING);
 
         ping_sent_point = std::chrono::steady_clock::now();
-        socket_status = socket.send(packet);
+        status = socket.send(packet);
 
-        waiting_for_pong = true;
+        if (status == sf::Socket::Done)
+        {
+            waiting_for_pong = true;
+            
+            std::cout << "Debug: PING! Setting waiting_for_pong to true\n";
+        }
+        else
+        {
+            exit = true;
+        }
     }
 }
 
-void TronClient::disconnect()
+void TronClient::shutdown()
 {
     sf::Packet packet;
     setPacketID(packet, PacketID::DISCONNECT);
 
-    socket_status = socket.send(packet);
-    if (socket_status == sf::Socket::Done || 
-        socket_status == sf::Socket::Disconnected)
-    {
-        exit = true;
-    }
+    socket.send(packet);
+    exit = true;
 }
 
 void TronClient::handlePacket(sf::Packet& _packet)
@@ -171,7 +202,7 @@ void TronClient::handlePacket(sf::Packet& _packet)
     {
         case DISCONNECT:
         {
-            disconnect();
+            shutdown();
         } break;
 
         // Determine latency to server.
@@ -183,9 +214,11 @@ void TronClient::handlePacket(sf::Packet& _packet)
             setPacketID(packet, PacketID::LATENCY);
 
             packet << static_cast<sf::Uint64>(latency);
-            socket_status = socket.send(packet);
+            socket.send(packet);
 
             waiting_for_pong = false;
+
+            std::cout << "Debug: PONG! Setting waiting_for_pong to false\n";
         } break;
 
         case MESSAGE:

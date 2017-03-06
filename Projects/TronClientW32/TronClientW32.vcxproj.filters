@@ -24,6 +24,9 @@
     <ClCompile Include="..\..\Code\Client\TronClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Client\SimpleTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Client\InputHandler.h">
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\TronClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\SimpleTimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
