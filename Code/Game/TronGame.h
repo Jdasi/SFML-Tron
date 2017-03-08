@@ -11,8 +11,8 @@ public:
 	TronGame() = default;
 	~TronGame() = default;
 
-	friend sf::Packet& operator <<(sf::Packet& packet, const TronGame& game);
-	friend sf::Packet& operator >>(sf::Packet& packet, const TronGame& game);
+	friend sf::Packet& operator<<(sf::Packet& _packet, const TronGame& _game);
+	friend sf::Packet& operator>>(sf::Packet& _packet, const TronGame& _game);
 
 private:
 

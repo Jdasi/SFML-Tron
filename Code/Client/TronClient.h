@@ -9,6 +9,7 @@
 #include <Game/TronGame.h>
 #include "InputHandler.h"
 #include "SimpleTimer.h"
+#include "ObjectRenderer.h"
 
 class TronClient
 {
@@ -29,6 +30,7 @@ private:
 
     std::unique_ptr<sf::RenderWindow> window;
     std::unique_ptr<TronGame> tron_game;
+    std::unique_ptr<ObjectRenderer> object_renderer;
     std::unique_ptr<InputHandler> input_handler;
 
     SimpleTimer timer;

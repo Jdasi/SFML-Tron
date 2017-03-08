@@ -21,12 +21,18 @@
     <ClCompile Include="..\..\Code\Game\TronGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Game\Bike.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Game\TronGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\PacketID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Bike.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

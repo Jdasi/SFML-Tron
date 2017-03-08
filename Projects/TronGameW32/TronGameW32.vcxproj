@@ -82,9 +82,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Code\Game\Bike.cpp" />
     <ClCompile Include="..\..\Code\Game\TronGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Code\Game\Bike.h" />
     <ClInclude Include="..\..\Code\Game\PacketID.h" />
     <ClInclude Include="..\..\Code\Game\TronGame.h" />
   </ItemGroup>

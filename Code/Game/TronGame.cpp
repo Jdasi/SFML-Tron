@@ -2,12 +2,12 @@
 
 #include "TronGame.h"
 
-sf::Packet& operator<<(sf::Packet& packet, const TronGame& game)
+sf::Packet& operator<<(sf::Packet& _packet, const TronGame& _game)
 {
-	return packet;
+	return _packet;
 }
 
-sf::Packet& operator>>(sf::Packet& packet, const TronGame& game)
+sf::Packet& operator>>(sf::Packet& _packet, const TronGame& _game)
 {
-	return packet;
+	return _packet;
 }

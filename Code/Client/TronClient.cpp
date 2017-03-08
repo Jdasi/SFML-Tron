@@ -10,9 +10,7 @@
 #include "GameAction.h"
 
 TronClient::TronClient(const std::string& _ip_address, unsigned int _port)
-    : tron_game(std::make_unique<TronGame>())
-    , input_handler(nullptr)
-    , delta_time(0)
+    : delta_time(0)
     , reattempt_timer(0)
     , reattempt_threshold(3.0f)
     , ip_address(sf::IpAddress(_ip_address))
@@ -27,9 +25,6 @@ void TronClient::run()
 {
     window = std::make_unique<sf::RenderWindow>(sf::VideoMode(800, 600), "Tron Game");
 
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-
     // Declare and load a font.
     sf::Font font;
     if (!font.loadFromFile("../../Resources/arial.ttf"))
@@ -37,14 +32,21 @@ void TronClient::run()
         return;
     }
 
+    tron_game = std::make_unique<TronGame>();
+    object_renderer = std::make_unique<ObjectRenderer>(*window);
+    input_handler = std::make_unique<InputHandler>(*this);
+    input_handler->registerKey(sf::Keyboard::Key::Escape, GameAction::QUIT);
+
+    sf::CircleShape shape(100.f);
+    shape.setFillColor(sf::Color::Green);
+    object_renderer->link(shape);
+
     // Create text.
     sf::Text text("hello", font);
     text.setCharacterSize(30);
     text.setStyle(sf::Text::Bold);
     text.setFillColor(sf::Color::Red);
-
-    input_handler = std::make_unique<InputHandler>(*this);
-    input_handler->registerKey(sf::Keyboard::Key::Escape, GameAction::QUIT);
+    object_renderer->link(text);
 
     if (!connect())
     {
@@ -84,10 +86,7 @@ void TronClient::run()
 
         text.setString(std::to_string(latency) + "us");
 
-        window->clear();
-        window->draw(shape);
-        window->draw(text);
-        window->display();
+        object_renderer->draw();
     }
 
     listen_thread.join();
