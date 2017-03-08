@@ -12,6 +12,7 @@
 #include "InputHandler.h"
 #include "SimpleTimer.h"
 #include "ObjectRenderer.h"
+#include "ClientStateHandler.h"
 
 class TronClient
 {
@@ -34,6 +35,7 @@ private:
     std::unique_ptr<TronGame> tron_game;
     std::unique_ptr<ObjectRenderer> object_renderer;
     std::unique_ptr<InputHandler> input_handler;
+    std::unique_ptr<ClientStateHandler> state_handler;
 
     SimpleTimer timer;
     float delta_time;

@@ -9,43 +9,81 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Header Files\Managerial">
+      <UniqueIdentifier>{adea4e22-e4e3-4504-839c-bd5b40dad044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managerial">
+      <UniqueIdentifier>{ba306424-1319-45e6-8e7b-95226f287fb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{7616f457-91c4-4d62-bd2d-a09df5d7617c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{552bebe0-89b6-4bdf-9f7d-db56e39cfe27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{d85995c8-be84-4357-9d85-4bcdb6fd7f5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{e79fe75d-8fa0-4d68-a6a6-b1264bbeca94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States">
+      <UniqueIdentifier>{07928339-097b-4e13-b2a8-a8e2da3447ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States">
+      <UniqueIdentifier>{4b48d6a7-dd05-431e-ba71-4bd6dedff740}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Code\Client\InputHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Code\Client\main_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Client\TronClient.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\Client\SimpleTimer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\Code\Client\InputHandler.cpp">
+      <Filter>Source Files\Managerial</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Client\ObjectRenderer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Managerial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Client\TronClient.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Client\SimpleTimer.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Client\CStateStart.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Client\CStateGame.cpp">
+      <Filter>Source Files\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Client\InputHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Client\GameAction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Client\TronClient.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Client\SimpleTimer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ObjectRenderer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Managerial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\TronClient.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\SimpleTimer.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\GameAction.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\ClientState.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\ClientStateHandler.h">
+      <Filter>Header Files\Managerial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\ClientStateGame.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\ClientStateStart.h">
+      <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

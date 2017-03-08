@@ -87,6 +87,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Code\Client\CStateGame.cpp" />
+    <ClCompile Include="..\..\Code\Client\CStateStart.cpp" />
     <ClCompile Include="..\..\Code\Client\ObjectRenderer.cpp" />
     <ClCompile Include="..\..\Code\Client\SimpleTimer.cpp" />
     <ClCompile Include="..\..\Code\Client\TronClient.cpp" />
@@ -94,6 +96,10 @@
     <ClCompile Include="..\..\Code\Client\main_client.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Code\Client\ClientState.h" />
+    <ClInclude Include="..\..\Code\Client\ClientStateGame.h" />
+    <ClInclude Include="..\..\Code\Client\ClientStateHandler.h" />
+    <ClInclude Include="..\..\Code\Client\ClientStateStart.h" />
     <ClInclude Include="..\..\Code\Client\ObjectRenderer.h" />
     <ClInclude Include="..\..\Code\Client\SimpleTimer.h" />
     <ClInclude Include="..\..\Code\Client\TronClient.h" />

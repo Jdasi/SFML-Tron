@@ -9,9 +9,17 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{895ace81-5647-4be3-9512-381d462517f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Managerial">
+      <UniqueIdentifier>{767e2c59-316f-4365-bd95-938b88655b0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managerial">
+      <UniqueIdentifier>{eb1e05e2-3c6a-4c31-a435-8ac109976455}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{768822f9-91e3-4c2c-9e18-b1304677f9b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,14 +37,23 @@
     <ClInclude Include="..\..\Code\Game\TronGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Game\PacketID.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\Game\Bike.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\Constants.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\PacketID.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\State.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\StateHandler.h">
+      <Filter>Header Files\Managerial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Noncopyable.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

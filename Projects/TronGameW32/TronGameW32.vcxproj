@@ -88,7 +88,10 @@
   <ItemGroup>
     <ClInclude Include="..\..\Code\Game\Bike.h" />
     <ClInclude Include="..\..\Code\Game\Constants.h" />
+    <ClInclude Include="..\..\Code\Game\Noncopyable.h" />
     <ClInclude Include="..\..\Code\Game\PacketID.h" />
+    <ClInclude Include="..\..\Code\Game\State.h" />
+    <ClInclude Include="..\..\Code\Game\StateHandler.h" />
     <ClInclude Include="..\..\Code\Game\TronGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

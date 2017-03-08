@@ -9,6 +9,18 @@
 #include "InputHandler.h"
 #include "GameAction.h"
 
+class Game : public ClientState
+{
+public:
+    Game() = default;
+    virtual ~Game() = default;
+
+    void onCommand(GameAction _action, ActionState _action_state) override {}
+    void onStateEnter() override {}
+    void onStateLeave() override {}
+    void tick() override {}
+};
+
 TronClient::TronClient(const std::string& _ip_address, unsigned int _port)
     : delta_time(0)
     , ip_address(sf::IpAddress(_ip_address))
@@ -31,8 +43,13 @@ void TronClient::run()
 
     tron_game = std::make_unique<TronGame>();
     object_renderer = std::make_unique<ObjectRenderer>(*window);
+
     input_handler = std::make_unique<InputHandler>(*this);
     input_handler->registerKey(sf::Keyboard::Key::Escape, GameAction::QUIT);
+
+    state_handler = std::make_unique<ClientStateHandler>();
+    state_handler->registerState("GamePlay", std::move(std::make_unique<Game>()));
+    state_handler->queueState("GamePlay");
 
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
@@ -68,6 +85,7 @@ void TronClient::run()
         text.setString(std::to_string(latency) + "us");
 
         object_renderer->draw();
+        state_handler->tick();
     }
 
     listen_thread.join();
