@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Game\Bike.h" />
+    <ClInclude Include="..\..\Code\Game\Constants.h" />
     <ClInclude Include="..\..\Code\Game\PacketID.h" />
     <ClInclude Include="..\..\Code\Game\TronGame.h" />
   </ItemGroup>
