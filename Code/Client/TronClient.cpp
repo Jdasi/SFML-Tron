@@ -11,12 +11,9 @@
 
 TronClient::TronClient(const std::string& _ip_address, unsigned int _port)
     : delta_time(0)
-    , reattempt_timer(0)
-    , reattempt_threshold(3.0f)
     , ip_address(sf::IpAddress(_ip_address))
     , tcp_port(_port)
     , exit(false)
-    , waiting_for_pong(false)
     , latency(0)
 {
 }
@@ -61,22 +58,6 @@ void TronClient::run()
         // Crude delta-time system.
         delta_time = timer.getTimeDifference();
         timer.reset();
-
-        // Crude ping-pong reattempt system.
-        if (waiting_for_pong)
-        {
-            reattempt_timer = reattempt_timer + delta_time;
-
-            if (reattempt_timer >= reattempt_threshold)
-            {
-                waiting_for_pong = false;
-                reattempt_timer = 0;
-            }
-        }
-        else
-        {
-            reattempt_timer = 0;
-        }
 
         sf::Event event;
         while (window->pollEvent(event))
@@ -157,9 +138,23 @@ void TronClient::ping()
     sf::Socket::Status status = sf::Socket::Done;
     while (status != sf::Socket::Disconnected && !exit)
     {
-        if (waiting_for_pong)
         {
-            continue;
+            std::lock_guard<std::mutex> guard(pong_queue_mutex);
+            if (pong_queue.empty())
+            {
+                continue;
+            }
+
+            pong_queue.pop();
+
+            sf::Packet packet;
+            setPacketID(packet, PacketID::LATENCY);
+
+            packet << static_cast<sf::Uint64>(latency);
+            if (socket.send(packet) == sf::Socket::Disconnected)
+            {
+                exit = true;
+            }
         }
 
         // Minimise network traffic.
@@ -170,17 +165,6 @@ void TronClient::ping()
 
         ping_sent_point = std::chrono::steady_clock::now();
         status = socket.send(packet);
-
-        if (status == sf::Socket::Done)
-        {
-            waiting_for_pong = true;
-            
-            std::cout << "Debug: PING! Setting waiting_for_pong to true\n";
-        }
-        else
-        {
-            exit = true;
-        }
     }
 }
 
@@ -207,17 +191,13 @@ void TronClient::handlePacket(sf::Packet& _packet)
         // Determine latency to server.
         case PONG:
         {
-            latency = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - ping_sent_point).count();
+            latency = std::chrono::duration_cast<std::chrono::microseconds>
+                (std::chrono::steady_clock::now() - ping_sent_point).count();
 
-            sf::Packet packet;
-            setPacketID(packet, PacketID::LATENCY);
-
-            packet << static_cast<sf::Uint64>(latency);
-            socket.send(packet);
-
-            waiting_for_pong = false;
-
-            std::cout << "Debug: PONG! Setting waiting_for_pong to false\n";
+            {
+                std::lock_guard<std::mutex> guard(pong_queue_mutex);
+                pong_queue.push(_packet);
+            }
         } break;
 
         case MESSAGE:

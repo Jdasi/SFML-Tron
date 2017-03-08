@@ -2,6 +2,8 @@
 #include <memory>
 #include <atomic>
 #include <chrono>
+#include <queue>
+#include <mutex>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
@@ -35,8 +37,8 @@ private:
 
     SimpleTimer timer;
     float delta_time;
-    float reattempt_timer;
-    float reattempt_threshold;
+    std::queue<sf::Packet> pong_queue;
+    std::mutex pong_queue_mutex;
 
     sf::IpAddress ip_address;
     unsigned int tcp_port;
@@ -45,7 +47,6 @@ private:
     std::atomic<bool> exit;
     std::string user_name;
 
-    std::atomic<bool> waiting_for_pong;
     std::chrono::steady_clock::time_point ping_sent_point;
     __int64 latency;
 
