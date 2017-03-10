@@ -21,6 +21,7 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
     , tcp_port(SERVER_TCP_PORT)
     , latency(0)
 {
+    objects.reserve(100);
 }
 
 ClientStateGame::~ClientStateGame()
@@ -148,7 +149,7 @@ void ClientStateGame::ping()
         sf::Packet packet;
         setPacketID(packet, PacketID::PING);
 
-        ping_sent_point = std::chrono::steady_clock::now();
+        packet << client_data->play_time;
         status = socket.send(packet);
     }
 }
@@ -175,8 +176,10 @@ void ClientStateGame::handlePacket(sf::Packet& _packet)
     // Determine latency to server.
     case PONG:
     {
-        latency = std::chrono::duration_cast<std::chrono::microseconds>
-            (std::chrono::steady_clock::now() - ping_sent_point).count();
+        double prev_play_time = 0;
+        _packet >> prev_play_time;
+
+        latency = static_cast<sf::Int64>((client_data->play_time - prev_play_time) * 1000);
 
         {
             std::lock_guard<std::mutex> guard(pong_queue_mutex);

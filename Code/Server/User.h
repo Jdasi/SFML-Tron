@@ -17,13 +17,13 @@ public:
     sf::TcpSocket* getSocket() const;
     void resetSocket();
 
-    const sf::Uint64& getLatency() const;
-    void setLatency(sf::Uint64 _latency);
+    const sf::Uint32& getLatency() const;
+    void setLatency(sf::Uint32 _latency);
 
 private:
     std::unique_ptr<sf::TcpSocket> socket;
     sf::Uint8 id;
     std::string name;
-    sf::Uint64 latency;
+    sf::Uint32 latency;
 
 };

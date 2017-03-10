@@ -9,6 +9,7 @@ ClientStateStart::ClientStateStart(ClientData* _client_data)
     : ClientState(_client_data)
     , title_text(nullptr)
 {
+    objects.reserve(10);
 }
 
 void ClientStateStart::onStateEnter()

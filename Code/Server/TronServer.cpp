@@ -134,17 +134,22 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
         // Send a PONG packet back to _sender to inform their latency.
         case PING:
         {
+            double time_stamp = 0;
+            _packet >> time_stamp;
+
             sf::Packet packet;
             setPacketID(packet, PacketID::PONG);
+
+            packet << time_stamp;
             _sender->getSocket()->send(packet);
         } break;
 
         case LATENCY:
         {
-            sf::Uint64 latency;
+            sf::Uint32 latency;
             _packet >> latency;
             _sender->setLatency(latency);
-            std::cout << "User " << static_cast<int>(_sender->getID()) << ": " << latency << "us" << std::endl;
+            std::cout << "User " << static_cast<int>(_sender->getID()) << ": " << latency << "ms" << std::endl;
         } break;
 
         case MESSAGE:

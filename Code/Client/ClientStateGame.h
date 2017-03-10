@@ -43,7 +43,6 @@ private:
 
     std::queue<sf::Packet> pong_queue;
     std::mutex pong_queue_mutex;
-    std::chrono::steady_clock::time_point ping_sent_point;
     sf::Int64 latency;
 
     std::vector<std::unique_ptr<sf::Drawable>> objects;
