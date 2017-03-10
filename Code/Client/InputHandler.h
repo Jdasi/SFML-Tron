@@ -17,11 +17,11 @@ public:
     explicit InputHandler(TronClient& _attached_client);
     ~InputHandler() = default;
 
-    bool handleInput(sf::Event& _event);
+    bool handleInput(const sf::Event& _event);
     void registerKey(sf::Keyboard::Key _key, GameAction _game_action);
 
 private:
-    void checkKeyBindings(sf::Event& _event);
+    void checkKeyBindings(const sf::Event& _event);
 
     TronClient& tron_client;
     std::map<sf::Keyboard::Key, GameAction> key_bindings;

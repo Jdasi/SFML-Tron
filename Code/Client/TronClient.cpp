@@ -8,18 +8,7 @@
 #include "TronClient.h"
 #include "InputHandler.h"
 #include "GameAction.h"
-
-class Game : public ClientState
-{
-public:
-    Game() = default;
-    virtual ~Game() = default;
-
-    void onCommand(GameAction _action, ActionState _action_state) override {}
-    void onStateEnter() override {}
-    void onStateLeave() override {}
-    void tick() override {}
-};
+#include "ClientStates.h"
 
 TronClient::TronClient(const std::string& _ip_address, unsigned int _port)
     : delta_time(0)
@@ -48,8 +37,10 @@ void TronClient::run()
     input_handler->registerKey(sf::Keyboard::Key::Escape, GameAction::QUIT);
 
     state_handler = std::make_unique<ClientStateHandler>();
-    state_handler->registerState("GamePlay", std::move(std::make_unique<Game>()));
-    state_handler->queueState("GamePlay");
+    state_handler->registerState("GameStart", std::make_unique<ClientStateStart>());
+    state_handler->registerState("GamePlay", std::make_unique<ClientStateGame>());
+
+    state_handler->queueState("GameStart");
 
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
@@ -105,7 +96,7 @@ void TronClient::onCommand(GameAction _action, ActionState _action_state)
     }
 }
 
-void TronClient::handleEvent(sf::Event& _event)
+void TronClient::handleEvent(const sf::Event& _event)
 {
     // Input Handler gets first dibs at handling events.
     if (input_handler->handleInput(_event))

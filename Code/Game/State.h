@@ -1,6 +1,5 @@
 #pragma once
 #include "Noncopyable.h"
-#include "Client/GameAction.h"
 
 template <typename T, typename U>
 class StateHandler;

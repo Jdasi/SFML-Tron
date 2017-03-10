@@ -24,7 +24,7 @@ public:
     void onCommand(GameAction _action, ActionState _action_state);
 
 private:
-    void handleEvent(sf::Event& _event);
+    void handleEvent(const sf::Event& _event);
     bool connect();
     void listen();
     void ping();

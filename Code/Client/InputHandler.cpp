@@ -12,7 +12,7 @@ InputHandler::InputHandler(TronClient& _attached_client)
 {
 }
 
-bool InputHandler::handleInput(sf::Event& _event)
+bool InputHandler::handleInput(const sf::Event& _event)
 {
     bool event_handled = false;
 
@@ -93,7 +93,7 @@ void InputHandler::registerKey(sf::Keyboard::Key _key, GameAction _game_action)
     key_bindings.emplace(_key, _game_action);    
 }
 
-void InputHandler::checkKeyBindings(sf::Event& _event)
+void InputHandler::checkKeyBindings(const sf::Event& _event)
 {
     // Determine the state of the TBD GameAction.
     ActionState action_state = ActionState::PRESSED;

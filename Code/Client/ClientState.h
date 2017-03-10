@@ -8,7 +8,7 @@ class ClientStateHandler;
 class ClientState : public State<ClientState, ClientStateHandler>
 {
 public:
-    explicit ClientState(GameData& _game_data)
+    explicit ClientState(GameData* _game_data = nullptr)
         : game_data(_game_data)
     {
     }
@@ -19,10 +19,11 @@ public:
 
     void onStateEnter() override = 0;
     void onStateLeave() override = 0;
+
     void tick() override = 0;
 
 protected:
-    GameData& game_data;
+    GameData* game_data;
 
 private:
 
