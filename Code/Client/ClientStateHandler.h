@@ -3,13 +3,13 @@
 #include "GameAction.h"
 #include "ClientState.h"
 
-class ClientStateHandler : public StateHandler<ClientState, ClientStateHandler>
+class ClientStateHandler final : public StateHandler<ClientState, ClientStateHandler>
 {
 public:
     ClientStateHandler() = default;
     virtual ~ClientStateHandler() = default;
 
-    void onCommand(GameAction _action, ActionState _action_state)
+    void onCommand(GameAction _action, ActionState _action_state) const
     {
         if (current_state)
         {

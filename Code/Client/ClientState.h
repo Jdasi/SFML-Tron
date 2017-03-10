@@ -2,20 +2,20 @@
 #include <Game/State.h>
 #include "GameAction.h"
 
-struct GameData;
+struct ClientData;
 class ClientStateHandler;
 
 class ClientState : public State<ClientState, ClientStateHandler>
 {
 public:
-    explicit ClientState(GameData* _game_data = nullptr)
-        : game_data(_game_data)
+    explicit ClientState(ClientData* _client_data)
+        : client_data(_client_data)
     {
     }
     
     ~ClientState() = default;
 
-    virtual void onCommand(GameAction _action, ActionState _action_state) = 0;
+    virtual void onCommand(const GameAction _action, const ActionState _action_state) = 0;
 
     void onStateEnter() override = 0;
     void onStateLeave() override = 0;
@@ -23,7 +23,7 @@ public:
     void tick() override = 0;
 
 protected:
-    GameData* game_data;
+    ClientData* client_data;
 
 private:
 

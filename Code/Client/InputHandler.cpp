@@ -37,25 +37,23 @@ bool InputHandler::handleInput(const sf::Event& _event)
         case sf::Event::KeyPressed:
         {
             event_handled = true;
-            checkKeyBindings(_event);
+            checkBindings(_event);
         } break;
 
         case sf::Event::KeyReleased:
         {
             event_handled = true;
-            checkKeyBindings(_event);
+            checkBindings(_event);
         } break;
 
         case sf::Event::MouseButtonPressed:
         {
-            event_handled = true;
-            checkKeyBindings(_event);
+
         } break;
 
         case sf::Event::MouseButtonReleased:
         {
-            event_handled = true;
-            checkKeyBindings(_event);
+
         } break;
 
         case sf::Event::MouseMoved:
@@ -65,14 +63,12 @@ bool InputHandler::handleInput(const sf::Event& _event)
 
         case sf::Event::MouseWheelMoved:
         {
-            event_handled = true;
-            checkKeyBindings(_event);
+
         } break;
 
         case sf::Event::MouseWheelScrolled:
         {
-            event_handled = true;
-            checkKeyBindings(_event);
+
         } break;
 
         default: {}
@@ -90,10 +86,10 @@ void InputHandler::registerKey(sf::Keyboard::Key _key, GameAction _game_action)
         return;
     }
 
-    key_bindings.emplace(_key, _game_action);    
+    key_bindings.emplace(_key, _game_action);
 }
 
-void InputHandler::checkKeyBindings(const sf::Event& _event)
+void InputHandler::checkBindings(const sf::Event& _event)
 {
     // Determine the state of the TBD GameAction.
     ActionState action_state = ActionState::PRESSED;
@@ -109,6 +105,6 @@ void InputHandler::checkKeyBindings(const sf::Event& _event)
         return;
     }
 
-    // Inform tron client of the GameAction.
+    // Inform Tron Client of the GameAction.
     tron_client.onCommand(entry->second, action_state);
 }

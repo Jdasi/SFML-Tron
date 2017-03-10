@@ -1,21 +1,30 @@
 #pragma once
+#include <vector>
+#include <memory>
+
 #include "ClientState.h"
 
-class ClientStateStart : public ClientState
+namespace sf
+{
+    class Text;
+    class Drawable;
+}
+
+class ClientStateStart final : public ClientState
 {
 public:
-    ClientStateStart() = default;
+    ClientStateStart(ClientData* _client_data);
     virtual ~ClientStateStart() = default;
 
-    void onCommand(GameAction _action, ActionState _action_state) override {}
-    void onStateEnter() override {}
-    void onStateLeave() override {}
-    void tick() override {}
+    void onStateEnter() override;
+    void onStateLeave() override;
 
-protected:
-
+    void tick() override;
+    void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
+    sf::Text* title_text;
 
+    std::vector<std::unique_ptr<sf::Drawable>> objects;
 
 };

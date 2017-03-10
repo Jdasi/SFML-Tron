@@ -21,7 +21,7 @@ public:
     void registerKey(sf::Keyboard::Key _key, GameAction _game_action);
 
 private:
-    void checkKeyBindings(const sf::Event& _event);
+    void checkBindings(const sf::Event& _event);
 
     TronClient& tron_client;
     std::map<sf::Keyboard::Key, GameAction> key_bindings;
