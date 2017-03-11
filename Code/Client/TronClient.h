@@ -9,7 +9,6 @@
 
 #include <Game/Constants.h>
 #include "SimpleTimer.h"
-#include "NetworkManager.h"
 #include "GameAction.h"
 #include "ObjectRenderer.h"
 #include "InputHandler.h"
@@ -17,8 +16,10 @@
 #include "ClientStates.h"
 #include "ClientData.h"
 #include "ThreadDispatcher.h"
+#include "TronNetworkManager.h"
+#include "NetworkClient.h"
 
-class TronClient : public ThreadDispatcher
+class TronClient : public INetworkClient, public ThreadDispatcher
 {
 public:
     TronClient(sf::IpAddress _ip_address, unsigned int _tcp_port);
@@ -27,12 +28,12 @@ public:
     void run();
     void onCommand(GameAction _action, ActionState _action_state) const;
 
-    void updatePingTime(const double ping);
+    void updatePingTime(const double ping) override;
 
 private:
     void handleEvent(const sf::Event& _event) const;
 
-    NetworkManager network_manager;
+    TronNetworkManager network_manager;
 
     std::unique_ptr<sf::RenderWindow> window;
     std::unique_ptr<ObjectRenderer> object_renderer;

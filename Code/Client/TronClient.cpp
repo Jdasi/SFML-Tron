@@ -64,8 +64,6 @@ void TronClient::run()
         }
     }
 
-    //network_thread.join();
-
     window->close();
 }
 

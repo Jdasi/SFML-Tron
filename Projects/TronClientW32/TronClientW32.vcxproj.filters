@@ -59,6 +59,9 @@
     <ClCompile Include="..\..\Code\Client\TronClient.cpp">
       <Filter>Header Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Client\TronNetworkManager.cpp">
+      <Filter>Header Files\Managerial</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Client\InputHandler.h">
@@ -99,6 +102,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ThreadDispatcher.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\TronNetworkManager.h">
+      <Filter>Header Files\Managerial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\NetworkClient.h">
+      <Filter>Header Files\Managerial</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -20,21 +20,23 @@ class TronClient;
 class NetworkManager : public ThreadDispatcher
 {
 public:
-    NetworkManager(TronClient& client, const sf::IpAddress _ip_address, const unsigned int _tcp_port);
+    NetworkManager(const sf::IpAddress _ip_address, const unsigned int _tcp_port);
     ~NetworkManager();
 
     void connect();
     void disconnect();
+
+protected:
+    void registerPacketHandler(const PacketID id, const std::function<void(sf::Packet&)> handler);
+    virtual void updatePingTime(const sf::Uint32 ping) = 0;
 
 private:
     void networkingThread();
     void stopNetworkingThread();
 
     void registerPacketHandlers();
-
     void handlePacket(sf::Packet& _packet);
     void handlePongPacket(sf::Packet& _packet);
-    void handleMessagePacket(sf::Packet& _packet);
 
     void calculatePlayTime();
 
@@ -49,8 +51,6 @@ private:
     volatile bool running;
     volatile sf::Uint32 latency;
     double play_time;
-
-    TronClient& client;
 
     SimpleTimer timer;
 

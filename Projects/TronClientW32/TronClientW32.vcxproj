@@ -95,6 +95,7 @@
     <ClCompile Include="..\..\Code\Client\TronClient.cpp" />
     <ClCompile Include="..\..\Code\Client\InputHandler.cpp" />
     <ClCompile Include="..\..\Code\Client\main_client.cpp" />
+    <ClCompile Include="..\..\Code\Client\TronNetworkManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Client\ClientState.h" />
@@ -103,6 +104,7 @@
     <ClInclude Include="..\..\Code\Client\ClientStates.h" />
     <ClInclude Include="..\..\Code\Client\ClientStateStart.h" />
     <ClInclude Include="..\..\Code\Client\ClientData.h" />
+    <ClInclude Include="..\..\Code\Client\NetworkClient.h" />
     <ClInclude Include="..\..\Code\Client\NetworkManager.h" />
     <ClInclude Include="..\..\Code\Client\ObjectRenderer.h" />
     <ClInclude Include="..\..\Code\Client\SimpleTimer.h" />
@@ -110,6 +112,7 @@
     <ClInclude Include="..\..\Code\Client\TronClient.h" />
     <ClInclude Include="..\..\Code\Client\GameAction.h" />
     <ClInclude Include="..\..\Code\Client\InputHandler.h" />
+    <ClInclude Include="..\..\Code\Client\TronNetworkManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

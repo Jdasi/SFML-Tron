@@ -1,11 +1,9 @@
 #include "NetworkManager.h"
-#include "TronClient.h"
-
 #include <iostream>
 
 using namespace std::placeholders;
 
-NetworkManager::NetworkManager(TronClient& _client, const sf::IpAddress _ip_address, const unsigned int _tcp_port)
+NetworkManager::NetworkManager(const sf::IpAddress _ip_address, const unsigned int _tcp_port)
     : ip_address(_ip_address)
     , tcp_port(_tcp_port)
     , socket()
@@ -13,7 +11,6 @@ NetworkManager::NetworkManager(TronClient& _client, const sf::IpAddress _ip_addr
     , running(true)
     , latency(0)
     , play_time(0)
-    , client(_client)
     , packet_handlers()
 {
     registerPacketHandlers();
@@ -99,10 +96,14 @@ void NetworkManager::stopNetworkingThread()
     network_thread.join();
 }
 
+void NetworkManager::registerPacketHandler(const PacketID id, const std::function<void(sf::Packet&)> handler)
+{
+    packet_handlers.emplace(id, handler);
+}
+
 void NetworkManager::registerPacketHandlers()
 {
-    packet_handlers.emplace(PONG, std::bind(&NetworkManager::handlePongPacket, this, _1));
-    packet_handlers.emplace(MESSAGE, std::bind(&NetworkManager::handleMessagePacket, this, _1));
+    registerPacketHandler(PONG, std::bind(&NetworkManager::handlePongPacket, this, _1));
 }
 
 void NetworkManager::handlePacket(sf::Packet& _packet)
@@ -118,14 +119,7 @@ void NetworkManager::handlePongPacket(sf::Packet& _packet)
 
     latency = static_cast<sf::Uint32>((play_time - prev_play_time) * 1000);
 
-    client.updatePingTime(latency);
-}
-
-void NetworkManager::handleMessagePacket(sf::Packet& _packet)
-{
-    std::string str;
-    _packet >> str;
-    std::cout << str << std::endl;
+    updatePingTime(latency);
 }
 
 void NetworkManager::calculatePlayTime()
