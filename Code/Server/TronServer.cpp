@@ -80,14 +80,10 @@ void TronServer::acceptClient()
     {
         std::cout << connection_message << std::endl;
 
-        sf::Packet packet;
-        setPacketID(packet, PacketID::PONG);
-        new_user->getSocket()->send(packet);
-
         socket_selector.add(*new_user->getSocket());
         users.push_back(std::move(new_user));
 
-        packet.clear();
+        sf::Packet packet;
         setPacketID(packet, PacketID::MESSAGE);
         packet << connection_message;
 

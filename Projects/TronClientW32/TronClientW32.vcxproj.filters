@@ -38,14 +38,8 @@
     <ClCompile Include="..\..\Code\Client\main_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Client\InputHandler.cpp">
-      <Filter>Source Files\Managerial</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Code\Client\ObjectRenderer.cpp">
       <Filter>Source Files\Managerial</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\Client\TronClient.cpp">
-      <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Client\SimpleTimer.cpp">
       <Filter>Source Files\Utility</Filter>
@@ -55,6 +49,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Code\Client\ClientStateGame.cpp">
       <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Client\NetworkManager.cpp">
+      <Filter>Header Files\Managerial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Client\InputHandler.cpp">
+      <Filter>Header Files\Managerial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Client\TronClient.cpp">
+      <Filter>Header Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +93,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ClientData.h">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\NetworkManager.h">
+      <Filter>Header Files\Managerial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\ThreadDispatcher.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
