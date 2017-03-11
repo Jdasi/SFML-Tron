@@ -5,6 +5,12 @@
 struct ClientData;
 class ClientStateHandler;
 
+/* The Client's extension of the generic State class.
+ * ClientState requires a ClientStateHandler, which is derived from generic StateHandler.
+ *
+ * The extended state functionality includes command handling based on user input,
+ * which the server does not need.
+ */
 class ClientState : public State<ClientState, ClientStateHandler>
 {
 public:

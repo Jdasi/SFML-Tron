@@ -11,6 +11,8 @@ NetworkManager::NetworkManager(const sf::IpAddress _ip_address, const unsigned i
     , running(true)
     , latency(0)
     , play_time(0)
+    , timer()
+    , scheduler()
     , packet_handlers()
 {
     registerPacketHandlers();
@@ -38,11 +40,16 @@ void NetworkManager::connect()
         auto status = socket.connect(ip_address, tcp_port);
         if (status != sf::Socket::Done)
         {
-            throw NetworkException();
+            onDisconnected();
+            return;
         }
 
         socket.setBlocking(false);
         has_connected = true;
+
+        onConnected();
+
+        sendPing();
 
         std::cout << "Connected to server: " << ip_address << std::endl;
     });
@@ -63,9 +70,11 @@ void NetworkManager::networkingThread()
 {
     while (running)
     {
+        // Ease CPU usage.
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
         executeDispatchedMethods();
+        scheduler.update();
 
         if (!has_connected)
             continue;
@@ -79,8 +88,9 @@ void NetworkManager::networkingThread()
                 handlePacket(packet);
                 break;
             case sf::Socket::Disconnected:
-            case sf::Socket::Error: 
+            case sf::Socket::Error:
                 running = false;
+                onDisconnected();
                 return;
             case sf::Socket::NotReady:
             case sf::Socket::Partial:
@@ -88,6 +98,8 @@ void NetworkManager::networkingThread()
                 break;
         }
     }
+
+    std::cout << "Networking thread ended" << std::endl;
 }
 
 void NetworkManager::stopNetworkingThread()
@@ -96,9 +108,9 @@ void NetworkManager::stopNetworkingThread()
     network_thread.join();
 }
 
-void NetworkManager::registerPacketHandler(const PacketID id, const std::function<void(sf::Packet&)> handler)
+void NetworkManager::registerPacketHandler(const PacketID _id, const std::function<void(sf::Packet&)> _handler)
 {
-    packet_handlers.emplace(id, handler);
+    packet_handlers.emplace(_id, _handler);
 }
 
 void NetworkManager::registerPacketHandlers()
@@ -114,12 +126,23 @@ void NetworkManager::handlePacket(sf::Packet& _packet)
 
 void NetworkManager::handlePongPacket(sf::Packet& _packet)
 {
+    std::cout << "Received pong." << std::endl;
+
     double prev_play_time = 0;
     _packet >> prev_play_time;
 
     latency = static_cast<sf::Uint32>((play_time - prev_play_time) * 1000);
 
-    updatePingTime(latency);
+    onUpdatePingTime(latency);
+
+    sendClientLatency();
+
+    scheduler.invoke([this]() { sendPing(); }, 1.0);
+}
+
+void NetworkManager::sendPacket(sf::Packet& _packet)
+{
+    while (socket.send(_packet) == sf::Socket::Partial){}
 }
 
 void NetworkManager::calculatePlayTime()
@@ -131,14 +154,13 @@ void NetworkManager::calculatePlayTime()
 
 void NetworkManager::sendClientLatency()
 {
-    // This should really be pushed to network queue instead.
     sf::Packet packet;
     setPacketID(packet, PacketID::LATENCY);
 
     // Inform server of client latency.
     packet << latency;
     
-    socket.send(packet);
+    sendPacket(packet);
 }
 
 void NetworkManager::sendPing()
@@ -150,5 +172,5 @@ void NetworkManager::sendPing()
 
     // Send next ping to server.
     packet << play_time;
-    socket.send(packet);
+    sendPacket(packet);;
 }

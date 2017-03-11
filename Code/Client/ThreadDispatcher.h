@@ -1,5 +1,4 @@
 #pragma once
-
 #include <Game/Noncopyable.h>
 
 #include <queue>

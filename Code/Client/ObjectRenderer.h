@@ -25,6 +25,7 @@ private:
 
     sf::RenderWindow& window;
     std::vector<sf::Drawable*> drawables;
+
     std::queue<sf::Drawable*> link_queue;
     std::queue<sf::Drawable*> unlink_queue;
 

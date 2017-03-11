@@ -6,6 +6,14 @@
 
 #include "Noncopyable.h"
 
+/* StateHandler uses a self-referring template pattern.
+ * The first templated type indicates which type of state is to be handled,
+ * which in essence then decides the second templated type, which forms
+ * the type of StateHandler is created.
+ *
+ * This allows for the StateHandler to stay generic, meaning it can be reused for
+ * both Client and Server state handlers, which will differ in requirements.
+ */
 template <typename StateType, typename StateHandlerType>
 class StateHandler : public Noncopyable
 {

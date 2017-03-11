@@ -4,6 +4,7 @@
 #include "ClientStateHandler.h"
 #include "ClientData.h"
 #include "ObjectRenderer.h"
+#include "TronNetworkManager.h"
 
 ClientStateStart::ClientStateStart(ClientData* _client_data)
     : ClientState(_client_data)
@@ -49,7 +50,7 @@ void ClientStateStart::onStateLeave()
 
 void ClientStateStart::tick()
 {
-    latency_text->setString(std::to_string(client_data->latency) + "us");
+    latency_text->setString(std::to_string(client_data->latency) + "ms");
 }
 
 void ClientStateStart::onCommand(const GameAction _action, const ActionState _action_state)
@@ -59,6 +60,14 @@ void ClientStateStart::onCommand(const GameAction _action, const ActionState _ac
         if (_action_state == ActionState::PRESSED)
         {
             getHandler()->queueState("GamePlay");
+        }
+    }
+
+    if (_action == GameAction::INTERACT)
+    {
+        if (_action_state == ActionState::PRESSED)
+        {
+            client_data->network_manager->sendChatMessage("Hello!");
         }
     }
 

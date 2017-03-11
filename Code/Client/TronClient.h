@@ -1,13 +1,8 @@
 #pragma once
-#include <memory>
-#include <queue>
-#include <mutex>
-#include <map>
-
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 
-#include <Game/Constants.h>
+// TronClient includes headers for its members to avoid linking errors in main.
 #include "SimpleTimer.h"
 #include "GameAction.h"
 #include "ObjectRenderer.h"
@@ -28,18 +23,20 @@ public:
     void run();
     void onCommand(GameAction _action, ActionState _action_state) const;
 
-    void updatePingTime(const double ping) override;
-
 private:
-    void handleEvent(const sf::Event& _event) const;
+    void onConnected() override;
+    void onDisconnected() override;
+    void onUpdatePingTime(const sf::Uint32 _ping) override;
+
+    void handleEvent(const sf::Event& _event);
+
+    sf::RenderWindow window;
+    sf::Font font;
 
     TronNetworkManager network_manager;
-
-    std::unique_ptr<sf::RenderWindow> window;
-    std::unique_ptr<ObjectRenderer> object_renderer;
-    std::unique_ptr<InputHandler> input_handler;
-    std::unique_ptr<ClientData> client_data;
-    std::unique_ptr<ClientStateHandler> state_handler;
-
+    ObjectRenderer object_renderer;
+    InputHandler input_handler;
+    ClientData client_data;
+    ClientStateHandler state_handler;
     SimpleTimer timer;
 };

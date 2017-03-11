@@ -9,12 +9,16 @@ public:
     explicit TronNetworkManager(INetworkClient& _client, const sf::IpAddress _ip_address, const unsigned int _tcp_port);
     ~TronNetworkManager() = default;
 
+    void sendChatMessage(const std::string& _message);
+
 private:
     void registerGamePacketHandlers();
 
     void handleMessagePacket(sf::Packet& _packet);
 
-    void updatePingTime(const sf::Uint32 ping) override;
+    void onConnected() override;
+    void onDisconnected() override;
+    void onUpdatePingTime(const sf::Uint32 _ping) override;
 
     INetworkClient& client;
 };

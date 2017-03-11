@@ -85,9 +85,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\Code\Server\main_server.cpp" />
     <ClCompile Include="..\..\Code\Server\TronServer.cpp" />
     <ClCompile Include="..\..\Code\Server\User.cpp" />

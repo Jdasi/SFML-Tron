@@ -8,6 +8,7 @@
 #include <Game/PacketID.h>
 #include "ThreadDispatcher.h"
 #include "SimpleTimer.h"
+#include "Scheduler.h"
 
 class NetworkException : public std::runtime_error
 {
@@ -27,8 +28,13 @@ public:
     void disconnect();
 
 protected:
-    void registerPacketHandler(const PacketID id, const std::function<void(sf::Packet&)> handler);
-    virtual void updatePingTime(const sf::Uint32 ping) = 0;
+    void registerPacketHandler(const PacketID _id, const std::function<void(sf::Packet&)> _handler);
+
+    virtual void onConnected() = 0;
+    virtual void onDisconnected() = 0;
+    virtual void onUpdatePingTime(const sf::Uint32 _ping) = 0;
+
+    void sendPacket(sf::Packet& _packet);
 
 private:
     void networkingThread();
@@ -37,6 +43,7 @@ private:
     void registerPacketHandlers();
     void handlePacket(sf::Packet& _packet);
     void handlePongPacket(sf::Packet& _packet);
+
 
     void calculatePlayTime();
 
@@ -53,6 +60,7 @@ private:
     double play_time;
 
     SimpleTimer timer;
+    Scheduler scheduler;
 
     std::thread network_thread;
 

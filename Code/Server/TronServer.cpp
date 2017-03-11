@@ -111,6 +111,8 @@ void TronServer::receivePacket()
                 return handleDisconnect(sender);
             }
 
+            std::cout << "Received Packet" << std::endl;
+
             handlePacket(packet, sender);
         }
     }
@@ -133,8 +135,12 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
             double time_stamp = 0;
             _packet >> time_stamp;
 
+            std::cout << "Ping Packet Received: " <<time_stamp << std::endl;
+
             sf::Packet packet;
             setPacketID(packet, PacketID::PONG);
+
+            std::cout << "Sending Pong Packet" << std::endl;
 
             packet << time_stamp;
             _sender->getSocket()->send(packet);
@@ -142,7 +148,7 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
 
         case LATENCY:
         {
-            sf::Uint64 latency;
+            sf::Uint32 latency;
             _packet >> latency;
             _sender->setLatency(latency);
             std::cout << "User " << static_cast<int>(_sender->getID()) << ": " << latency << "ms" << std::endl;
@@ -156,6 +162,7 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
 
             for (auto& user : users)
             {
+                // Don't send the sender's message back to themself.
                 if (user->getSocket() == _sender->getSocket())
                 {
                     continue;
