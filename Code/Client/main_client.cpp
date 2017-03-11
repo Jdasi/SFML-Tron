@@ -3,6 +3,7 @@
 
 #include <windows.h>
 
+#include <Game/Constants.h>
 #include "TronClient.h"
 
 int main()
@@ -12,7 +13,7 @@ int main()
     freopen("CONOUT$", "wt", stdout);
     SetConsoleTitle(L"Debug Console");
 
-    TronClient client;
+    TronClient client(SERVER_IP, SERVER_TCP_PORT);
     client.run();
 
 	return 0;

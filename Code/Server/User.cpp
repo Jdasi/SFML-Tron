@@ -32,12 +32,12 @@ void User::resetSocket()
     socket.reset();
 }
 
-const sf::Uint32& User::getLatency() const
+const sf::Uint64& User::getLatency() const
 {
     return latency;
 }
 
-void User::setLatency(sf::Uint32 _latency)
+void User::setLatency(sf::Uint64 _latency)
 {
     latency = _latency;
 }

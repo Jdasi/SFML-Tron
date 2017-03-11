@@ -10,19 +10,29 @@ ClientStateStart::ClientStateStart(ClientData* _client_data)
     , title_text(nullptr)
 {
     objects.reserve(10);
+
+    // Create text.
+    auto ttext = std::make_unique<sf::Text>("StateStart", *client_data->font);
+    ttext->setCharacterSize(30);
+    ttext->setStyle(sf::Text::Bold);
+    ttext->setFillColor(sf::Color::Red);
+
+    title_text = ttext.get();
+    objects.push_back(std::move(ttext));
+
+    // Create text.
+    auto ltext = std::make_unique<sf::Text>("", *client_data->font);
+    ltext->setCharacterSize(30);
+    ltext->setStyle(sf::Text::Bold);
+    ltext->setFillColor(sf::Color::Red);
+    ltext->setPosition({ 0, 50 });
+
+    latency_text = ltext.get();
+    objects.push_back(std::move(ltext));
 }
 
 void ClientStateStart::onStateEnter()
 {
-    // Create text.
-    auto text = std::make_unique<sf::Text>("StateStart", *client_data->font);
-    text->setCharacterSize(30);
-    text->setStyle(sf::Text::Bold);
-    text->setFillColor(sf::Color::Red);
-
-    title_text = text.get();
-    objects.push_back(std::move(text));
-
     for (auto& obj : objects)
     {
         client_data->object_renderer->link(*obj);
@@ -39,6 +49,7 @@ void ClientStateStart::onStateLeave()
 
 void ClientStateStart::tick()
 {
+    latency_text->setString(std::to_string(client_data->latency) + "us");
 }
 
 void ClientStateStart::onCommand(const GameAction _action, const ActionState _action_state)

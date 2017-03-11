@@ -1,23 +1,25 @@
 #pragma once
 #include <memory>
-#include <chrono>
 #include <queue>
 #include <mutex>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 
-#include <Game/TronGame.h>
-#include "InputHandler.h"
+#include <Game/PacketID.h>
+#include <Game/Constants.h>
 #include "SimpleTimer.h"
+#include "GameAction.h"
 #include "ObjectRenderer.h"
+#include "InputHandler.h"
 #include "ClientStateHandler.h"
+#include "ClientStates.h"
 #include "ClientData.h"
 
 class TronClient
 {
 public:
-    TronClient();
+    TronClient(sf::IpAddress _ip_address, unsigned int _tcp_port);
     ~TronClient() = default;
 
     void run();
@@ -25,6 +27,11 @@ public:
 
 private:
     void handleEvent(const sf::Event& _event) const;
+    bool connect();
+    void receive();
+    void ping();
+    void shutdown();
+    void handlePacket(sf::Packet& _packet);
 
     std::unique_ptr<sf::RenderWindow> window;
     std::unique_ptr<ObjectRenderer> object_renderer;
@@ -33,5 +40,12 @@ private:
     std::unique_ptr<ClientStateHandler> state_handler;
 
     SimpleTimer timer;
+
+    sf::IpAddress ip_address;
+    unsigned int tcp_port;
+    sf::TcpSocket socket;
+
+    std::queue<sf::Packet> pong_queue;
+    std::mutex pong_queue_mutex;
 
 };

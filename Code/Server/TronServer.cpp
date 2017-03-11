@@ -146,7 +146,7 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
 
         case LATENCY:
         {
-            sf::Uint32 latency;
+            sf::Uint64 latency;
             _packet >> latency;
             _sender->setLatency(latency);
             std::cout << "User " << static_cast<int>(_sender->getID()) << ": " << latency << "ms" << std::endl;

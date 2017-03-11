@@ -25,4 +25,7 @@ struct ClientData
     std::atomic<bool> exit = false;
     double delta_time = 0;
     double play_time = 0;
+
+    sf::Uint64 latency = 0;
+
 };
