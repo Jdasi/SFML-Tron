@@ -43,6 +43,7 @@ add_executable(TronClient
     Code/Client/ClientStateGame.cpp
     Code/Client/ClientStateGame.h
     Code/Client/ClientStates.h
+    Code/Client/ClientStateHandler.h
     Code/Client/ClientStateStart.cpp
     Code/Client/ClientStateStart.h
     Code/Client/GameAction.h
