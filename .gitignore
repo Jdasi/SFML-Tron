@@ -346,3 +346,5 @@ paket-files/
 !/Libs/**/*.dll
 !/Libs/**/*.pdb
 !/Libs/**/*.lib
+
+build
