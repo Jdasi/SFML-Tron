@@ -4,56 +4,27 @@
 
 ObjectRenderer::ObjectRenderer(sf::RenderWindow& _window)
     : window(_window)
+    , drawables(nullptr)
 {
-    drawables.reserve(100);
 }
 
-void ObjectRenderer::draw()
+void ObjectRenderer::draw() const
 {
-    process_unlink_queue();
-    process_link_queue();
+    // No drawables linked.
+    if (!drawables)
+    {
+        return;
+    }
 
     window.clear();
-    for (auto& drawable : drawables)
+    for (auto& drawable : *drawables)
     {
         window.draw(*drawable);
     }
     window.display();
 }
 
-void ObjectRenderer::unlink(sf::Drawable& _drawable)
+void ObjectRenderer::link(std::vector<std::unique_ptr<sf::Drawable>>* _drawables)
 {
-    unlink_queue.push(&_drawable);
-}
-
-void ObjectRenderer::link(sf::Drawable& _drawable)
-{
-    link_queue.push(&_drawable);
-}
-
-void ObjectRenderer::process_link_queue()
-{
-    while (!link_queue.empty())
-    {
-        drawables.push_back(link_queue.front());
-        link_queue.pop();
-    }
-}
-
-void ObjectRenderer::process_unlink_queue()
-{
-    while (!unlink_queue.empty())
-    {
-        auto drawable = drawables.front();
-        for (auto iter = drawables.begin(); iter != drawables.end(); ++iter)
-        {
-            if (drawable == (*iter))
-            {
-                drawables.erase(iter);
-                break;
-            }
-        }
-
-        unlink_queue.pop();
-    }
+    drawables = _drawables;
 }

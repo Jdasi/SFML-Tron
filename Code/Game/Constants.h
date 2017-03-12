@@ -22,7 +22,7 @@ constexpr int WINDOW_BOTTOM_BOUNDARY    = WINDOW_HEIGHT - WINDOW_MARGIN;
 // NETWORK SETTINGS
 // ======================================================================================
 const std::string SERVER_IP             { "127.0.0.1" };
-const unsigned int SERVER_TCP_PORT      = 72500;
+const unsigned int SERVER_TCP_PORT      = 1337;
 
 // ======================================================================================
 // GAMEPLAY SETTINGS

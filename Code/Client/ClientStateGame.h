@@ -27,6 +27,4 @@ public:
 private:
     sf::Text* title_text;
 
-    std::vector<std::unique_ptr<sf::Drawable>> objects;
-
 };

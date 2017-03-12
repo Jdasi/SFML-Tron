@@ -1,6 +1,14 @@
 #pragma once
+#include <vector>
+#include <memory>
+
 #include <Game/State.h>
 #include "GameAction.h"
+
+namespace sf
+{
+    class Drawable;
+}
 
 struct ClientData;
 class ClientStateHandler;
@@ -28,8 +36,14 @@ public:
 
     void tick() override = 0;
 
+    std::vector<std::unique_ptr<sf::Drawable>>* getDrawables()
+    {
+        return &drawables;
+    }
+
 protected:
     ClientData* client_data;
+    std::vector<std::unique_ptr<sf::Drawable>> drawables;
 
 private:
 

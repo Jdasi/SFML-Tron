@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <queue>
+#include <memory>
 
 namespace sf
 {
@@ -14,19 +14,12 @@ public:
     ObjectRenderer(sf::RenderWindow& _window);
     ~ObjectRenderer() = default;
 
-    void draw();
+    void draw() const;
 
-    void unlink(sf::Drawable& _drawable);
-    void link(sf::Drawable& _drawable);
+    void link(std::vector<std::unique_ptr<sf::Drawable>>* _drawables);
 
 private:
-    void process_link_queue();
-    void process_unlink_queue();
-
     sf::RenderWindow& window;
-    std::vector<sf::Drawable*> drawables;
-
-    std::queue<sf::Drawable*> link_queue;
-    std::queue<sf::Drawable*> unlink_queue;
+    std::vector<std::unique_ptr<sf::Drawable>>* drawables;
 
 };

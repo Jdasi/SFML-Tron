@@ -8,10 +8,7 @@
 
 ClientStateStart::ClientStateStart(ClientData* _client_data)
     : ClientState(_client_data)
-    , title_text(nullptr)
 {
-    objects.reserve(10);
-
     // Create text.
     auto ttext = std::make_unique<sf::Text>("StateStart", *client_data->font);
     ttext->setCharacterSize(30);
@@ -19,7 +16,7 @@ ClientStateStart::ClientStateStart(ClientData* _client_data)
     ttext->setFillColor(sf::Color::Red);
 
     title_text = ttext.get();
-    objects.push_back(std::move(ttext));
+    drawables.push_back(std::move(ttext));
 
     // Create text.
     auto ltext = std::make_unique<sf::Text>("", *client_data->font);
@@ -29,23 +26,15 @@ ClientStateStart::ClientStateStart(ClientData* _client_data)
     ltext->setPosition({ 0, 50 });
 
     latency_text = ltext.get();
-    objects.push_back(std::move(ltext));
+    drawables.push_back(std::move(ltext));
 }
 
 void ClientStateStart::onStateEnter()
 {
-    for (auto& obj : objects)
-    {
-        client_data->object_renderer->link(*obj);
-    }
 }
 
 void ClientStateStart::onStateLeave()
 {
-    for (auto& obj : objects)
-    {
-        client_data->object_renderer->unlink(*obj);
-    }
 }
 
 void ClientStateStart::tick()

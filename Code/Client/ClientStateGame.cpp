@@ -6,8 +6,6 @@
 ClientStateGame::ClientStateGame(ClientData* _client_data)
     : ClientState(_client_data)
 {
-    objects.reserve(100);
-
     // Create text.
     auto ttext = std::make_unique<sf::Text>("StateGame", *client_data->font);
     ttext->setCharacterSize(30);
@@ -15,23 +13,15 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
     ttext->setFillColor(sf::Color::Red);
 
     title_text = ttext.get();
-    objects.push_back(std::move(ttext));
+    drawables.push_back(std::move(ttext));
 }
 
 void ClientStateGame::onStateEnter()
 {
-    for (auto& obj : objects)
-    {
-        client_data->object_renderer->link(*obj);
-    }
 }
 
 void ClientStateGame::onStateLeave()
 {
-    for (auto& obj : objects)
-    {
-        client_data->object_renderer->unlink(*obj);
-    }
 }
 
 void ClientStateGame::tick()

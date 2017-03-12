@@ -50,6 +50,9 @@ public:
 protected:
     StateType* current_state;
 
+    virtual void onStateLeave(StateType* _state) = 0;
+    virtual void onStateEnter(StateType* _state) = 0;
+
 private:
     void processStatesQueue()
     {
@@ -73,11 +76,13 @@ private:
         if (current_state)
         {
             current_state->onStateLeave();
+            onStateLeave(current_state);
         }
 
         current_state = result->second.get();
 
         current_state->onStateEnter();
+        onStateEnter(current_state);
     }
 
     std::map<std::string, std::unique_ptr<StateType>> states;

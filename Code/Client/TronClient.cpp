@@ -11,6 +11,7 @@ TronClient::TronClient(sf::IpAddress _ip_address, unsigned int _tcp_port)
     , object_renderer(window)
     , input_handler(*this)
     , client_data(&font, &input_handler, &object_renderer, &network_manager)
+    , state_handler(&object_renderer)
 {
     if (!font.loadFromFile("../../Resources/arial.ttf"))
     {

@@ -26,6 +26,4 @@ private:
     sf::Text* title_text;
     sf::Text* latency_text;
 
-    std::vector<std::unique_ptr<sf::Drawable>> objects;
-
 };
