@@ -20,10 +20,12 @@ public:
     void onStateLeave() override;
 
     void tick() override;
+    void draw(sf::RenderWindow& _window) override;
+
     void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
-    sf::Text* title_text;
-    sf::Text* latency_text;
+    std::unique_ptr<sf::Text> title_text;
+    std::unique_ptr<sf::Text> latency_text;
 
 };

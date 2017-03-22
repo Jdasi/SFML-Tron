@@ -1,0 +1,17 @@
+#include "ClientStateHandler.h"
+
+void ClientStateHandler::onCommand(GameAction _action, ActionState _action_state) const
+{
+    if (current_state)
+    {
+        current_state->onCommand(_action, _action_state);
+    }
+}
+
+void ClientStateHandler::draw(sf::RenderWindow& _window)
+{
+    if (current_state)
+    {
+        current_state->draw(_window);
+    }
+}

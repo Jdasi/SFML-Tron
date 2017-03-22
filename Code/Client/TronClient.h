@@ -5,7 +5,6 @@
 // TronClient includes headers for its members to avoid linking errors in main.
 #include "SimpleTimer.h"
 #include "GameAction.h"
-#include "ObjectRenderer.h"
 #include "InputHandler.h"
 #include "ClientStateHandler.h"
 #include "ClientStates.h"
@@ -24,17 +23,22 @@ public:
     void onCommand(GameAction _action, ActionState _action_state) const;
 
 private:
+    void initKeyBindings();
+    void initClientStates();
+
     void onConnected() override;
     void onDisconnected() override;
     void onUpdatePingTime(const sf::Uint32 _ping) override;
 
     void handleEvent(const sf::Event& _event);
 
+    void tick();
+    void draw();
+
     sf::RenderWindow window;
     sf::Font font;
 
     TronNetworkManager network_manager;
-    ObjectRenderer object_renderer;
     InputHandler input_handler;
     ClientData client_data;
     ClientStateHandler state_handler;

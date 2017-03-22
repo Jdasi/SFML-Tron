@@ -8,6 +8,7 @@
 namespace sf
 {
     class Drawable;
+    class RenderWindow;
 }
 
 struct ClientData;
@@ -35,15 +36,10 @@ public:
     void onStateLeave() override = 0;
 
     void tick() override = 0;
-
-    std::vector<std::unique_ptr<sf::Drawable>>* getDrawables()
-    {
-        return &drawables;
-    }
+    virtual void draw(sf::RenderWindow& _window) = 0;
 
 protected:
     ClientData* client_data;
-    std::vector<std::unique_ptr<sf::Drawable>> drawables;
 
 private:
 

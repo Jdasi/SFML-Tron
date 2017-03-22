@@ -88,9 +88,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\Client\ClientStateGame.cpp" />
+    <ClCompile Include="..\..\Code\Client\ClientStateHandler.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateStart.cpp" />
+    <ClCompile Include="..\..\Code\Client\GameGrid.cpp" />
     <ClCompile Include="..\..\Code\Client\NetworkManager.cpp" />
-    <ClCompile Include="..\..\Code\Client\ObjectRenderer.cpp" />
     <ClCompile Include="..\..\Code\Client\Scheduler.cpp" />
     <ClCompile Include="..\..\Code\Client\SimpleTimer.cpp" />
     <ClCompile Include="..\..\Code\Client\TronClient.cpp" />
@@ -105,9 +106,10 @@
     <ClInclude Include="..\..\Code\Client\ClientStates.h" />
     <ClInclude Include="..\..\Code\Client\ClientStateStart.h" />
     <ClInclude Include="..\..\Code\Client\ClientData.h" />
+    <ClInclude Include="..\..\Code\Client\GameGrid.h" />
     <ClInclude Include="..\..\Code\Client\NetworkClient.h" />
     <ClInclude Include="..\..\Code\Client\NetworkManager.h" />
-    <ClInclude Include="..\..\Code\Client\ObjectRenderer.h" />
+    <ClInclude Include="..\..\Code\Client\ObjectFactory.h" />
     <ClInclude Include="..\..\Code\Client\Scheduler.h" />
     <ClInclude Include="..\..\Code\Client\SimpleTimer.h" />
     <ClInclude Include="..\..\Code\Client\ThreadDispatcher.h" />

@@ -1,19 +1,14 @@
 #include "ClientStateGame.h"
 #include "ClientData.h"
-#include "ObjectRenderer.h"
 #include "ClientStateHandler.h"
 
 ClientStateGame::ClientStateGame(ClientData* _client_data)
     : ClientState(_client_data)
 {
-    // Create text.
-    auto ttext = std::make_unique<sf::Text>("StateGame", *client_data->font);
-    ttext->setCharacterSize(30);
-    ttext->setStyle(sf::Text::Bold);
-    ttext->setFillColor(sf::Color::Red);
-
-    title_text = ttext.get();
-    drawables.push_back(std::move(ttext));
+    title_text = std::make_unique<sf::Text>("StateGame", *client_data->font);
+    title_text->setCharacterSize(30);
+    title_text->setStyle(sf::Text::Bold);
+    title_text->setFillColor(sf::Color::Red);
 }
 
 void ClientStateGame::onStateEnter()
@@ -26,6 +21,12 @@ void ClientStateGame::onStateLeave()
 
 void ClientStateGame::tick()
 {
+    
+}
+
+void ClientStateGame::draw(sf::RenderWindow& _window)
+{
+    _window.draw(*title_text);
 }
 
 void ClientStateGame::onCommand(const GameAction _action, const ActionState _action_state)
