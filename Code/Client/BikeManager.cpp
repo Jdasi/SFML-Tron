@@ -12,7 +12,7 @@ BikeManager::BikeManager(GameGrid& _game_grid)
         sf::Color::Magenta,
         sf::Color::Yellow})
 {
-    bikes.reserve(10);
+    bikes.reserve(MAX_PLAYERS);
 }
 
 void BikeManager::tick(ClientData* _client_data)
@@ -47,8 +47,8 @@ void BikeManager::addBike()
     bike.setID(bikes.size()); // Set unique bike ID starting from 0.
     bike.setTrailColor(colors[bikes.size()]);
 
-    bike.setGridPosition({ 0, 0 }); // Need to change this to support multiple bikes...
-    game_grid.setTileColor(bike.getGridPosition(), bike.getTrailColor());
+    bike.setGridPosition({ 0, bike.getID() * 20 }); // Need to change this to support multiple bikes...
+    game_grid.setTileColor(bike.getGridPosition(), sf::Color::White);
 
     bikes.push_back(bike);
 }
@@ -83,6 +83,8 @@ bool BikeManager::directionChangeValid(Bike& _bike, MoveDirection _dir) const
 
 void BikeManager::moveBike(Bike& _bike) const
 {
+    game_grid.setTileColor(_bike.getGridPosition(), _bike.getTrailColor());
+
     MoveDirection dir = _bike.getMoveDirection();
     sf::Vector2<int> pos = _bike.getGridPosition();
 
@@ -102,7 +104,7 @@ void BikeManager::moveBike(Bike& _bike) const
     {
         // Path is clear.
         _bike.setGridPosition(adjustment);
-        game_grid.setTileColor(adjustment, _bike.getTrailColor());
+        game_grid.setTileColor(adjustment, sf::Color::White);
     }
 }
 
