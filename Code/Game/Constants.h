@@ -28,6 +28,8 @@ const unsigned int SERVER_TCP_PORT      = 1337;
 // ======================================================================================
 // GAMEPLAY SETTINGS
 // ======================================================================================
+const int MAX_PLAYERS                   = 4; // Max players supported.
+
 const int GRID_SIZE_X                   = 125; // Width (in tiles) of the playing grid.
 const int GRID_SIZE_Y                   = 125; // Height (in tiles) of the playing grid.
 

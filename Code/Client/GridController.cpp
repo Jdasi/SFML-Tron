@@ -2,9 +2,16 @@
 #include "GameGrid.h"
 #include "ClientData.h"
 #include <Game/Constants.h>
+#include <Game/RandomEngine.h>
 
 GridController::GridController(GameGrid& _game_grid)
     : game_grid(_game_grid)
+    , colors({sf::Color::Blue,
+        sf::Color::Cyan,
+        sf::Color::Green,
+        sf::Color::Magenta,
+        sf::Color::Red,
+        sf::Color::Yellow})
 {
     bikes.reserve(10);
 }
@@ -31,12 +38,17 @@ void GridController::tick(ClientData* _client_data)
 
 void GridController::addBike()
 {
+    if (bikes.size() >= MAX_PLAYERS)
+    {
+        return;
+    }
+
     Bike bike;
 
     bike.setID(bikes.size()); // Set unique bike ID starting from 0.
-    bike.setTrailColor(sf::Color::Red); // Need to randomise this for more bikes...
-    bike.setGridPosition({ 0, 0 }); // Need to randomise this for more bikes...
+    bike.setTrailColor(colors[bikes.size()]);
 
+    bike.setGridPosition({ 0, 0 }); // Need to change this to support multiple bikes...
     game_grid.setTileColor(bike.getGridPosition(), bike.getTrailColor());
 
     bikes.push_back(bike);

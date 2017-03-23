@@ -27,5 +27,6 @@ private:
 
     GameGrid& game_grid;
     std::vector<Bike> bikes;
+    std::vector<sf::Color> colors;
 
 };

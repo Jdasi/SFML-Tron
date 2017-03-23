@@ -19,6 +19,9 @@
     <ClCompile Include="..\..\Code\Game\TronGame.cpp">
       <Filter>Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Game\RandomEngine.cpp">
+      <Filter>Files\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Game\Constants.h">
@@ -41,6 +44,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\MoveDirection.h">
       <Filter>Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\RandomEngine.h">
+      <Filter>Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -79,6 +79,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Code\Game\RandomEngine.cpp" />
     <ClCompile Include="..\..\Code\Game\TronGame.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +87,7 @@
     <ClInclude Include="..\..\Code\Game\MoveDirection.h" />
     <ClInclude Include="..\..\Code\Game\Noncopyable.h" />
     <ClInclude Include="..\..\Code\Game\PacketID.h" />
+    <ClInclude Include="..\..\Code\Game\RandomEngine.h" />
     <ClInclude Include="..\..\Code\Game\State.h" />
     <ClInclude Include="..\..\Code\Game\StateHandler.h" />
     <ClInclude Include="..\..\Code\Game\TronGame.h" />
