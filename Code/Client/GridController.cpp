@@ -34,8 +34,10 @@ void GridController::addBike()
     Bike bike;
 
     bike.setID(bikes.size()); // Set unique bike ID starting from 0.
-    bike.setGridPosition({ 0, 0 }); // Need to randomise this for more bikes...
     bike.setTrailColor(sf::Color::Red); // Need to randomise this for more bikes...
+    bike.setGridPosition({ 0, 0 }); // Need to randomise this for more bikes...
+
+    game_grid.setTileColor(bike.getGridPosition(), bike.getTrailColor());
 
     bikes.push_back(bike);
 }
@@ -59,7 +61,8 @@ bool GridController::directionChangeValid(Bike& _bike, MoveDirection _dir) const
     if (_dir == MoveDirection::UP && _bike.getMoveDirection() == MoveDirection::DOWN ||
         _dir == MoveDirection::DOWN && _bike.getMoveDirection() == MoveDirection::UP ||
         _dir == MoveDirection::LEFT && _bike.getMoveDirection() == MoveDirection::RIGHT ||
-        _dir == MoveDirection::RIGHT && _bike.getMoveDirection() == MoveDirection::LEFT)
+        _dir == MoveDirection::RIGHT && _bike.getMoveDirection() == MoveDirection::LEFT ||
+        _dir == _bike.getMoveDirection())
     {
         return false;
     }

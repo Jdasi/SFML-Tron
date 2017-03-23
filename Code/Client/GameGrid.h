@@ -23,6 +23,7 @@ private:
     int size_y;
     int area;
 
+    sf::RectangleShape border;
     std::vector<std::unique_ptr<sf::RectangleShape>> tiles;
 
 };

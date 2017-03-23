@@ -12,6 +12,8 @@ GameGrid::GameGrid(int _size_x, int _size_y)
 
 void GameGrid::draw(sf::RenderWindow& _window)
 {
+    _window.draw(border);
+
     for (auto& tile : tiles)
     {
         _window.draw(*tile);
@@ -30,8 +32,20 @@ void GameGrid::setTileColor(sf::Vector2<int> _pos, sf::Color _color)
 
 void GameGrid::initGrid()
 {
-    sf::Vector2f rect({ static_cast<float>(WINDOW_RIGHT_BOUNDARY - WINDOW_LEFT_BOUNDARY) / size_x, 
-                        static_cast<float>(WINDOW_BOTTOM_BOUNDARY - WINDOW_TOP_BOUNDARY) / size_y });
+    float pane_width = WINDOW_RIGHT_BOUNDARY - WINDOW_LEFT_BOUNDARY;
+    float pane_height = WINDOW_BOTTOM_BOUNDARY - WINDOW_TOP_BOUNDARY;
+    sf::Vector2f pane({ pane_width, pane_height });
+
+    border.setOrigin({ 0.5f, 0.5f });
+    border.setPosition({ WINDOW_LEFT_BOUNDARY, WINDOW_TOP_BOUNDARY });
+    border.setSize(pane);
+    border.setFillColor(sf::Color::Transparent);
+    border.setOutlineThickness(5.0f);
+    border.setOutlineColor(sf::Color::White);
+
+    float rect_width =  pane_width / size_x;
+    float rect_height =  pane_height / size_y;
+    sf::Vector2f rect({ rect_width, rect_height });
 
     for (int y_cycles = 0; y_cycles < size_y; ++y_cycles)
     {
@@ -41,6 +55,7 @@ void GameGrid::initGrid()
             rectangle->setOrigin({ 0.5f, 0.5f });
 
             rectangle->setFillColor(sf::Color::Transparent);
+
             rectangle->setPosition({ WINDOW_LEFT_BOUNDARY + (x_cycles * rect.x), 
                                      WINDOW_TOP_BOUNDARY + (y_cycles * rect.y) });
 
