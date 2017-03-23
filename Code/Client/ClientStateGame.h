@@ -7,7 +7,7 @@
 
 #include "ClientState.h"
 #include "GameGrid.h"
-#include "GridController.h"
+#include "BikeManager.h"
 
 namespace sf
 {
@@ -31,6 +31,6 @@ public:
 
 private:
     GameGrid game_grid;
-    GridController grid_controller;
+    BikeManager grid_controller;
 
 };

@@ -6,11 +6,11 @@
 class GameGrid;
 struct ClientData;
 
-class GridController
+class BikeManager
 {
 public:
-    explicit GridController(GameGrid& _game_grid);
-    ~GridController() = default;
+    explicit BikeManager(GameGrid& _game_grid);
+    ~BikeManager() = default;
 
     void tick(ClientData* _client_data);
 

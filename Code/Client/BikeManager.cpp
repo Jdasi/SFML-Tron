@@ -1,22 +1,21 @@
-#include "GridController.h"
+#include "BikeManager.h"
 #include "GameGrid.h"
 #include "ClientData.h"
 #include <Game/Constants.h>
 #include <Game/RandomEngine.h>
 
-GridController::GridController(GameGrid& _game_grid)
+BikeManager::BikeManager(GameGrid& _game_grid)
     : game_grid(_game_grid)
-    , colors({sf::Color::Blue,
+    , colors({
         sf::Color::Cyan,
         sf::Color::Green,
         sf::Color::Magenta,
-        sf::Color::Red,
         sf::Color::Yellow})
 {
     bikes.reserve(10);
 }
 
-void GridController::tick(ClientData* _client_data)
+void BikeManager::tick(ClientData* _client_data)
 {
     for (auto& bike : bikes)
     {
@@ -36,7 +35,7 @@ void GridController::tick(ClientData* _client_data)
     }
 }
 
-void GridController::addBike()
+void BikeManager::addBike()
 {
     if (bikes.size() >= MAX_PLAYERS)
     {
@@ -54,7 +53,7 @@ void GridController::addBike()
     bikes.push_back(bike);
 }
 
-void GridController::changeBikeDirection(unsigned int _bike_id, MoveDirection _dir)
+void BikeManager::changeBikeDirection(unsigned int _bike_id, MoveDirection _dir)
 {
     if (_bike_id > bikes.size())
     {
@@ -68,7 +67,7 @@ void GridController::changeBikeDirection(unsigned int _bike_id, MoveDirection _d
     }
 }
 
-bool GridController::directionChangeValid(Bike& _bike, MoveDirection _dir) const
+bool BikeManager::directionChangeValid(Bike& _bike, MoveDirection _dir) const
 {
     if (_dir == MoveDirection::UP && _bike.getMoveDirection() == MoveDirection::DOWN ||
         _dir == MoveDirection::DOWN && _bike.getMoveDirection() == MoveDirection::UP ||
@@ -82,7 +81,7 @@ bool GridController::directionChangeValid(Bike& _bike, MoveDirection _dir) const
     return true;
 }
 
-void GridController::moveBike(Bike& _bike) const
+void BikeManager::moveBike(Bike& _bike) const
 {
     MoveDirection dir = _bike.getMoveDirection();
     sf::Vector2<int> pos = _bike.getGridPosition();
@@ -107,7 +106,7 @@ void GridController::moveBike(Bike& _bike) const
     }
 }
 
-sf::Vector2<int> GridController::generatePositionAdjustment(MoveDirection _dir, 
+sf::Vector2<int> BikeManager::generatePositionAdjustment(MoveDirection _dir, 
     sf::Vector2<int> _current_position) const
 {
     switch(_dir)
@@ -121,7 +120,7 @@ sf::Vector2<int> GridController::generatePositionAdjustment(MoveDirection _dir,
     }
 }
 
-bool GridController::adjustmentWithinBounds(sf::Vector2<int> _adjustment) const
+bool BikeManager::adjustmentWithinBounds(sf::Vector2<int> _adjustment) const
 {
     if (_adjustment.x >= GRID_SIZE_X || 
         _adjustment.x < 0 ||
@@ -135,7 +134,7 @@ bool GridController::adjustmentWithinBounds(sf::Vector2<int> _adjustment) const
 }
 
 // Returns true if the adjustment points to a coloured tile, otherwise returns false.
-bool GridController::adjustmentCollisionCheck(sf::Vector2<int> _adjustment) const
+bool BikeManager::adjustmentCollisionCheck(sf::Vector2<int> _adjustment) const
 {
     if (game_grid.getTileColor(_adjustment) == sf::Color::Transparent)
     {

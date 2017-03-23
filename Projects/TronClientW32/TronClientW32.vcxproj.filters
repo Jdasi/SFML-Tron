@@ -58,7 +58,7 @@
     <ClCompile Include="..\..\Code\Client\Bike.cpp">
       <Filter>Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Client\GridController.cpp">
+    <ClCompile Include="..\..\Code\Client\BikeManager.cpp">
       <Filter>Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -117,7 +117,7 @@
     <ClInclude Include="..\..\Code\Client\Bike.h">
       <Filter>Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Client\GridController.h">
+    <ClInclude Include="..\..\Code\Client\BikeManager.h">
       <Filter>Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
