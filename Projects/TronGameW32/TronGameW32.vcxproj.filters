@@ -11,9 +11,6 @@
     <Filter Include="Files\Managerial">
       <UniqueIdentifier>{767e2c59-316f-4365-bd95-938b88655b0d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Files\Objects">
-      <UniqueIdentifier>{34955752-779e-4e05-bcdd-535e0cf5e64f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Files\Core">
       <UniqueIdentifier>{f76b1dc9-67d6-4630-9d14-2b41a10d5a94}</UniqueIdentifier>
     </Filter>
@@ -21,9 +18,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\Code\Game\TronGame.cpp">
       <Filter>Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\Game\Bike.cpp">
-      <Filter>Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -45,8 +39,8 @@
     <ClInclude Include="..\..\Code\Game\TronGame.h">
       <Filter>Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Game\Bike.h">
-      <Filter>Files\Objects</Filter>
+    <ClInclude Include="..\..\Code\Game\MoveDirection.h">
+      <Filter>Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -79,12 +79,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Code\Game\Bike.cpp" />
     <ClCompile Include="..\..\Code\Game\TronGame.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Code\Game\Bike.h" />
     <ClInclude Include="..\..\Code\Game\Constants.h" />
+    <ClInclude Include="..\..\Code\Game\MoveDirection.h" />
     <ClInclude Include="..\..\Code\Game\Noncopyable.h" />
     <ClInclude Include="..\..\Code\Game\PacketID.h" />
     <ClInclude Include="..\..\Code\Game\State.h" />

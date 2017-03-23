@@ -22,7 +22,7 @@ public:
 
     void onCommand(GameAction _action, ActionState _action_state) const;
 
-    void draw(sf::RenderWindow& _window);
+    void draw(sf::RenderWindow& _window) const;
 
 private:
     void onStateLeave(ClientState* _state) override {}

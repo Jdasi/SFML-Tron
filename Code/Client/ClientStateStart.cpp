@@ -8,16 +8,19 @@
 ClientStateStart::ClientStateStart(ClientData* _client_data)
     : ClientState(_client_data)
 {
-    title_text = std::make_unique<sf::Text>("StateStart", *client_data->font);
+    auto title_text = std::make_unique<sf::Text>("StateStart", *client_data->font);
     title_text->setCharacterSize(30);
     title_text->setStyle(sf::Text::Bold);
     title_text->setFillColor(sf::Color::Red);
+    drawables.push_back(std::move(title_text));
 
-    latency_text = std::make_unique<sf::Text>("", *client_data->font);
-    latency_text->setCharacterSize(30);
-    latency_text->setStyle(sf::Text::Bold);
-    latency_text->setFillColor(sf::Color::Red);
-    latency_text->setPosition({ 0, 50 });
+    auto l_text = std::make_unique<sf::Text>("", *client_data->font);
+    l_text->setCharacterSize(30);
+    l_text->setStyle(sf::Text::Bold);
+    l_text->setFillColor(sf::Color::Red);
+    l_text->setPosition({ 0, 50 });
+    latency_text = l_text.get();
+    drawables.push_back(std::move(l_text));
 }
 
 void ClientStateStart::onStateEnter()
@@ -35,8 +38,10 @@ void ClientStateStart::tick()
 
 void ClientStateStart::draw(sf::RenderWindow& _window)
 {
-    _window.draw(*title_text);
-    _window.draw(*latency_text);
+    for (auto& drawable : drawables)
+    {
+        _window.draw(*drawable);
+    }
 }
 
 void ClientStateStart::onCommand(const GameAction _action, const ActionState _action_state)

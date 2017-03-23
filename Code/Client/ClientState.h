@@ -2,14 +2,10 @@
 #include <vector>
 #include <memory>
 
+#include <SFML/Graphics.hpp>
+
 #include <Game/State.h>
 #include "GameAction.h"
-
-namespace sf
-{
-    class Drawable;
-    class RenderWindow;
-}
 
 struct ClientData;
 class ClientStateHandler;
@@ -40,6 +36,7 @@ public:
 
 protected:
     ClientData* client_data;
+    std::vector<std::unique_ptr<sf::Drawable>> drawables;
 
 private:
 

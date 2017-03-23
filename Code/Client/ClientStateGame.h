@@ -6,6 +6,8 @@
 #include <SFML/Graphics.hpp>
 
 #include "ClientState.h"
+#include "GameGrid.h"
+#include "GridController.h"
 
 namespace sf
 {
@@ -28,6 +30,7 @@ public:
     void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
-    std::unique_ptr<sf::Text> title_text;
+    GameGrid game_grid;
+    GridController grid_controller;
 
 };

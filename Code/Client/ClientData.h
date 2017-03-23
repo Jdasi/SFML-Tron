@@ -19,6 +19,7 @@ struct ClientData
     {
     }
 
+    int client_id = 0;
     sf::Font* font = nullptr;
     InputHandler* input_handler = nullptr;
     TronNetworkManager* network_manager = nullptr;
