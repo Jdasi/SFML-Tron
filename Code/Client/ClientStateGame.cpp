@@ -1,20 +1,19 @@
 #include "ClientStateGame.h"
 #include "ClientData.h"
 #include "ClientStateHandler.h"
-#include <Game/Constants.h>
 
 ClientStateGame::ClientStateGame(ClientData* _client_data)
     : ClientState(_client_data)
-    , game_grid(GRID_SIZE_X, GRID_SIZE_Y)
-    , grid_controller(game_grid)
 {
+    simulation.attachListener(&pretty_grid);
+
     auto title_text = std::make_unique<sf::Text>("StateGame", *client_data->font);
     title_text->setCharacterSize(30);
     title_text->setStyle(sf::Text::Bold);
     title_text->setFillColor(sf::Color::Red);
     drawables.push_back(std::move(title_text));
 
-    grid_controller.addBike();
+    simulation.addPlayer();
 }
 
 void ClientStateGame::onStateEnter()
@@ -27,12 +26,12 @@ void ClientStateGame::onStateLeave()
 
 void ClientStateGame::tick()
 {
-    grid_controller.tick(client_data);
+    simulation.tick(client_data->delta_time);
 }
 
 void ClientStateGame::draw(sf::RenderWindow& _window)
 {
-    game_grid.draw(_window);
+    pretty_grid.draw(_window);
 
     for (auto& drawable : drawables)
     {
@@ -54,7 +53,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
     {
         if (_action_state == ActionState::PRESSED)
         {
-            grid_controller.changeBikeDirection(client_data->client_id, MoveDirection::UP);
+            simulation.changePlayerDirection(client_data->client_id, MoveDirection::UP);
         }
     }
 
@@ -62,7 +61,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
     {
         if (_action_state == ActionState::PRESSED)
         {
-            grid_controller.changeBikeDirection(client_data->client_id, MoveDirection::DOWN);
+            simulation.changePlayerDirection(client_data->client_id, MoveDirection::DOWN);
         }
     }
 
@@ -70,7 +69,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
     {
         if (_action_state == ActionState::PRESSED)
         {
-            grid_controller.changeBikeDirection(client_data->client_id, MoveDirection::LEFT);
+            simulation.changePlayerDirection(client_data->client_id, MoveDirection::LEFT);
         }
     }
 
@@ -78,7 +77,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
     {
         if (_action_state == ActionState::PRESSED)
         {
-            grid_controller.changeBikeDirection(client_data->client_id, MoveDirection::RIGHT);
+            simulation.changePlayerDirection(client_data->client_id, MoveDirection::RIGHT);
         }
     }
 }

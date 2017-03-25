@@ -87,12 +87,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Code\Client\Bike.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateGame.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateHandler.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateStart.cpp" />
-    <ClCompile Include="..\..\Code\Client\GameGrid.cpp" />
-    <ClCompile Include="..\..\Code\Client\BikeManager.cpp" />
+    <ClCompile Include="..\..\Code\Client\PrettyGrid.cpp" />
     <ClCompile Include="..\..\Code\Client\NetworkManager.cpp" />
     <ClCompile Include="..\..\Code\Client\Scheduler.cpp" />
     <ClCompile Include="..\..\Code\Client\SimpleTimer.cpp" />
@@ -102,15 +100,13 @@
     <ClCompile Include="..\..\Code\Client\TronNetworkManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Code\Client\Bike.h" />
     <ClInclude Include="..\..\Code\Client\ClientState.h" />
     <ClInclude Include="..\..\Code\Client\ClientStateGame.h" />
     <ClInclude Include="..\..\Code\Client\ClientStateHandler.h" />
     <ClInclude Include="..\..\Code\Client\ClientStates.h" />
     <ClInclude Include="..\..\Code\Client\ClientStateStart.h" />
     <ClInclude Include="..\..\Code\Client\ClientData.h" />
-    <ClInclude Include="..\..\Code\Client\GameGrid.h" />
-    <ClInclude Include="..\..\Code\Client\BikeManager.h" />
+    <ClInclude Include="..\..\Code\Client\PrettyGrid.h" />
     <ClInclude Include="..\..\Code\Client\NetworkClient.h" />
     <ClInclude Include="..\..\Code\Client\NetworkManager.h" />
     <ClInclude Include="..\..\Code\Client\ObjectFactory.h" />

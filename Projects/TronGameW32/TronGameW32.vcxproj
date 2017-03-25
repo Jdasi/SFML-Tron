@@ -79,18 +79,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Code\Game\Grid.cpp" />
+    <ClCompile Include="..\..\Code\Game\Player.cpp" />
     <ClCompile Include="..\..\Code\Game\RandomEngine.cpp" />
+    <ClCompile Include="..\..\Code\Game\Simulation.cpp" />
     <ClCompile Include="..\..\Code\Game\TronGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Code\Game\CellValue.h" />
+    <ClInclude Include="..\..\Code\Game\Colour.h" />
     <ClInclude Include="..\..\Code\Game\Constants.h" />
+    <ClInclude Include="..\..\Code\Game\Grid.h" />
     <ClInclude Include="..\..\Code\Game\MoveDirection.h" />
     <ClInclude Include="..\..\Code\Game\Noncopyable.h" />
+    <ClInclude Include="..\..\Code\Game\SimulationListener.h" />
+    <ClInclude Include="..\..\Code\Game\TronEvent.h" />
+    <ClInclude Include="..\..\Code\Game\ListenerSubject.h" />
     <ClInclude Include="..\..\Code\Game\PacketID.h" />
+    <ClInclude Include="..\..\Code\Game\Player.h" />
     <ClInclude Include="..\..\Code\Game\RandomEngine.h" />
+    <ClInclude Include="..\..\Code\Game\Simulation.h" />
     <ClInclude Include="..\..\Code\Game\State.h" />
     <ClInclude Include="..\..\Code\Game\StateHandler.h" />
     <ClInclude Include="..\..\Code\Game\TronGame.h" />
+    <ClInclude Include="..\..\Code\Game\Vector2f.h" />
+    <ClInclude Include="..\..\Code\Game\Vector2i.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

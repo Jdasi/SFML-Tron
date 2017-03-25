@@ -7,7 +7,8 @@ enum PacketID
     PING,
     PONG,
     LATENCY,
-    MESSAGE
+    MESSAGE,
+    DIRECTION
 };
 
 // This function must be called after creating a packet to set its type.

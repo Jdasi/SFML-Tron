@@ -49,16 +49,10 @@
     <ClCompile Include="..\..\Code\Client\main_client.cpp">
       <Filter>Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Client\GameGrid.cpp">
-      <Filter>Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Code\Client\ClientStateHandler.cpp">
       <Filter>Files\Managerial</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Client\Bike.cpp">
-      <Filter>Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\Client\BikeManager.cpp">
+    <ClCompile Include="..\..\Code\Client\PrettyGrid.cpp">
       <Filter>Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -108,16 +102,10 @@
     <ClInclude Include="..\..\Code\Client\ClientState.h">
       <Filter>Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Client\GameGrid.h">
-      <Filter>Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\Client\ObjectFactory.h">
       <Filter>Files\Abstract</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Client\Bike.h">
-      <Filter>Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Client\BikeManager.h">
+    <ClInclude Include="..\..\Code\Client\PrettyGrid.h">
       <Filter>Files\Core</Filter>
     </ClInclude>
   </ItemGroup>

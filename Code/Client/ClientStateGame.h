@@ -1,13 +1,9 @@
 #pragma once
-#include <vector>
-#include <memory>
-#include <functional>
-
 #include <SFML/Graphics.hpp>
 
+#include <Game/Simulation.h>
 #include "ClientState.h"
-#include "GameGrid.h"
-#include "BikeManager.h"
+#include "PrettyGrid.h"
 
 namespace sf
 {
@@ -30,7 +26,7 @@ public:
     void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
-    GameGrid game_grid;
-    BikeManager grid_controller;
+    PrettyGrid pretty_grid;
+    Simulation simulation;
 
 };

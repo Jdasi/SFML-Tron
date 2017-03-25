@@ -172,6 +172,20 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
             }
         } break;
 
+        case DIRECTION:
+        {
+            for (auto& user : users)
+            {
+                // Don't send the sender's message back to themself.
+                if (user->getSocket() == _sender->getSocket())
+                {
+                    continue;
+                }
+
+                user->getSocket()->send(_packet);
+            }
+        } break;
+
         default: {}
     }
 }

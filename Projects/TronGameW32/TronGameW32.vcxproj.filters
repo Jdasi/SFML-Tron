@@ -22,6 +22,15 @@
     <ClCompile Include="..\..\Code\Game\RandomEngine.cpp">
       <Filter>Files\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Game\Simulation.cpp">
+      <Filter>Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Game\Player.cpp">
+      <Filter>Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Game\Grid.cpp">
+      <Filter>Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Game\Constants.h">
@@ -47,6 +56,36 @@
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\RandomEngine.h">
       <Filter>Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Simulation.h">
+      <Filter>Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Player.h">
+      <Filter>Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Colour.h">
+      <Filter>Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Vector2i.h">
+      <Filter>Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Grid.h">
+      <Filter>Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\CellValue.h">
+      <Filter>Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Vector2f.h">
+      <Filter>Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\TronEvent.h">
+      <Filter>Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\ListenerSubject.h">
+      <Filter>Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\SimulationListener.h">
+      <Filter>Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
