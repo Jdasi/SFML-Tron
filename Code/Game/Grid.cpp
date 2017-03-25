@@ -4,17 +4,17 @@
 
 Grid::Grid()
 {
-    cells.assign(GRID_SIZE_X * GRID_SIZE_Y, CellValue::NONE);
+    cells.assign(GRID_SIZE_X * GRID_SIZE_Y, Cell());
 }
 
-int Grid::getCellValue(Vector2i _pos) const
+Cell Grid::getCell(Vector2i _pos) const
 {
     return cells[calculateCellIndex(_pos)];
 }
 
-void Grid::setCellValue(Vector2i _pos, CellValue _value)
+void Grid::setCell(Vector2i _pos, Cell _cell)
 {
-    cells[calculateCellIndex(_pos)] = _value;
+    cells[calculateCellIndex(_pos)] = _cell;
 }
 
 int Grid::calculateCellIndex(Vector2i _pos) const

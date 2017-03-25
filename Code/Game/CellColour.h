@@ -1,6 +1,6 @@
 #pragma once
 
-enum Colour
+enum CellColour
 {
     CYAN,
     GREEN,

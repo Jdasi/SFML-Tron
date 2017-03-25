@@ -15,3 +15,8 @@ void ClientStateHandler::draw(sf::RenderWindow& _window) const
         current_state->draw(_window);
     }
 }
+
+ClientState* ClientStateHandler::getCurrentState() const
+{
+    return current_state;
+}

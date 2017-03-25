@@ -1,5 +1,6 @@
-#include "NetworkManager.h"
 #include <iostream>
+
+#include "NetworkManager.h"
 
 using namespace std::placeholders;
 
@@ -77,7 +78,9 @@ void NetworkManager::networkingThread()
         scheduler.update();
 
         if (!has_connected)
+        {
             continue;
+        }
 
         sf::Packet packet;
         auto status = socket.receive(packet);
@@ -85,17 +88,23 @@ void NetworkManager::networkingThread()
         switch (status)
         {
             case sf::Socket::Done:
+            {
                 handlePacket(packet);
-                break;
+            } break;
+
             case sf::Socket::Disconnected:
             case sf::Socket::Error:
+            {
                 running = false;
                 onDisconnected();
                 return;
+            }
+
             case sf::Socket::NotReady:
             case sf::Socket::Partial:
             default:
-                break;
+            {
+            } break;
         }
     }
 

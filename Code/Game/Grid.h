@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-#include "CellValue.h"
+#include "Cell.h"
 
 struct Vector2i;
 
@@ -11,12 +11,12 @@ public:
     Grid();
     ~Grid() = default;
 
-    int getCellValue(Vector2i _pos) const;
-    void setCellValue(Vector2i _pos, CellValue _value);
+    Cell getCell(Vector2i _pos) const;
+    void setCell(Vector2i _pos, Cell _cell);
 
 private:
     int calculateCellIndex(Vector2i _pos) const;
 
-    std::vector<CellValue> cells;
+    std::vector<Cell> cells;
 
 };

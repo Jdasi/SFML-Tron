@@ -15,6 +15,6 @@ public:
     virtual void onDisconnected() = 0;
 
     virtual void onUpdatePingTime(const sf::Uint32 _ping) = 0;
-    virtual void onGamePacket() {}
+    virtual void onPlayerDirectionChange(int _id, MoveDirection _dir) = 0;
 
 };

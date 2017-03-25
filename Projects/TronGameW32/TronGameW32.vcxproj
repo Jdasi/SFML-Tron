@@ -82,16 +82,21 @@
     <ClCompile Include="..\..\Code\Game\Grid.cpp" />
     <ClCompile Include="..\..\Code\Game\Player.cpp" />
     <ClCompile Include="..\..\Code\Game\RandomEngine.cpp" />
+    <ClCompile Include="..\..\Code\Game\Scheduler.cpp" />
+    <ClCompile Include="..\..\Code\Game\SimpleTimer.cpp" />
     <ClCompile Include="..\..\Code\Game\Simulation.cpp" />
     <ClCompile Include="..\..\Code\Game\TronGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Code\Game\Cell.h" />
     <ClInclude Include="..\..\Code\Game\CellValue.h" />
-    <ClInclude Include="..\..\Code\Game\Colour.h" />
+    <ClInclude Include="..\..\Code\Game\CellColour.h" />
     <ClInclude Include="..\..\Code\Game\Constants.h" />
     <ClInclude Include="..\..\Code\Game\Grid.h" />
     <ClInclude Include="..\..\Code\Game\MoveDirection.h" />
     <ClInclude Include="..\..\Code\Game\Noncopyable.h" />
+    <ClInclude Include="..\..\Code\Game\Scheduler.h" />
+    <ClInclude Include="..\..\Code\Game\SimpleTimer.h" />
     <ClInclude Include="..\..\Code\Game\SimulationListener.h" />
     <ClInclude Include="..\..\Code\Game\TronEvent.h" />
     <ClInclude Include="..\..\Code\Game\ListenerSubject.h" />

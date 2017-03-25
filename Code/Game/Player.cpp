@@ -3,7 +3,7 @@
 
 Player::Player()
     : id(0)
-    , colour(Colour::CYAN)
+    , colour(CellColour::CYAN)
     , direction(MoveDirection::RIGHT)
     , move_speed(BIKE_MOVE_SPEED)
     , move_timer(0)
@@ -22,12 +22,12 @@ void Player::setID(int _id)
     id = _id;
 }
 
-Colour Player::getColour() const
+CellColour Player::getColour() const
 {
     return colour;
 }
 
-void Player::setColour(Colour _colour)
+void Player::setColour(CellColour _colour)
 {
     colour = _colour;
 }

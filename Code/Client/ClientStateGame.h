@@ -4,6 +4,9 @@
 #include <Game/Simulation.h>
 #include "ClientState.h"
 #include "PrettyGrid.h"
+#include "NetworkClient.h"
+#include "ThreadDispatcher.h"
+#include "TronNetworkManager.h"
 
 namespace sf
 {
@@ -11,7 +14,7 @@ namespace sf
     class Drawable;
 }
 
-class ClientStateGame final : public ClientState
+class ClientStateGame final : public ClientState, public INetworkClient, public ThreadDispatcher
 {
 public:
     ClientStateGame(ClientData* _client_data);
@@ -26,6 +29,12 @@ public:
     void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
+    void onConnected() override;
+    void onDisconnected() override;
+    void onUpdatePingTime(const sf::Uint32 _ping) override;
+    void onPlayerDirectionChange(int _id, MoveDirection _dir) override;
+
+    TronNetworkManager network_manager;
     PrettyGrid pretty_grid;
     Simulation simulation;
 

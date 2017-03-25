@@ -1,9 +1,14 @@
+#include <Game/Constants.h>
 #include "ClientStateGame.h"
 #include "ClientData.h"
 #include "ClientStateHandler.h"
+#include "TronNetworkManager.h"
+
+#include <iostream>
 
 ClientStateGame::ClientStateGame(ClientData* _client_data)
     : ClientState(_client_data)
+    , network_manager(*this, SERVER_IP, SERVER_TCP_PORT)
 {
     simulation.attachListener(&pretty_grid);
 
@@ -18,6 +23,7 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
 
 void ClientStateGame::onStateEnter()
 {
+    network_manager.connect();
 }
 
 void ClientStateGame::onStateLeave()
@@ -26,6 +32,8 @@ void ClientStateGame::onStateLeave()
 
 void ClientStateGame::tick()
 {
+    executeDispatchedMethods();
+
     simulation.tick(client_data->delta_time);
 }
 
@@ -41,6 +49,8 @@ void ClientStateGame::draw(sf::RenderWindow& _window)
 
 void ClientStateGame::onCommand(const GameAction _action, const ActionState _action_state)
 {
+    auto id = client_data->client_id;
+
     if (_action == GameAction::QUIT)
     {
         if (_action_state == ActionState::PRESSED)
@@ -53,7 +63,10 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
     {
         if (_action_state == ActionState::PRESSED)
         {
-            simulation.changePlayerDirection(client_data->client_id, MoveDirection::UP);
+            auto dir = MoveDirection::UP;
+
+            simulation.changePlayerDirection(id, dir);
+            network_manager.sendPlayerDirectionChange(id, dir);
         }
     }
 
@@ -61,7 +74,10 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
     {
         if (_action_state == ActionState::PRESSED)
         {
-            simulation.changePlayerDirection(client_data->client_id, MoveDirection::DOWN);
+            auto dir = MoveDirection::DOWN;
+
+            simulation.changePlayerDirection(id, dir);
+            network_manager.sendPlayerDirectionChange(id, dir);
         }
     }
 
@@ -69,7 +85,10 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
     {
         if (_action_state == ActionState::PRESSED)
         {
-            simulation.changePlayerDirection(client_data->client_id, MoveDirection::LEFT);
+            auto dir = MoveDirection::LEFT;
+
+            simulation.changePlayerDirection(id, dir);
+            network_manager.sendPlayerDirectionChange(id, dir);
         }
     }
 
@@ -77,7 +96,46 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
     {
         if (_action_state == ActionState::PRESSED)
         {
-            simulation.changePlayerDirection(client_data->client_id, MoveDirection::RIGHT);
+            auto dir = MoveDirection::RIGHT;
+
+            simulation.changePlayerDirection(id, dir);
+            network_manager.sendPlayerDirectionChange(id, dir);
         }
     }
+}
+
+// Called by TronNetworkManager when a connection to the server has been made.
+void ClientStateGame::onConnected()
+{
+    postEvent([this]()
+    {
+        std::cout << "Connected." << std::endl;
+    });
+}
+
+// Called by TronNetworkManager when the client becomes disconnected from the server.
+void ClientStateGame::onDisconnected()
+{
+    postEvent([this]()
+    {
+        std::cout << "Disconnected." << std::endl;
+    });
+}
+
+// Called by TronNetworkManager when the server replies to ping requests.
+void ClientStateGame::onUpdatePingTime(const sf::Uint32 _ping)
+{
+    postEvent([this, _ping]()
+    {
+        client_data->latency = _ping;
+        std::cout << "Ping: " << _ping << std::endl;
+    });
+}
+
+void ClientStateGame::onPlayerDirectionChange(int _id, MoveDirection _dir)
+{
+    postEvent([this, _id, _dir]()
+    {
+        simulation.changePlayerDirection(_id, _dir);
+    });
 }

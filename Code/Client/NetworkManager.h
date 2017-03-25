@@ -6,9 +6,9 @@
 #include <SFML/Network.hpp>
 
 #include <Game/PacketID.h>
+#include <Game/Scheduler.h>
+#include <Game/SimpleTimer.h>
 #include "ThreadDispatcher.h"
-#include "SimpleTimer.h"
-#include "Scheduler.h"
 
 class NetworkException : public std::runtime_error
 {
@@ -17,6 +17,7 @@ public:
 };
 
 class TronClient;
+enum MoveDirection;
 
 class NetworkManager : public ThreadDispatcher
 {
@@ -33,6 +34,7 @@ protected:
     virtual void onConnected() = 0;
     virtual void onDisconnected() = 0;
     virtual void onUpdatePingTime(const sf::Uint32 _ping) = 0;
+    virtual void onPlayerDirectionChange(int _id, MoveDirection _dir) = 0;
 
     void sendPacket(sf::Packet& _packet);
 
@@ -43,7 +45,6 @@ private:
     void registerPacketHandlers();
     void handlePacket(sf::Packet& _packet);
     void handlePongPacket(sf::Packet& _packet);
-
 
     void calculatePlayTime();
 

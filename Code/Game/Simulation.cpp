@@ -39,10 +39,10 @@ void Simulation::addPlayer()
     Player player;
 
     player.setID(players.size());
-    player.setColour(static_cast<Colour>(colours_assigned++));
+    player.setColour(static_cast<CellColour>(colours_assigned++));
 
     player.setPosition({ 0, player.getID() * 20 }); // Need to change this to properly support multiple bikes...
-    grid.setCellValue(player.getPosition(), CellValue::HEAD);
+    grid.setCell(player.getPosition(), { CellValue::HEAD, player.getColour() });
 
     players.push_back(player);
 }
@@ -63,7 +63,7 @@ void Simulation::changePlayerDirection(unsigned int _player_id, MoveDirection _d
 
 void Simulation::movePlayer(Player& _player)
 {
-    grid.setCellValue(_player.getPosition(), CellValue::TRAIL);
+    grid.setCell(_player.getPosition(), { CellValue::TRAIL, _player.getColour() } );
 
     for (auto& listener : listeners)
     {
@@ -89,7 +89,7 @@ void Simulation::movePlayer(Player& _player)
     {
         // Path is clear.
         _player.setPosition(adjustment);
-        grid.setCellValue(adjustment, CellValue::HEAD);
+        grid.setCell(adjustment, { CellValue::HEAD, _player.getColour() });
 
         for (auto& listener : listeners)
         {
@@ -126,7 +126,7 @@ bool Simulation::adjustmentWithinBounds(Vector2i _adjustment) const
 
 bool Simulation::adjustmentCollisionCheck(Vector2i _adjustment) const
 {
-    if (grid.getCellValue(_adjustment) == CellValue::NONE)
+    if (grid.getCell(_adjustment).value == CellValue::NONE)
     {
         return false;
     }

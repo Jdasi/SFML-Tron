@@ -1,91 +1,102 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    <Filter Include="Core">
+      <UniqueIdentifier>{f76b1dc9-67d6-4630-9d14-2b41a10d5a94}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Files\Utility">
-      <UniqueIdentifier>{895ace81-5647-4be3-9512-381d462517f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\Managerial">
+    <Filter Include="Managerial">
       <UniqueIdentifier>{767e2c59-316f-4365-bd95-938b88655b0d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Files\Core">
-      <UniqueIdentifier>{f76b1dc9-67d6-4630-9d14-2b41a10d5a94}</UniqueIdentifier>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{895ace81-5647-4be3-9512-381d462517f5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\Game\TronGame.cpp">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Game\RandomEngine.cpp">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Game\Simulation.cpp">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Game\Player.cpp">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Game\Grid.cpp">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Game\Scheduler.cpp">
+      <Filter>Managerial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Game\SimpleTimer.cpp">
+      <Filter>Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Game\Constants.h">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\PacketID.h">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\State.h">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\StateHandler.h">
-      <Filter>Files\Managerial</Filter>
+      <Filter>Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\Noncopyable.h">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\TronGame.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\MoveDirection.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\RandomEngine.h">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\Simulation.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\Player.h">
-      <Filter>Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Game\Colour.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\Vector2i.h">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\Grid.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\CellValue.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\Vector2f.h">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\TronEvent.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\ListenerSubject.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\SimulationListener.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Cell.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\CellColour.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Scheduler.h">
+      <Filter>Managerial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\SimpleTimer.h">
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

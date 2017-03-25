@@ -1,9 +1,8 @@
 #pragma once
-#include <Game/Noncopyable.h>
-
 #include <queue>
 #include <mutex>
-#include <future>
+
+#include <Game/Noncopyable.h>
 
 class ThreadDispatcher : public Noncopyable
 {
@@ -17,27 +16,6 @@ protected:
     {
         std::lock_guard<std::mutex> guard(mutex);
         queue.push(method);
-    }
-
-    void callEvent(std::function<void()> method)
-    {
-        std::promise<void> promise;
-        std::future<void> future = promise.get_future();
-
-        postEvent([method, &promise]()
-        {
-            try
-            {
-                method();
-                promise.set_value();
-            }
-            catch (...)
-            {
-                promise.set_exception(std::current_exception());
-            }
-        });
-
-        return future.get();
     }
 
     void executeDispatchedMethods()

@@ -15,12 +15,13 @@ public:
 
     void draw(sf::RenderWindow& _window);
     void updateCell(const Player& _player, CellValue _value) override;
+    void updateAllCells(std::vector<Cell> _cells) override;
 
 private:
     void initGrid();
     void setTileColor(int _index, sf::Color _color);
     void setTileColor(const Vector2i _pos, sf::Color _color);
-    sf::Color evaluateColor(Colour _colour) const;
+    sf::Color evaluateSFColor(CellColour _colour) const;
 
     int calculateTilesIndex(int _x, int _y) const;
 

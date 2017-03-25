@@ -1,34 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Files\Core">
+    <Filter Include="Core">
       <UniqueIdentifier>{3ba69b46-ab2e-4c90-a5b8-9d7ef0961ad4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Files\Utility">
+    <Filter Include="Utility">
       <UniqueIdentifier>{0f58da91-014e-4a52-b325-c0bcc46716ff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\Server\TronServer.cpp">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Server\User.cpp">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Server\main_server.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
+    <ClCompile Include="..\..\Code\Server\main_server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Server\TronServer.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Server\User.h">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

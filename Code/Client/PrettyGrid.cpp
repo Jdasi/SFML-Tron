@@ -2,6 +2,7 @@
 #include <Game/Vector2i.h>
 #include <Game/CellValue.h>
 #include <Game/Player.h>
+#include <Game/Cell.h>
 #include "PrettyGrid.h"
 
 PrettyGrid::PrettyGrid()
@@ -33,12 +34,21 @@ void PrettyGrid::updateCell(const Player& _player, CellValue _value)
     {
         case CellValue::NONE: color = sf::Color::Transparent; break;
         case CellValue::HEAD: color = sf::Color::White; break;
-        case CellValue::TRAIL: color = evaluateColor(_player.getColour());
+        case CellValue::TRAIL: color = evaluateSFColor(_player.getColour());
 
         default: {}
     }
     
     setTileColor(_player.getPosition(), color);
+}
+
+void PrettyGrid::updateAllCells(std::vector<Cell> _cells)
+{
+    int count = 0;
+    for (auto& cell : _cells)
+    {
+        tiles[count]->setFillColor(evaluateSFColor(cell.colour));
+    }
 }
 
 void PrettyGrid::initGrid()
@@ -85,14 +95,14 @@ void PrettyGrid::setTileColor(const Vector2i _pos, sf::Color _color)
     setTileColor(calculateTilesIndex(_pos.x, _pos.y), _color);
 }
 
-sf::Color PrettyGrid::evaluateColor(Colour _colour) const
+sf::Color PrettyGrid::evaluateSFColor(CellColour _colour) const
 {
     switch (_colour)
     {
-        case Colour::CYAN: return sf::Color::Cyan;
-        case Colour::GREEN: return sf::Color::Green;
-        case Colour::MAGENTA: return sf::Color::Magenta;
-        case Colour::YELLOW: return sf::Color::Yellow;
+        case CellColour::CYAN: return sf::Color::Cyan;
+        case CellColour::GREEN: return sf::Color::Green;
+        case CellColour::MAGENTA: return sf::Color::Magenta;
+        case CellColour::YELLOW: return sf::Color::Yellow;
 
         default: return sf::Color::Transparent;
     }

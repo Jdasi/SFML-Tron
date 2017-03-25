@@ -1,112 +1,88 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Files\Managerial">
-      <UniqueIdentifier>{adea4e22-e4e3-4504-839c-bd5b40dad044}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\Core">
+    <Filter Include="Core">
       <UniqueIdentifier>{7616f457-91c4-4d62-bd2d-a09df5d7617c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Files\Utility">
-      <UniqueIdentifier>{e79fe75d-8fa0-4d68-a6a6-b1264bbeca94}</UniqueIdentifier>
+    <Filter Include="Managerial">
+      <UniqueIdentifier>{adea4e22-e4e3-4504-839c-bd5b40dad044}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Files\States">
+    <Filter Include="States">
       <UniqueIdentifier>{4b48d6a7-dd05-431e-ba71-4bd6dedff740}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Files\Abstract">
-      <UniqueIdentifier>{42aa6b16-7fe6-433a-9b66-18041d8b7d4f}</UniqueIdentifier>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{e79fe75d-8fa0-4d68-a6a6-b1264bbeca94}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\Client\NetworkManager.cpp">
-      <Filter>Files\Managerial</Filter>
+      <Filter>Managerial</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Client\InputHandler.cpp">
-      <Filter>Files\Managerial</Filter>
+      <Filter>Managerial</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Client\TronClient.cpp">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Client\TronNetworkManager.cpp">
-      <Filter>Files\Managerial</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\Client\Scheduler.cpp">
-      <Filter>Files\Managerial</Filter>
+      <Filter>Managerial</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Client\ClientStateGame.cpp">
-      <Filter>Files\States</Filter>
+      <Filter>States</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Client\ClientStateStart.cpp">
-      <Filter>Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\Client\SimpleTimer.cpp">
-      <Filter>Files\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\Client\main_client.cpp">
-      <Filter>Files</Filter>
+      <Filter>States</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Client\ClientStateHandler.cpp">
-      <Filter>Files\Managerial</Filter>
+      <Filter>Managerial</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Client\PrettyGrid.cpp">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Client\main_client.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Client\InputHandler.h">
-      <Filter>Files\Managerial</Filter>
+      <Filter>Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\TronClient.h">
-      <Filter>Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Client\SimpleTimer.h">
-      <Filter>Files\Utility</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\GameAction.h">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ClientStateHandler.h">
-      <Filter>Files\Managerial</Filter>
+      <Filter>Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ClientStateGame.h">
-      <Filter>Files\States</Filter>
+      <Filter>States</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ClientStateStart.h">
-      <Filter>Files\States</Filter>
+      <Filter>States</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ClientStates.h">
-      <Filter>Files\States</Filter>
+      <Filter>States</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ClientData.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\NetworkManager.h">
-      <Filter>Files\Managerial</Filter>
+      <Filter>Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ThreadDispatcher.h">
-      <Filter>Files\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\TronNetworkManager.h">
-      <Filter>Files\Managerial</Filter>
+      <Filter>Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\NetworkClient.h">
-      <Filter>Files\Managerial</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Client\Scheduler.h">
-      <Filter>Files\Managerial</Filter>
+      <Filter>Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ClientState.h">
-      <Filter>Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Client\ObjectFactory.h">
-      <Filter>Files\Abstract</Filter>
+      <Filter>States</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\PrettyGrid.h">
-      <Filter>Files\Core</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

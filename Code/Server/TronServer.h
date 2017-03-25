@@ -4,6 +4,8 @@
 
 #include <SFML/Network.hpp>
 
+#include <Game/Simulation.h>
+#include <Game/Scheduler.h>
 #include "User.h"
 
 class TronServer
@@ -35,5 +37,9 @@ private:
     bool clients_dirty;
     std::string server_name;
     std::string welcome_message;
+
+    Simulation simulation;
+    SimpleTimer simple_timer;
+    Scheduler scheduler;
 
 };

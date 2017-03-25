@@ -92,8 +92,6 @@
     <ClCompile Include="..\..\Code\Client\ClientStateStart.cpp" />
     <ClCompile Include="..\..\Code\Client\PrettyGrid.cpp" />
     <ClCompile Include="..\..\Code\Client\NetworkManager.cpp" />
-    <ClCompile Include="..\..\Code\Client\Scheduler.cpp" />
-    <ClCompile Include="..\..\Code\Client\SimpleTimer.cpp" />
     <ClCompile Include="..\..\Code\Client\TronClient.cpp" />
     <ClCompile Include="..\..\Code\Client\InputHandler.cpp" />
     <ClCompile Include="..\..\Code\Client\main_client.cpp" />
@@ -109,9 +107,6 @@
     <ClInclude Include="..\..\Code\Client\PrettyGrid.h" />
     <ClInclude Include="..\..\Code\Client\NetworkClient.h" />
     <ClInclude Include="..\..\Code\Client\NetworkManager.h" />
-    <ClInclude Include="..\..\Code\Client\ObjectFactory.h" />
-    <ClInclude Include="..\..\Code\Client\Scheduler.h" />
-    <ClInclude Include="..\..\Code\Client\SimpleTimer.h" />
     <ClInclude Include="..\..\Code\Client\ThreadDispatcher.h" />
     <ClInclude Include="..\..\Code\Client\TronClient.h" />
     <ClInclude Include="..\..\Code\Client\GameAction.h" />

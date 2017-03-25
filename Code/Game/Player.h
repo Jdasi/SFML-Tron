@@ -1,6 +1,6 @@
 #pragma once
 #include "MoveDirection.h"
-#include "Colour.h"
+#include "CellColour.h"
 #include "Vector2i.h"
 
 class Player
@@ -12,8 +12,8 @@ public:
     int getID() const;
     void setID(int _id);
 
-    Colour getColour() const;
-    void setColour(Colour _colour);
+    CellColour getColour() const;
+    void setColour(CellColour _colour);
 
     MoveDirection getDirection() const;
     void setDirection(MoveDirection _direction);
@@ -36,7 +36,7 @@ public:
 
 private:
     int id;
-    Colour colour;
+    CellColour colour;
     MoveDirection direction;
     Vector2i pos;
     float move_speed;

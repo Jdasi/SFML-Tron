@@ -52,6 +52,9 @@ void TronServer::listen()
 {
     while (!exit)
     {
+        float dt = simple_timer.getTimeDifference();
+        simple_timer.reset();
+
         if (socket_selector.wait())
         {
             if (socket_selector.isReady(tcp_listener))
@@ -64,6 +67,13 @@ void TronServer::listen()
                 // Packet received.
                 receivePacket();
             }
+        }
+
+        if (connected_clients > 0)
+        {
+            simulation.tick(dt);
+
+            
         }
 
         garbageCollectClients();
@@ -110,8 +120,6 @@ void TronServer::receivePacket()
             {
                 return handleDisconnect(sender);
             }
-
-            std::cout << "Received Packet" << std::endl;
 
             handlePacket(packet, sender);
         }
@@ -174,6 +182,12 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
 
         case DIRECTION:
         {
+            sf::Uint8 id;
+            sf::Uint8 dir;
+
+            _packet >> id >> dir;
+            // Do something with server's simulation ...
+
             for (auto& user : users)
             {
                 // Don't send the sender's message back to themself.

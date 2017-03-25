@@ -1,15 +1,12 @@
-#include <iostream>
-
 #include <SFML/Graphics.hpp>
 
 #include <Game/Constants.h>
 #include "TronClient.h"
 
-TronClient::TronClient(sf::IpAddress _ip_address, unsigned int _tcp_port)
+TronClient::TronClient()
     : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Tron Game")
-    , network_manager(*this, _ip_address, _tcp_port)
     , input_handler(*this)
-    , client_data(&font, &input_handler, &network_manager)
+    , client_data(&font, &input_handler)
     , state_handler()
 {
     if (!font.loadFromFile("../../Resources/arial.ttf"))
@@ -20,8 +17,6 @@ TronClient::TronClient(sf::IpAddress _ip_address, unsigned int _tcp_port)
 
 void TronClient::run()
 {
-    network_manager.connect();
-
     initKeyBindings();
     initClientStates();
 
@@ -31,9 +26,6 @@ void TronClient::run()
         client_data.delta_time = timer.getTimeDifference();
         timer.reset();
         client_data.play_time += client_data.delta_time;
-
-        // Execute everything in the client queue.
-        executeDispatchedMethods();
 
         tick();
         draw();
@@ -72,34 +64,6 @@ void TronClient::initClientStates()
     state_handler.registerState("GamePlay", std::make_unique<ClientStateGame>(&client_data));
 
     state_handler.queueState("GameStart");
-}
-
-// Called by TronNetworkManager when a connection to the server has been made.
-void TronClient::onConnected()
-{
-    postEvent([this]()
-    {
-        std::cout << "Connected." << std::endl;
-    });
-}
-
-// Called by TronNetworkManager when the client becomes disconnected from the server.
-void TronClient::onDisconnected()
-{
-    postEvent([this]()
-    {
-        std::cout << "Disconnected." << std::endl;
-    });
-}
-
-// Called by TronNetworkManager when the server replies to ping requests.
-void TronClient::onUpdatePingTime(const sf::Uint32 _ping)
-{
-    postEvent([this, _ping]()
-    {
-        client_data.latency = _ping;
-        std::cout << "Ping: " << _ping << std::endl;
-    });
 }
 
 // Processes the passed SFML event.

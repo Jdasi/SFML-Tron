@@ -3,7 +3,6 @@
 #include "ClientStateStart.h"
 #include "ClientStateHandler.h"
 #include "ClientData.h"
-#include "TronNetworkManager.h"
 
 ClientStateStart::ClientStateStart(ClientData* _client_data)
     : ClientState(_client_data)
@@ -51,14 +50,6 @@ void ClientStateStart::onCommand(const GameAction _action, const ActionState _ac
         if (_action_state == ActionState::PRESSED)
         {
             getHandler()->queueState("GamePlay");
-        }
-    }
-
-    if (_action == GameAction::INTERACT)
-    {
-        if (_action_state == ActionState::PRESSED)
-        {
-            client_data->network_manager->sendChatMessage("Hello!");
         }
     }
 
