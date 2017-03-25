@@ -6,6 +6,7 @@
 #include <memory>
 
 struct Vector2i;
+enum CellColour;
 
 class PrettyGrid : public SimulationListener
 {

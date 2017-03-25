@@ -1,8 +1,5 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-
 #include "ClientState.h"
-#include "PrettyGrid.h"
 
 namespace sf
 {
@@ -10,11 +7,11 @@ namespace sf
     class Drawable;
 }
 
-class ClientStateGame final : public ClientState
+class ClientStateEnd final : public ClientState
 {
 public:
-    ClientStateGame(ClientData* _client_data);
-    virtual ~ClientStateGame() = default;
+    ClientStateEnd(ClientData* _client_data);
+    virtual ~ClientStateEnd() = default;
 
     void onStateEnter() override;
     void onStateLeave() override;
@@ -25,6 +22,6 @@ public:
     void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
-    PrettyGrid pretty_grid;
+
 
 };

@@ -25,13 +25,13 @@ public:
 
     virtual ~StateHandler() = default;
 
-    void registerState(const std::string& _key, std::unique_ptr<StateType> _state)
+    void registerState(int _key, std::unique_ptr<StateType> _state)
     {
         _state->setHandler(this);
         states[_key] = std::move(_state);
     }
 
-    void queueState(const std::string& _key)
+    void queueState(int _key)
     {
         std::lock_guard<std::mutex> guard(states_queue_mutex);
         states_queue.push(_key);
@@ -64,7 +64,7 @@ private:
         }
     }
 
-    void triggerState(const std::string& _key)
+    void triggerState(int _key)
     {
         auto result = states.find(_key);
 
@@ -85,9 +85,9 @@ private:
         onStateEnter(current_state);
     }
 
-    std::map<std::string, std::unique_ptr<StateType>> states;
+    std::map<int, std::unique_ptr<StateType>> states;
 
-    std::queue<std::string> states_queue;
+    std::queue<int> states_queue;
     std::mutex states_queue_mutex;
 
 };

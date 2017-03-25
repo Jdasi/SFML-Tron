@@ -49,7 +49,7 @@ void Simulation::addPlayer()
 
 void Simulation::changePlayerDirection(unsigned int _player_id, MoveDirection _dir)
 {
-    if (_player_id > players.size())
+    if (_player_id > players.size() || players.empty())
     {
         return;
     }

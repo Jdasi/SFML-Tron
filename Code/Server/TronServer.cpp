@@ -22,7 +22,7 @@ bool TronServer::run(unsigned int port)
     }
 
     std::cout << "Server launched on port: " << tcp_port << std::endl
-        << "> Awaiting clients . . ." << std::endl;
+              << "> Awaiting clients . . ." << std::endl;
 
     socket_selector.add(tcp_listener);
 
