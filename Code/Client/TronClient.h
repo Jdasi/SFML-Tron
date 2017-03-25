@@ -1,17 +1,16 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
 
 // TronClient includes headers for its members to avoid linking errors in main.
 #include <Game/SimpleTimer.h>
 #include <Game/Simulation.h>
-#include "GameAction.h"
-#include "InputHandler.h"
-#include "ClientStateHandler.h"
-#include "ClientData.h"
 #include "NetworkClient.h"
 #include "ThreadDispatcher.h"
 #include "TronNetworkManager.h"
+#include "InputHandler.h"
+#include "ClientData.h"
+#include "ClientStateHandler.h"
+#include "PlayerManager.h"
 
 class TronClient : public INetworkClient, public ThreadDispatcher
 {
@@ -30,8 +29,10 @@ private:
 
     void onConnected() override;
     void onDisconnected() override;
-    void onUpdatePingTime(const sf::Uint32 _ping) override;
-    void onPlayerDirectionChange(int _id, MoveDirection _dir) override;
+    void onUpdatePingTime(double _ping) override;
+    void onBikeDirectionChange(int _id, MoveDirection _dir) override;
+    void onIdentity(int _id) override;
+    void onPlayerJoined(int _id) override;
 
     void tick();
     void draw();
@@ -45,5 +46,6 @@ private:
     ClientStateHandler state_handler;
     SimpleTimer timer;
     Simulation simulation;
+    PlayerManager player_manager;
 
 };

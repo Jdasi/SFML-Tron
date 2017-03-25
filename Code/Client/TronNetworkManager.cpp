@@ -26,7 +26,7 @@ void TronNetworkManager::sendChatMessage(const std::string& _message)
     });
 }
 
-void TronNetworkManager::sendPlayerDirectionChange(int _id, MoveDirection _dir)
+void TronNetworkManager::sendBikeDirectionChange(int _id, MoveDirection _dir)
 {
     postEvent([this, _id, _dir]()
     {
@@ -41,8 +41,26 @@ void TronNetworkManager::sendPlayerDirectionChange(int _id, MoveDirection _dir)
 
 void TronNetworkManager::registerGamePacketHandlers()
 {
+    registerPacketHandler(IDENTITY, std::bind(&TronNetworkManager::handleIdentityPacket, this, _1));
+    registerPacketHandler(PLAYERJOINED, std::bind(&TronNetworkManager::handlePlayerJoinedPacket, this, _1));
     registerPacketHandler(MESSAGE, std::bind(&TronNetworkManager::handleMessagePacket, this, _1));
     registerPacketHandler(DIRECTION, std::bind(&TronNetworkManager::handleDirectionPacket, this, _1));
+}
+
+void TronNetworkManager::handleIdentityPacket(sf::Packet& _packet)
+{
+    sf::Uint8 temp_id;
+    _packet >> temp_id;
+
+    onIdentity(static_cast<int>(temp_id));
+}
+
+void TronNetworkManager::handlePlayerJoinedPacket(sf::Packet& _packet)
+{
+    sf::Uint8 temp_id;
+    _packet >> temp_id;
+
+    onPlayerJoined(static_cast<int>(temp_id));
 }
 
 void TronNetworkManager::handleMessagePacket(sf::Packet& _packet)
@@ -54,15 +72,15 @@ void TronNetworkManager::handleMessagePacket(sf::Packet& _packet)
 
 void TronNetworkManager::handleDirectionPacket(sf::Packet& _packet)
 {
-    sf::Uint8 val1;
-    sf::Uint8 val2;
+    sf::Uint8 temp_id;
+    sf::Uint8 temp_dir;
 
-    _packet >> val1 >> val2;
+    _packet >> temp_id >> temp_dir;
 
-    int id = static_cast<int>(val1);
-    MoveDirection dir = static_cast<MoveDirection>(val2);
+    int id = static_cast<int>(temp_id);
+    MoveDirection dir = static_cast<MoveDirection>(temp_dir);
 
-    onPlayerDirectionChange(id, dir);
+    onBikeDirectionChange(id, dir);
 }
 
 void TronNetworkManager::onConnected()
@@ -75,12 +93,22 @@ void TronNetworkManager::onDisconnected()
     client.onDisconnected();
 }
 
-void TronNetworkManager::onUpdatePingTime(const sf::Uint32 _ping)
+void TronNetworkManager::onUpdatePingTime(double _ping)
 {
     client.onUpdatePingTime(_ping);
 }
 
-void TronNetworkManager::onPlayerDirectionChange(int _id, MoveDirection _dir)
+void TronNetworkManager::onBikeDirectionChange(int _id, MoveDirection _dir)
 {
-    client.onPlayerDirectionChange(_id, _dir);
+    client.onBikeDirectionChange(_id, _dir);
+}
+
+void TronNetworkManager::onIdentity(int _id)
+{
+    client.onIdentity(_id);
+}
+
+void TronNetworkManager::onPlayerJoined(int _id)
+{
+    client.onPlayerJoined(_id);
 }

@@ -3,11 +3,11 @@
 #include "CellColour.h"
 #include "Vector2i.h"
 
-class Player
+class Bike
 {
 public:
-    Player();
-    ~Player() = default;
+    Bike();
+    ~Bike() = default;
 
     int getID() const;
     void setID(int _id);

@@ -140,7 +140,7 @@ void NetworkManager::handlePongPacket(sf::Packet& _packet)
     double prev_play_time = 0;
     _packet >> prev_play_time;
 
-    latency = static_cast<sf::Uint32>((play_time - prev_play_time) * 1000);
+    latency = (play_time - prev_play_time) * 1000;
 
     onUpdatePingTime(latency);
 

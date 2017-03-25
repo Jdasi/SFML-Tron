@@ -7,7 +7,7 @@ User::User(sf::Uint8 _id)
 {
 }
 
-const sf::Uint8& User::getID() const
+sf::Uint8 User::getID() const
 {
     return id;
 }
@@ -32,12 +32,12 @@ void User::resetSocket()
     socket.reset();
 }
 
-const sf::Uint64& User::getLatency() const
+double User::getLatency() const
 {
     return latency;
 }
 
-void User::setLatency(sf::Uint64 _latency)
+void User::setLatency(double _latency)
 {
     latency = _latency;
 }

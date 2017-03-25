@@ -55,7 +55,7 @@ void TronServer::listen()
         float dt = simple_timer.getTimeDifference();
         simple_timer.reset();
 
-        if (socket_selector.wait())
+        if (socket_selector.wait(sf::milliseconds(1)))
         {
             if (socket_selector.isReady(tcp_listener))
             {
@@ -72,8 +72,6 @@ void TronServer::listen()
         if (connected_clients > 0)
         {
             simulation.tick(dt);
-
-            
         }
 
         garbageCollectClients();
@@ -83,28 +81,32 @@ void TronServer::listen()
 void TronServer::acceptClient()
 {
     auto new_user = std::make_unique<User>(connected_clients);
-    std::string connection_message;
-    connection_message.append("[User " + std::to_string(connected_clients) + " connected]");
 
     if (tcp_listener.accept(*new_user->getSocket()) == sf::Socket::Done)
     {
-        std::cout << connection_message << std::endl;
+        // Temporary server full code.
+        if (connected_clients >= 4)
+        {
+            new_user->getSocket()->disconnect();
+            return;
+        }
 
         socket_selector.add(*new_user->getSocket());
-        users.push_back(std::move(new_user));
-
+        
         sf::Packet packet;
-        setPacketID(packet, PacketID::MESSAGE);
-        packet << connection_message;
+        setPacketID(packet, PacketID::IDENTITY);
+        packet << new_user->getID();
+        new_user->getSocket()->send(packet);
+
+        setPacketID(packet, PacketID::PLAYERJOINED);
+        packet << new_user->getID();
 
         for (auto& user : users)
         {
-            if (user == users[connected_clients])
-                continue;
-
             user->getSocket()->send(packet);
         }
 
+        users.push_back(std::move(new_user));
         ++connected_clients;
     }
 }
@@ -143,7 +145,7 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
             double time_stamp = 0;
             _packet >> time_stamp;
 
-            std::cout << "Ping Packet Received: " <<time_stamp << std::endl;
+            std::cout << "Ping Packet Received: " << time_stamp << std::endl;
 
             sf::Packet packet;
             setPacketID(packet, PacketID::PONG);
@@ -156,8 +158,9 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
 
         case LATENCY:
         {
-            sf::Uint32 latency;
+            double latency;
             _packet >> latency;
+
             _sender->setLatency(latency);
             std::cout << "User " << static_cast<int>(_sender->getID()) << ": " << latency << "ms" << std::endl;
         } break;

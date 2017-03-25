@@ -57,8 +57,8 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
         {
             auto dir = MoveDirection::UP;
 
-            client_data->simulation->changePlayerDirection(id, dir);
-            client_data->network_manager->sendPlayerDirectionChange(id, dir);
+            client_data->simulation->changeBikeDirection(id, dir);
+            client_data->network_manager->sendBikeDirectionChange(id, dir);
         }
     }
 
@@ -68,8 +68,8 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
         {
             auto dir = MoveDirection::DOWN;
 
-            client_data->simulation->changePlayerDirection(id, dir);
-            client_data->network_manager->sendPlayerDirectionChange(id, dir);
+            client_data->simulation->changeBikeDirection(id, dir);
+            client_data->network_manager->sendBikeDirectionChange(id, dir);
         }
     }
 
@@ -79,8 +79,8 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
         {
             auto dir = MoveDirection::LEFT;
 
-            client_data->simulation->changePlayerDirection(id, dir);
-            client_data->network_manager->sendPlayerDirectionChange(id, dir);
+            client_data->simulation->changeBikeDirection(id, dir);
+            client_data->network_manager->sendBikeDirectionChange(id, dir);
         }
     }
 
@@ -90,8 +90,8 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
         {
             auto dir = MoveDirection::RIGHT;
 
-            client_data->simulation->changePlayerDirection(id, dir);
-            client_data->network_manager->sendPlayerDirectionChange(id, dir);
+            client_data->simulation->changeBikeDirection(id, dir);
+            client_data->network_manager->sendBikeDirectionChange(id, dir);
         }
     }
 }

@@ -15,7 +15,7 @@ public:
     ~PrettyGrid() = default;
 
     void draw(sf::RenderWindow& _window);
-    void updateCell(const Player& _player, CellValue _value) override;
+    void updateCell(const Bike& _bike, CellValue _value) override;
     void updateAllCells(std::vector<Cell> _cells) override;
 
 private:

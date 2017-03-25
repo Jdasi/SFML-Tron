@@ -80,7 +80,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\Game\Grid.cpp" />
-    <ClCompile Include="..\..\Code\Game\Player.cpp" />
+    <ClCompile Include="..\..\Code\Game\Bike.cpp" />
     <ClCompile Include="..\..\Code\Game\RandomEngine.cpp" />
     <ClCompile Include="..\..\Code\Game\Scheduler.cpp" />
     <ClCompile Include="..\..\Code\Game\SimpleTimer.cpp" />
@@ -101,7 +101,7 @@
     <ClInclude Include="..\..\Code\Game\TronEvent.h" />
     <ClInclude Include="..\..\Code\Game\ListenerSubject.h" />
     <ClInclude Include="..\..\Code\Game\PacketID.h" />
-    <ClInclude Include="..\..\Code\Game\Player.h" />
+    <ClInclude Include="..\..\Code\Game\Bike.h" />
     <ClInclude Include="..\..\Code\Game\RandomEngine.h" />
     <ClInclude Include="..\..\Code\Game\Simulation.h" />
     <ClInclude Include="..\..\Code\Game\State.h" />

@@ -9,12 +9,15 @@
 class INetworkClient
 {
 public:
+    INetworkClient() = default;
     virtual ~INetworkClient() = default;
 
     virtual void onConnected() = 0;
     virtual void onDisconnected() = 0;
 
-    virtual void onUpdatePingTime(const sf::Uint32 _ping) = 0;
-    virtual void onPlayerDirectionChange(int _id, MoveDirection _dir) = 0;
+    virtual void onUpdatePingTime(double _ping) = 0;
+    virtual void onBikeDirectionChange(int _id, MoveDirection _dir) = 0;
+    virtual void onIdentity(int _id) = 0;
+    virtual void onPlayerJoined(int _id) = 0;
 
 };

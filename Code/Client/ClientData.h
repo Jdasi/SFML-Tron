@@ -37,6 +37,6 @@ struct ClientData
     double delta_time;
     double play_time;
 
-    sf::Uint32 latency;
+    double latency;
 
 };

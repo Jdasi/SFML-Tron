@@ -16,6 +16,7 @@ TronClient::TronClient()
     , input_handler(*this)
     , client_data(&font, &input_handler, &network_manager, &simulation)
     , state_handler()
+    , player_manager(&client_data)
 {
     if (!font.loadFromFile("../../Resources/arial.ttf"))
     {
@@ -113,7 +114,7 @@ void TronClient::onDisconnected()
 }
 
 // Called by TronNetworkManager when the server replies to ping requests.
-void TronClient::onUpdatePingTime(const sf::Uint32 _ping)
+void TronClient::onUpdatePingTime(double _ping)
 {
     postEvent([this, _ping]()
     {
@@ -123,11 +124,30 @@ void TronClient::onUpdatePingTime(const sf::Uint32 _ping)
 }
 
 // Called by TronNetworkManager when the server sends a player direction change.
-void TronClient::onPlayerDirectionChange(int _id, MoveDirection _dir)
+void TronClient::onBikeDirectionChange(int _id, MoveDirection _dir)
 {
     postEvent([this, _id, _dir]()
     {
-        simulation.changePlayerDirection(_id, _dir);
+        simulation.changeBikeDirection(_id, _dir);
+    });
+}
+
+void TronClient::onIdentity(int _id)
+{
+    postEvent([this, _id]()
+    {
+        client_data.client_id = _id;
+        player_manager.addPlayer(_id);
+
+        std::cout << "Identity assigned: " << _id << std::endl;
+    });
+}
+
+void TronClient::onPlayerJoined(int _id)
+{
+    postEvent([this, _id]()
+    {
+        player_manager.addPlayer(_id);
     });
 }
 

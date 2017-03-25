@@ -21,9 +21,6 @@
     <ClCompile Include="..\..\Code\Game\Simulation.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Game\Player.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Code\Game\Grid.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -32,6 +29,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Code\Game\SimpleTimer.cpp">
       <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Game\Bike.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -60,9 +60,6 @@
       <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\Simulation.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Game\Player.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\Vector2i.h">
@@ -97,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\SimpleTimer.h">
       <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Bike.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

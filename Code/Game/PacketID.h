@@ -6,6 +6,9 @@ enum PacketID
     DISCONNECT,
     PING,
     PONG,
+    IDENTITY,
+    PLAYERJOINED,
+    PLAYERLEFT,
     LATENCY,
     MESSAGE,
     DIRECTION

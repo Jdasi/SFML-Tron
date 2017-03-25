@@ -1,7 +1,7 @@
 #include <Game/Constants.h>
 #include <Game/Vector2i.h>
 #include <Game/CellValue.h>
-#include <Game/Player.h>
+#include <Game/Bike.h>
 #include <Game/Cell.h>
 #include "PrettyGrid.h"
 
@@ -26,7 +26,7 @@ void PrettyGrid::draw(sf::RenderWindow& _window)
     }
 }
 
-void PrettyGrid::updateCell(const Player& _player, CellValue _value)
+void PrettyGrid::updateCell(const Bike& _bike, CellValue _value)
 {
     sf::Color color;
 
@@ -34,12 +34,12 @@ void PrettyGrid::updateCell(const Player& _player, CellValue _value)
     {
         case CellValue::NONE: color = sf::Color::Transparent; break;
         case CellValue::HEAD: color = sf::Color::White; break;
-        case CellValue::TRAIL: color = evaluateSFColor(_player.getColour());
+        case CellValue::TRAIL: color = evaluateSFColor(_bike.getColour());
 
         default: {}
     }
     
-    setTileColor(_player.getPosition(), color);
+    setTileColor(_bike.getPosition(), color);
 }
 
 void PrettyGrid::updateAllCells(std::vector<Cell> _cells)

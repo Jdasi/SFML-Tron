@@ -1,99 +1,98 @@
 #include "Simulation.h"
-#include "Player.h"
+#include "Bike.h"
 #include "Constants.h"
-
 
 Simulation::Simulation()
     : colours_assigned(0)
 {
-    players.reserve(MAX_PLAYERS);
+    bikes.reserve(MAX_PLAYERS);
 }
 
 void Simulation::tick(double _dt)
 {
-    for (auto& player : players)
+    for (auto& bike : bikes)
     {
-        if (!player.isAlive())
+        if (!bike.isAlive())
         {
             continue;
         }
 
-        player.modifyMoveTimer(_dt);
+        bike.modifyMoveTimer(_dt);
 
-        if (player.getMoveTimer() > player.getMoveSpeed())
+        if (bike.getMoveTimer() > bike.getMoveSpeed())
         {
-            player.resetMoveTimer();
+            bike.resetMoveTimer();
 
-            movePlayer(player);
+            moveBike(bike);
         }
     }
 }
 
-void Simulation::addPlayer()
+void Simulation::addBike()
 {
-    if (players.size() >= MAX_PLAYERS)
+    if (bikes.size() >= MAX_PLAYERS)
     {
         return;
     }
 
-    Player player;
+    Bike bike;
 
-    player.setID(players.size());
-    player.setColour(static_cast<CellColour>(colours_assigned++));
+    bike.setID(bikes.size());
+    bike.setColour(static_cast<CellColour>(colours_assigned++));
 
-    player.setPosition({ 0, player.getID() * 20 }); // Need to change this to properly support multiple bikes...
-    grid.setCell(player.getPosition(), { CellValue::HEAD, player.getColour() });
+    bike.setPosition({ 0, bike.getID() * 20 }); // Need to change this to properly support multiple bikes...
+    grid.setCell(bike.getPosition(), { CellValue::HEAD, bike.getColour() });
 
-    players.push_back(player);
+    bikes.push_back(bike);
 }
 
-void Simulation::changePlayerDirection(unsigned int _player_id, MoveDirection _dir)
+void Simulation::changeBikeDirection(unsigned int _bike_id, MoveDirection _dir)
 {
-    if (_player_id > players.size() || players.empty())
+    if (_bike_id > bikes.size() || bikes.empty())
     {
         return;
     }
 
-    Player& player = players[_player_id];
-    if (directionChangeValid(player, _dir))
+    Bike& bike = bikes[_bike_id];
+    if (directionChangeValid(bike, _dir))
     {
-        player.setDirection(_dir);
+        bike.setDirection(_dir);
     }
 }
 
-void Simulation::movePlayer(Player& _player)
+void Simulation::moveBike(Bike& _bike)
 {
-    grid.setCell(_player.getPosition(), { CellValue::TRAIL, _player.getColour() } );
+    grid.setCell(_bike.getPosition(), { CellValue::TRAIL, _bike.getColour() } );
 
     for (auto& listener : listeners)
     {
-        listener->updateCell(_player, CellValue::TRAIL);
+        listener->updateCell(_bike, CellValue::TRAIL);
     }
 
-    MoveDirection dir = _player.getDirection();
-    Vector2i pos = _player.getPosition();
+    MoveDirection dir = _bike.getDirection();
+    Vector2i pos = _bike.getPosition();
 
     Vector2i adjustment = pos + generatePositionAdjustment(dir, pos);
 
     if (!adjustmentWithinBounds(adjustment))
     {
         // Bike hit the edge of the grid.
-        _player.setAlive(false);
+        _bike.setAlive(false);
     }
     else if (adjustmentCollisionCheck(adjustment))
     {
         // Bike hit a trail.
-        _player.setAlive(false);
+        _bike.setAlive(false);
     }
     else
     {
         // Path is clear.
-        _player.setPosition(adjustment);
-        grid.setCell(adjustment, { CellValue::HEAD, _player.getColour() });
+        _bike.setPosition(adjustment);
+        grid.setCell(adjustment, { CellValue::HEAD, _bike.getColour() });
 
         for (auto& listener : listeners)
         {
-            listener->updateCell(_player, CellValue::HEAD);
+            listener->updateCell(_bike, CellValue::HEAD);
         }
     }
 }
@@ -134,13 +133,13 @@ bool Simulation::adjustmentCollisionCheck(Vector2i _adjustment) const
     return true;
 }
 
-bool Simulation::directionChangeValid(Player& _player, MoveDirection _dir)
+bool Simulation::directionChangeValid(Bike& _bike, MoveDirection _dir)
 {
-    if (_dir == MoveDirection::UP && _player.getDirection() == MoveDirection::DOWN ||
-        _dir == MoveDirection::DOWN && _player.getDirection() == MoveDirection::UP ||
-        _dir == MoveDirection::LEFT && _player.getDirection() == MoveDirection::RIGHT ||
-        _dir == MoveDirection::RIGHT && _player.getDirection() == MoveDirection::LEFT ||
-        _dir == _player.getDirection())
+    if (_dir == MoveDirection::UP && _bike.getDirection() == MoveDirection::DOWN ||
+        _dir == MoveDirection::DOWN && _bike.getDirection() == MoveDirection::UP ||
+        _dir == MoveDirection::LEFT && _bike.getDirection() == MoveDirection::RIGHT ||
+        _dir == MoveDirection::RIGHT && _bike.getDirection() == MoveDirection::LEFT ||
+        _dir == _bike.getDirection())
     {
         return false;
     }
