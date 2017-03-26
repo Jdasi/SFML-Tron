@@ -88,13 +88,16 @@
     <ClCompile Include="..\..\Code\Game\TronGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Code\Client\GameStateIDs.h" />
     <ClInclude Include="..\..\Code\Game\Cell.h" />
     <ClInclude Include="..\..\Code\Game\CellValue.h" />
     <ClInclude Include="..\..\Code\Game\CellColour.h" />
     <ClInclude Include="..\..\Code\Game\Constants.h" />
     <ClInclude Include="..\..\Code\Game\Grid.h" />
+    <ClInclude Include="..\..\Code\Game\INetworkSimulation.h" />
     <ClInclude Include="..\..\Code\Game\MoveDirection.h" />
     <ClInclude Include="..\..\Code\Game\Noncopyable.h" />
+    <ClInclude Include="..\..\Code\Game\PlayerState.h" />
     <ClInclude Include="..\..\Code\Game\Scheduler.h" />
     <ClInclude Include="..\..\Code\Game\SimpleTimer.h" />
     <ClInclude Include="..\..\Code\Game\SimulationListener.h" />

@@ -91,9 +91,8 @@
     <ClCompile Include="..\..\Code\Client\ClientStateGame.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateHandler.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateLobby.cpp" />
-    <ClCompile Include="..\..\Code\Client\ClientStateStart.cpp" />
     <ClCompile Include="..\..\Code\Client\Player.cpp" />
-    <ClCompile Include="..\..\Code\Client\PlayerManager.cpp" />
+    <ClCompile Include="..\..\Code\Client\GameManager.cpp" />
     <ClCompile Include="..\..\Code\Client\PrettyGrid.cpp" />
     <ClCompile Include="..\..\Code\Client\NetworkManager.cpp" />
     <ClCompile Include="..\..\Code\Client\TronClient.cpp" />
@@ -107,13 +106,11 @@
     <ClInclude Include="..\..\Code\Client\ClientStateGame.h" />
     <ClInclude Include="..\..\Code\Client\ClientStateHandler.h" />
     <ClInclude Include="..\..\Code\Client\ClientStateLobby.h" />
-    <ClInclude Include="..\..\Code\Client\ClientStates.h" />
-    <ClInclude Include="..\..\Code\Client\ClientStateStart.h" />
     <ClInclude Include="..\..\Code\Client\ClientData.h" />
     <ClInclude Include="..\..\Code\Client\Player.h" />
-    <ClInclude Include="..\..\Code\Client\PlayerManager.h" />
+    <ClInclude Include="..\..\Code\Client\GameManager.h" />
     <ClInclude Include="..\..\Code\Client\PrettyGrid.h" />
-    <ClInclude Include="..\..\Code\Client\NetworkClient.h" />
+    <ClInclude Include="..\..\Code\Client\INetworkClient.h" />
     <ClInclude Include="..\..\Code\Client\NetworkManager.h" />
     <ClInclude Include="..\..\Code\Client\ThreadDispatcher.h" />
     <ClInclude Include="..\..\Code\Client\TronClient.h" />

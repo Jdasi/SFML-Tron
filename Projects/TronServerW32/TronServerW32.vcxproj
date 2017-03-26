@@ -87,11 +87,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\Code\Server\main_server.cpp" />
     <ClCompile Include="..\..\Code\Server\TronServer.cpp" />
-    <ClCompile Include="..\..\Code\Server\User.cpp" />
+    <ClCompile Include="..\..\Code\Server\Client.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Server\TronServer.h" />
-    <ClInclude Include="..\..\Code\Server\User.h" />
+    <ClInclude Include="..\..\Code\Server\Client.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -3,9 +3,8 @@
 #include <SFML/Graphics.hpp>
 
 #include <Game/Constants.h>
+#include <Game/GameStateIDs.h>
 #include "TronClient.h"
-#include "ClientStates.h"
-#include "ClientStateStart.h"
 #include "ClientStateLobby.h"
 #include "ClientStateGame.h"
 #include "ClientStateEnd.h"
@@ -13,10 +12,10 @@
 TronClient::TronClient()
     : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Tron Game")
     , network_manager(*this, SERVER_IP, SERVER_TCP_PORT)
+    , game_manager(&client_data)
     , input_handler(*this)
-    , client_data(&font, &input_handler, &network_manager, &simulation)
     , state_handler()
-    , player_manager(&client_data)
+    , client_data(&font, &input_handler, &network_manager, game_manager.getSimulation())
 {
     if (!font.loadFromFile("../../Resources/arial.ttf"))
     {
@@ -71,7 +70,6 @@ void TronClient::initKeyBindings()
 
 void TronClient::initClientStates()
 {
-    state_handler.registerState(STATE_START, std::make_unique<ClientStateStart>(&client_data));
     state_handler.registerState(STATE_LOBBY, std::make_unique<ClientStateLobby>(&client_data));
     state_handler.registerState(STATE_GAME, std::make_unique<ClientStateGame>(&client_data));
     state_handler.registerState(STATE_END, std::make_unique<ClientStateEnd>(&client_data));
@@ -128,7 +126,7 @@ void TronClient::onBikeDirectionChange(int _id, MoveDirection _dir)
 {
     postEvent([this, _id, _dir]()
     {
-        simulation.changeBikeDirection(_id, _dir);
+        game_manager.getNetworkSimulation()->changeBikeDirection(_id, _dir);
     });
 }
 
@@ -137,9 +135,20 @@ void TronClient::onIdentity(int _id)
     postEvent([this, _id]()
     {
         client_data.client_id = _id;
-        player_manager.addPlayer(_id);
+        game_manager.addPlayer(_id);
 
         std::cout << "Identity assigned: " << _id << std::endl;
+    });
+}
+
+void TronClient::onPlayerList(std::vector<Player> _players)
+{
+    postEvent([this, _players]()
+    {
+        for (auto& player : _players)
+        {
+            game_manager.addPlayer(player.getID(), player.getState());
+        }
     });
 }
 
@@ -147,19 +156,57 @@ void TronClient::onPlayerJoined(int _id)
 {
     postEvent([this, _id]()
     {
-        player_manager.addPlayer(_id);
+        game_manager.addPlayer(_id);
+    });
+}
+
+void TronClient::onPlayerStateChange(int _player_id, PlayerState _state)
+{
+    postEvent([this, _player_id, _state]()
+    {
+        game_manager.getPlayer(_player_id)->setState(_state);
+    });
+}
+
+void TronClient::onGameStateChange(int _state)
+{
+    postEvent([this, _state]()
+    {
+        switch (_state)
+        {
+            case STATE_LOBBY:
+            {
+
+            } break;
+
+            case STATE_GAME:
+            {
+                game_manager.startSimulation();
+            } break;
+
+            case STATE_END:
+            {
+                game_manager.stopSimulation();
+            } break;
+
+            default: {}
+        }
+
+        state_handler.queueState(_state);
     });
 }
 
 void TronClient::tick()
 {
-    simulation.tick(client_data.delta_time);
+    game_manager.tick();
     state_handler.tick();
 }
 
 void TronClient::draw()
 {
     window.clear();
+
     state_handler.draw(window);
+
     window.display();
 }

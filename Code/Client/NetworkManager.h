@@ -1,5 +1,4 @@
 #pragma once
-
 #include <map>
 #include <functional>
 
@@ -16,9 +15,6 @@ public:
     NetworkException() : std::runtime_error("Network exception") {}
 };
 
-class TronClient;
-enum MoveDirection;
-
 class NetworkManager : public ThreadDispatcher
 {
 public:
@@ -31,12 +27,10 @@ public:
 protected:
     void registerPacketHandler(const PacketID _id, const std::function<void(sf::Packet&)> _handler);
 
+    // Required network events.
     virtual void onConnected() = 0;
     virtual void onDisconnected() = 0;
     virtual void onUpdatePingTime(double _ping) = 0;
-    virtual void onBikeDirectionChange(int _id, MoveDirection _dir) = 0;
-    virtual void onIdentity(int _id) = 0;
-    virtual void onPlayerJoined(int _id) = 0;
 
     void sendPacket(sf::Packet& _packet);
 

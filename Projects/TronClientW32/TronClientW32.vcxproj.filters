@@ -30,9 +30,6 @@
     <ClCompile Include="..\..\Code\Client\ClientStateGame.cpp">
       <Filter>States</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Client\ClientStateStart.cpp">
-      <Filter>States</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Code\Client\ClientStateHandler.cpp">
       <Filter>Managerial</Filter>
     </ClCompile>
@@ -46,11 +43,11 @@
     <ClCompile Include="..\..\Code\Client\ClientStateEnd.cpp">
       <Filter>States</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Client\PlayerManager.cpp">
-      <Filter>Managerial</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Code\Client\Player.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Client\GameManager.cpp">
+      <Filter>Managerial</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -67,12 +64,6 @@
       <Filter>Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ClientStateGame.h">
-      <Filter>States</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Client\ClientStateStart.h">
-      <Filter>States</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Client\ClientStates.h">
       <Filter>States</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ClientData.h">
@@ -99,14 +90,14 @@
     <ClInclude Include="..\..\Code\Client\ClientStateEnd.h">
       <Filter>States</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Client\PlayerManager.h">
-      <Filter>Managerial</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\Client\Player.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Client\NetworkClient.h">
+    <ClInclude Include="..\..\Code\Client\INetworkClient.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\GameManager.h">
+      <Filter>Managerial</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

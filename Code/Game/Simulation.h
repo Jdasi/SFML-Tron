@@ -1,14 +1,16 @@
 #pragma once
 #include <vector>
 
-#include "MoveDirection.h"
+#include "SimulationListener.h"
+#include "INetworkSimulation.h"
 #include "Vector2i.h"
 #include "Grid.h"
 #include "ListenerSubject.h"
 #include "Bike.h"
-#include "SimulationListener.h"
 
-class Simulation : public ListenerSubject<SimulationListener>
+enum MoveDirection;
+
+class Simulation final : public INetworkSimulation, public ListenerSubject<SimulationListener>
 {
 public:
     Simulation();
@@ -17,7 +19,9 @@ public:
     void tick(double _dt);
 
     void addBike();
-    void changeBikeDirection(unsigned int _bike_id, MoveDirection _dir);
+    
+    // INetworkSimulation methods.
+    void changeBikeDirection(unsigned int _bike_id, MoveDirection _dir) override;
 
 private:
     void moveBike(Bike& _bike);
@@ -26,6 +30,7 @@ private:
     bool adjustmentCollisionCheck(Vector2i _adjustment) const;
     bool directionChangeValid(Bike& _bike, MoveDirection _dir);
 
+public:
     Grid grid;
     std::vector<Bike> bikes;
     int colours_assigned;

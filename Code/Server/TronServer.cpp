@@ -1,15 +1,23 @@
 #include <iostream>
 
+#include <Game/Constants.h>
 #include <Game/PacketID.h>
+#include <Game/GameStateIDs.h>
 #include "TronServer.h"
 
 TronServer::TronServer()
     : tcp_port(0)
-    , exit(false)
     , connected_clients(0)
-    , clients_dirty(false)
+    , exit(false)
     , server_name()
+    , server_state(STATE_LOBBY)
 {
+    clients.reserve(MAX_PLAYERS);
+
+    for (int i = 0; i < MAX_PLAYERS; ++i)
+    {
+        clients.push_back(nullptr);
+    }
 }
 
 bool TronServer::run(unsigned int port)
@@ -68,53 +76,109 @@ void TronServer::listen()
                 receivePacket();
             }
         }
-
-        if (connected_clients > 0)
-        {
-            simulation.tick(dt);
-        }
-
-        garbageCollectClients();
     }
 }
 
 void TronServer::acceptClient()
 {
-    auto new_user = std::make_unique<User>(connected_clients);
+    auto new_client = std::make_unique<Client>(generateUniqueID());
 
-    if (tcp_listener.accept(*new_user->getSocket()) == sf::Socket::Done)
+    if (tcp_listener.accept(*new_client->getSocket()) == sf::Socket::Done)
     {
         // Temporary server full code.
-        if (connected_clients >= 4)
+        if (new_client->getID() == MAX_PLAYERS)
         {
-            new_user->getSocket()->disconnect();
+            new_client->getSocket()->disconnect();
             return;
         }
 
-        socket_selector.add(*new_user->getSocket());
+        socket_selector.add(*new_client->getSocket());
         
-        sf::Packet packet;
-        setPacketID(packet, PacketID::IDENTITY);
-        packet << new_user->getID();
-        new_user->getSocket()->send(packet);
+        sendClientIdentity(new_client);
+        sendClientList(new_client);
+        sendClientJoined(new_client);
 
-        setPacketID(packet, PacketID::PLAYERJOINED);
-        packet << new_user->getID();
+        clients[new_client->getID()] = std::move(new_client);
+        ++connected_clients;
+    }
+}
 
-        for (auto& user : users)
+int TronServer::generateUniqueID() const
+{
+    int unique_id = 0;
+    for (auto& client : clients)
+    {
+        if (!client)
         {
-            user->getSocket()->send(packet);
+            return unique_id;
         }
 
-        users.push_back(std::move(new_user));
-        ++connected_clients;
+        ++unique_id;
+    }
+
+    return MAX_PLAYERS;
+}
+
+void TronServer::sendClientIdentity(std::unique_ptr<Client>& _client) const
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::IDENTITY);
+
+    packet << _client->getID();
+
+    _client->getSocket()->send(packet);
+}
+
+void TronServer::sendClientList(std::unique_ptr<Client>& _client)
+{
+    if (clients.size() == 0)
+    {
+        return;
+    }
+
+    sf::Packet packet;
+    setPacketID(packet, PacketID::PLAYERLIST);
+
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            continue;
+        }
+
+        packet << client->getID() << static_cast<sf::Uint8>(client->getState());
+    }
+
+    _client->getSocket()->send(packet);
+}
+
+void TronServer::sendClientJoined(std::unique_ptr<Client>& _client)
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::PLAYERJOINED);
+
+    packet << _client->getID();
+
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            continue;
+        }
+
+        client->getSocket()->send(packet);
     }
 }
 
 void TronServer::receivePacket()
 {
-    for (auto& sender : users)
+    for (auto& sender : clients)
     {
+        if (!sender)
+        {
+            continue;
+        }
+
         if (socket_selector.isReady(*sender->getSocket()))
         {
             sf::Packet packet;
@@ -128,7 +192,7 @@ void TronServer::receivePacket()
     }
 }
 
-void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sender)
+void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<Client>& _sender)
 {
     PacketID pid = getPacketID(_packet);
 
@@ -162,7 +226,7 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
             _packet >> latency;
 
             _sender->setLatency(latency);
-            std::cout << "User " << static_cast<int>(_sender->getID()) << ": " << latency << "ms" << std::endl;
+            std::cout << "Client " << static_cast<int>(_sender->getID()) << ": " << latency << "ms" << std::endl;
         } break;
 
         case MESSAGE:
@@ -171,15 +235,41 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
             _packet >> msg;
             std::cout << msg << std::endl;
 
-            for (auto& user : users)
+            sendPacketToAllButSender(_packet, _sender);
+        } break;
+
+        case PLAYERSTATE:
+        {
+            sf::Uint8 id;
+            sf::Uint8 state;
+
+            _packet >> id >> state;
+            clients[id]->setState(static_cast<PlayerState>(state));
+
+            sendPacketToAll(_packet);
+
+            if (server_state == STATE_LOBBY)
             {
-                // Don't send the sender's message back to themself.
-                if (user->getSocket() == _sender->getSocket())
+                int num_ready = 0;
+                for (auto& client : clients)
                 {
-                    continue;
+                    if (!client)
+                    {
+                        continue;
+                    }
+
+                    num_ready += client->getState() == PlayerState::READY ? 1 : -1;
                 }
 
-                user->getSocket()->send(_packet);
+                if (num_ready == connected_clients)
+                {
+                    sf::Packet packet;
+                    setPacketID(packet, PacketID::GAMESTATE);
+
+                    packet << static_cast<sf::Uint8>(STATE_GAME);
+
+                    sendPacketToAll(packet);
+                }
             }
         } break;
 
@@ -191,63 +281,61 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<User>& _sende
             _packet >> id >> dir;
             // Do something with server's simulation ...
 
-            for (auto& user : users)
-            {
-                // Don't send the sender's message back to themself.
-                if (user->getSocket() == _sender->getSocket())
-                {
-                    continue;
-                }
-
-                user->getSocket()->send(_packet);
-            }
+            sendPacketToAllButSender(_packet, _sender);
         } break;
 
         default: {}
     }
 }
 
-void TronServer::garbageCollectClients()
+void TronServer::handleDisconnect(std::unique_ptr<Client>& _client)
 {
-    if (!clients_dirty)
-    {
-        return;
-    }
-
-    users.erase(std::remove_if(
-        users.begin(),
-        users.end(),
-        [](const std::unique_ptr<User>& _user) { return !_user->getSocket(); }),
-        users.end());
-
-    clients_dirty = false;
-}
-
-void TronServer::handleDisconnect(std::unique_ptr<User>& _user)
-{
-    socket_selector.remove(*_user->getSocket());
-    _user->getSocket()->disconnect();
-
-    _user->resetSocket();
-    clients_dirty = true;
+    socket_selector.remove(*_client->getSocket());
+    _client->getSocket()->disconnect();
 
     std::string disconnection_message;
-    disconnection_message.append("[User " + std::to_string(_user->getID()) + " disconnected]"); 
+    disconnection_message.append("[Client " + std::to_string(_client->getID()) + " disconnected]");
     std::cout << disconnection_message << std::endl;
+
+    _client->resetSocket();
+    _client.reset();
 
     sf::Packet packet;
     setPacketID(packet, PacketID::MESSAGE);
     packet << disconnection_message;
 
-    for (auto& user : users)
+    sendPacketToAll(packet);
+    --connected_clients;
+}
+
+void TronServer::sendPacketToAll(sf::Packet& _packet)
+{
+    for (auto& client : clients)
     {
-        if (!user->getSocket())
+        if (!client)
         {
             continue;
         }
 
-        user->getSocket()->send(packet);
+        client->getSocket()->send(_packet);
     }
+}
 
-    --connected_clients;
+void TronServer::sendPacketToAllButSender(sf::Packet& _packet, std::unique_ptr<Client>& _sender)
+{
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            continue;
+        }
+
+        // Don't send the sender's message back to themself.
+        if (client->getSocket() == _sender->getSocket())
+        {
+            continue;
+        }
+
+        client->getSocket()->send(_packet);
+    }
 }

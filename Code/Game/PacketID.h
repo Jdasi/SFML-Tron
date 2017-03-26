@@ -7,8 +7,11 @@ enum PacketID
     PING,
     PONG,
     IDENTITY,
+    PLAYERLIST,
     PLAYERJOINED,
     PLAYERLEFT,
+    PLAYERSTATE,
+    GAMESTATE,
     LATENCY,
     MESSAGE,
     DIRECTION

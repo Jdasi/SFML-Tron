@@ -1,4 +1,9 @@
 #pragma once
+#include <vector>
+
+enum MoveDirection;
+class Player;
+enum PlayerState;
 
 /* Interface class used by TronNetworkManager to decouple networking from
  * the TronClient.
@@ -18,6 +23,9 @@ public:
     virtual void onUpdatePingTime(double _ping) = 0;
     virtual void onBikeDirectionChange(int _id, MoveDirection _dir) = 0;
     virtual void onIdentity(int _id) = 0;
+    virtual void onPlayerList(std::vector<Player> _players) = 0;
     virtual void onPlayerJoined(int _id) = 0;
+    virtual void onPlayerStateChange(int _player_id, PlayerState _state) = 0;
+    virtual void onGameStateChange(int _state) = 0;
 
 };

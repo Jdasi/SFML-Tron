@@ -1,9 +1,9 @@
 #include <Game/Simulation.h>
+#include <Game/GameStateIDs.h>
 #include "ClientStateGame.h"
 #include "ClientData.h"
 #include "ClientStateHandler.h"
 #include "TronNetworkManager.h"
-#include "ClientStates.h"
 
 ClientStateGame::ClientStateGame(ClientData* _client_data)
     : ClientState(_client_data)
@@ -47,7 +47,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
     {
         if (_action_state == ActionState::PRESSED)
         {
-            getHandler()->queueState(STATE_START);
+            getHandler()->queueState(STATE_LOBBY);
         }
     }
 
