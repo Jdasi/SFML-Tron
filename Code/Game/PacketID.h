@@ -7,14 +7,15 @@ enum PacketID
     PING,
     PONG,
     IDENTITY,
-    PLAYERLIST,
-    PLAYERJOINED,
-    PLAYERLEFT,
-    PLAYERSTATE,
-    GAMESTATE,
+    PLAYER_LIST,
+    PLAYER_JOINED,
+    PLAYER_LEFT,
+    PLAYER_STATE,
+    GAME_STATE,
     LATENCY,
     MESSAGE,
-    DIRECTION
+    DIRECTION,
+    SYNC_SIMULATION
 };
 
 // This function must be called after creating a packet to set its type.

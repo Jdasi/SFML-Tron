@@ -17,6 +17,16 @@ void Grid::setCell(Vector2i _pos, Cell _cell)
     cells[calculateCellIndex(_pos)] = _cell;
 }
 
+const std::vector<Cell>& Grid::getCells() const
+{
+    return cells;
+}
+
+void Grid::setCells(std::vector<Cell>& _cells)
+{
+    cells = _cells;
+}
+
 int Grid::calculateCellIndex(Vector2i _pos) const
 {
     return (_pos.y * GRID_SIZE_X) + _pos.x;

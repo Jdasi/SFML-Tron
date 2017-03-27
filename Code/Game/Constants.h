@@ -33,7 +33,7 @@ const int MAX_PLAYERS                     = 4; // Max players supported.
 const int GRID_SIZE_X                   = 125; // Width (in tiles) of the playing grid.
 const int GRID_SIZE_Y                   = 125; // Height (in tiles) of the playing grid.
 
-const float BIKE_MOVE_SPEED             = 0.025f; // Rate at which the bike moves.
+const float BIKE_MOVE_SPEED             = 0.03f; // Rate at which the bike moves.
 
 // ======================================================================================
 // COMMON PATH STRINGS

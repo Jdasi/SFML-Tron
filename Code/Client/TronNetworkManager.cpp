@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include <Game/PlayerState.h>
+#include <Game/Simulation.h>
 #include "TronNetworkManager.h"
 #include "INetworkClient.h"
 #include "Player.h"
@@ -34,7 +35,7 @@ void TronNetworkManager::sendPlayerStateChange(int _player_id, PlayerState _stat
     postEvent([this, _player_id, _state]()
     {
         sf::Packet packet;
-        setPacketID(packet, PacketID::PLAYERSTATE);
+        setPacketID(packet, PacketID::PLAYER_STATE);
 
         packet << static_cast<sf::Uint8>(_player_id) << static_cast<sf::Uint8>(_state);
 
@@ -58,12 +59,13 @@ void TronNetworkManager::sendBikeDirectionChange(int _player_id, MoveDirection _
 void TronNetworkManager::registerGamePacketHandlers()
 {
     registerPacketHandler(IDENTITY, std::bind(&TronNetworkManager::handleIdentityPacket, this, _1));
-    registerPacketHandler(PLAYERLIST, std::bind(&TronNetworkManager::handlePlayerListPacket, this, _1));
-    registerPacketHandler(PLAYERJOINED, std::bind(&TronNetworkManager::handlePlayerJoinedPacket, this, _1));
+    registerPacketHandler(PLAYER_LIST, std::bind(&TronNetworkManager::handlePlayerListPacket, this, _1));
+    registerPacketHandler(PLAYER_JOINED, std::bind(&TronNetworkManager::handlePlayerJoinedPacket, this, _1));
     registerPacketHandler(MESSAGE, std::bind(&TronNetworkManager::handleMessagePacket, this, _1));
     registerPacketHandler(DIRECTION, std::bind(&TronNetworkManager::handleDirectionPacket, this, _1));
-    registerPacketHandler(PLAYERSTATE, std::bind(&TronNetworkManager::handlePlayerStateChangePacket, this, _1));
-    registerPacketHandler(GAMESTATE, std::bind(&TronNetworkManager::handleGameStateChangePacket, this, _1));
+    registerPacketHandler(PLAYER_STATE, std::bind(&TronNetworkManager::handlePlayerStateChangePacket, this, _1));
+    registerPacketHandler(GAME_STATE, std::bind(&TronNetworkManager::handleGameStateChangePacket, this, _1));
+    registerPacketHandler(SYNC_SIMULATION, std::bind(&TronNetworkManager::handleFullSyncPacket, this, _1));
 }
 
 void TronNetworkManager::handleIdentityPacket(sf::Packet& _packet)
@@ -141,6 +143,14 @@ void TronNetworkManager::handleGameStateChangePacket(sf::Packet& _packet)
     onGameStateChange(state);
 }
 
+void TronNetworkManager::handleFullSyncPacket(sf::Packet& _packet)
+{
+    Simulation sim;
+    _packet >> sim;
+
+    onFullSync(sim);
+}
+
 void TronNetworkManager::onConnected()
 {
     client.onConnected();
@@ -184,4 +194,9 @@ void TronNetworkManager::onPlayerStateChange(int _player_id, PlayerState _state)
 void TronNetworkManager::onGameStateChange(int _state)
 {
     client.onGameStateChange(_state);
+}
+
+void TronNetworkManager::onFullSync(Simulation& _simulation)
+{
+    client.onFullSync(_simulation);
 }

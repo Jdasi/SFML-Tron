@@ -12,9 +12,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Code\Game\TronGame.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Code\Game\RandomEngine.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
@@ -40,9 +37,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\Noncopyable.h">
       <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Game\TronGame.h">
-      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\MoveDirection.h">
       <Filter>Core</Filter>

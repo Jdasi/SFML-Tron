@@ -4,6 +4,7 @@
 enum MoveDirection;
 class Player;
 enum PlayerState;
+class Simulation;
 
 /* Interface class used by TronNetworkManager to decouple networking from
  * the TronClient.
@@ -27,5 +28,6 @@ public:
     virtual void onPlayerJoined(int _id) = 0;
     virtual void onPlayerStateChange(int _player_id, PlayerState _state) = 0;
     virtual void onGameStateChange(int _state) = 0;
+    virtual void onFullSync(Simulation& _simulation) = 0;
 
 };

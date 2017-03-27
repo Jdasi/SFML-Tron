@@ -4,6 +4,5 @@ enum PlayerState
 {
     NOTREADY,
     READY,
-    ALIVE,
-    DEAD
+    PLAYING
 };

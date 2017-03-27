@@ -196,6 +196,11 @@ void TronClient::onGameStateChange(int _state)
     });
 }
 
+void TronClient::onFullSync(Simulation& _simulation)
+{
+    game_manager.getSimulation()->overwriteSimulation(_simulation);
+}
+
 void TronClient::tick()
 {
     game_manager.tick();

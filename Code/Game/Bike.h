@@ -25,6 +25,7 @@ public:
     void setMoveSpeed(float _speed);
 
     double getMoveTimer() const;
+    void setMoveTimer(double _value);
     void resetMoveTimer();
     void modifyMoveTimer(double _dt);
     

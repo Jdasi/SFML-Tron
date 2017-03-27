@@ -16,7 +16,7 @@ public:
 
     void draw(sf::RenderWindow& _window);
     void updateCell(const Bike& _bike, CellValue _value) override;
-    void updateAllCells(std::vector<Cell> _cells) override;
+    void updateAllCells(const std::vector<Cell>& _cells) override;
 
 private:
     void initGrid();

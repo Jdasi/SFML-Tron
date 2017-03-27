@@ -32,6 +32,8 @@ private:
     void sendPacketToAll(sf::Packet& _packet);
     void sendPacketToAllButSender(sf::Packet& _packet, std::unique_ptr<Client>& _sender);
 
+    void fullSimulationSync();
+
     unsigned int tcp_port;
     sf::TcpListener tcp_listener;
     sf::SocketSelector socket_selector;
@@ -42,9 +44,11 @@ private:
     std::string server_name;
     std::string welcome_message;
 
+    Simulation simulation;
     SimpleTimer simple_timer;
     Scheduler scheduler;
 
     int server_state;
+    bool full_sync_needed;
 
 };

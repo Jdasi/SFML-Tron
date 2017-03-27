@@ -1,4 +1,7 @@
+#include <SFML/Network.hpp>
+
 #include "Simulation.h"
+#include "Grid.h"
 #include "Bike.h"
 #include "Constants.h"
 
@@ -44,6 +47,17 @@ void Simulation::addBike()
     grid.setCell(bike.getPosition(), { CellValue::HEAD, bike.getColour() });
 
     bikes.push_back(bike);
+}
+
+void Simulation::overwriteSimulation(Simulation& _simulation)
+{
+    grid = _simulation.grid;
+    bikes = _simulation.bikes;
+
+    for (auto& listener : listeners)
+    {
+        listener->updateAllCells(_simulation.grid.getCells());
+    }
 }
 
 void Simulation::changeBikeDirection(unsigned int _bike_id, MoveDirection _dir)
@@ -145,4 +159,75 @@ bool Simulation::directionChangeValid(Bike& _bike, MoveDirection _dir)
     }
 
     return true;
+}
+
+sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation)
+{
+    auto& cells = _simulation.grid.getCells();
+    _packet << static_cast<sf::Uint32>(cells.size());
+    for (auto& cell : cells)
+    {
+        _packet << static_cast<sf::Uint8>(cell.value) 
+                << static_cast<sf::Uint8>(cell.colour);
+    }
+
+    auto& bikes = _simulation.bikes;
+    _packet << static_cast<sf::Uint8>(bikes.size());
+    for (auto& bike : bikes)
+    {
+        _packet << static_cast<sf::Uint8>(bike.getID())
+                << static_cast<sf::Uint8>(bike.getColour())
+                << static_cast<sf::Uint8>(bike.getDirection())
+                << static_cast<sf::Uint32>(bike.getPosition().x)
+                << static_cast<sf::Uint32>(bike.getPosition().y)
+                << bike.isAlive()
+                << bike.isBoosting();
+    }
+
+    return _packet;
+}
+
+sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation)
+{
+    sf::Uint32 num_cells;
+    _packet >> num_cells;
+
+    std::vector<Cell> cells(num_cells);
+    for (sf::Uint32 i = 0; i < num_cells; ++i)
+    {
+        sf::Uint8 cell_value;
+        sf::Uint8 cell_colour;
+
+        _packet >> cell_value >> cell_colour;
+        cells[i].value = static_cast<CellValue>(cell_value);
+        cells[i].colour = static_cast<CellColour>(cell_colour);
+    }
+    _simulation.grid.setCells(cells);
+
+    sf::Uint8 num_bikes;
+    _packet >> num_bikes;
+
+    std::vector<Bike> bikes(num_bikes);
+    for (sf::Uint8 i = 0; i < num_bikes; ++i)
+    {
+        sf::Uint8   bike_id;
+        sf::Uint8   bike_col;
+        sf::Uint8   bike_dir;
+        Vector2i    bike_pos;
+        bool        bike_alive;
+        bool        bike_boosting;
+
+        _packet >> bike_id >> bike_col >> bike_dir >> bike_pos.x >> bike_pos.y 
+                >> bike_alive >> bike_boosting;
+
+        Bike& bike = bikes[i];
+        bike.setID(bike_id);
+        bike.setDirection(static_cast<MoveDirection>(bike_dir));
+        bike.setPosition(bike_pos);
+        bike.setAlive(bike_alive);
+        bike.setBoosting(bike_boosting);
+    }
+    _simulation.bikes = bikes;
+
+    return _packet;
 }

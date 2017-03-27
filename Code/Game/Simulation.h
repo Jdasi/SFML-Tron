@@ -8,6 +8,11 @@
 #include "ListenerSubject.h"
 #include "Bike.h"
 
+namespace sf
+{
+    class Packet;
+}
+
 enum MoveDirection;
 
 class Simulation final : public INetworkSimulation, public ListenerSubject<SimulationListener>
@@ -19,6 +24,10 @@ public:
     void tick(double _dt);
 
     void addBike();
+    void overwriteSimulation(Simulation& _simulation);
+
+    friend sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation);
+    friend sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation);
     
     // INetworkSimulation methods.
     void changeBikeDirection(unsigned int _bike_id, MoveDirection _dir) override;
@@ -30,7 +39,6 @@ private:
     bool adjustmentCollisionCheck(Vector2i _adjustment) const;
     bool directionChangeValid(Bike& _bike, MoveDirection _dir);
 
-public:
     Grid grid;
     std::vector<Bike> bikes;
     int colours_assigned;

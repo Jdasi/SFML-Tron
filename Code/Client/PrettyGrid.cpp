@@ -42,12 +42,23 @@ void PrettyGrid::updateCell(const Bike& _bike, CellValue _value)
     setTileColor(_bike.getPosition(), color);
 }
 
-void PrettyGrid::updateAllCells(std::vector<Cell> _cells)
+void PrettyGrid::updateAllCells(const std::vector<Cell>& _cells)
 {
-    int count = 0;
-    for (auto& cell : _cells)
+    for (unsigned int i = 0; i < _cells.size(); ++i)
     {
-        tiles[count]->setFillColor(evaluateSFColor(cell.colour));
+        sf::Color color;
+
+        Cell cell = _cells[i];
+        switch (cell.value)
+        {
+            case CellValue::NONE: color = sf::Color::Transparent; break;
+            case CellValue::HEAD: color = sf::Color::White; break;
+            case CellValue::TRAIL: color = evaluateSFColor(cell.colour);
+
+            default: {}
+        }
+
+        tiles[i]->setFillColor(color);
     }
 }
 

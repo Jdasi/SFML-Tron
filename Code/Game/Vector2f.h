@@ -22,7 +22,7 @@ struct Vector2f
         return *this;
     }
 
-    Vector2f operator +(const Vector2f& rhs) const
+    Vector2f operator+(const Vector2f& rhs) const
     {
         Vector2f vec = *this;
 
@@ -32,7 +32,7 @@ struct Vector2f
         return vec;
     }
 
-    Vector2f& operator +=(const Vector2f& rhs)
+    Vector2f& operator+=(const Vector2f& rhs)
     {
         *this = *this + rhs;
         return *this;

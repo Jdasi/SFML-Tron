@@ -85,7 +85,6 @@
     <ClCompile Include="..\..\Code\Game\Scheduler.cpp" />
     <ClCompile Include="..\..\Code\Game\SimpleTimer.cpp" />
     <ClCompile Include="..\..\Code\Game\Simulation.cpp" />
-    <ClCompile Include="..\..\Code\Game\TronGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Client\GameStateIDs.h" />
@@ -109,7 +108,6 @@
     <ClInclude Include="..\..\Code\Game\Simulation.h" />
     <ClInclude Include="..\..\Code\Game\State.h" />
     <ClInclude Include="..\..\Code\Game\StateHandler.h" />
-    <ClInclude Include="..\..\Code\Game\TronGame.h" />
     <ClInclude Include="..\..\Code\Game\Vector2f.h" />
     <ClInclude Include="..\..\Code\Game\Vector2i.h" />
   </ItemGroup>

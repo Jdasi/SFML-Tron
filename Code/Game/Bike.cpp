@@ -67,6 +67,11 @@ double Bike::getMoveTimer() const
     return move_timer;
 }
 
+void Bike::setMoveTimer(double _value)
+{
+    move_timer = _value;
+}
+
 void Bike::resetMoveTimer()
 {
     move_timer = 0;

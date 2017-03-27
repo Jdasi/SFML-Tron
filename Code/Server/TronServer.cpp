@@ -11,6 +11,7 @@ TronServer::TronServer()
     , exit(false)
     , server_name()
     , server_state(STATE_LOBBY)
+    , full_sync_needed(true)
 {
     clients.reserve(MAX_PLAYERS);
 
@@ -60,8 +61,9 @@ void TronServer::listen()
 {
     while (!exit)
     {
-        float dt = simple_timer.getTimeDifference();
+        double dt = simple_timer.getTimeDifference();
         simple_timer.reset();
+        scheduler.update();
 
         if (socket_selector.wait(sf::milliseconds(1)))
         {
@@ -74,6 +76,18 @@ void TronServer::listen()
             {
                 // Packet received.
                 receivePacket();
+            }
+        }
+
+        if (server_state == STATE_GAME)
+        {
+            simulation.tick(dt);
+
+            if (full_sync_needed)
+            {
+                full_sync_needed = false;
+
+                scheduler.invoke([this]() { fullSimulationSync(); }, 0.1);
             }
         }
     }
@@ -137,7 +151,7 @@ void TronServer::sendClientList(std::unique_ptr<Client>& _client)
     }
 
     sf::Packet packet;
-    setPacketID(packet, PacketID::PLAYERLIST);
+    setPacketID(packet, PacketID::PLAYER_LIST);
 
     for (auto& client : clients)
     {
@@ -155,19 +169,11 @@ void TronServer::sendClientList(std::unique_ptr<Client>& _client)
 void TronServer::sendClientJoined(std::unique_ptr<Client>& _client)
 {
     sf::Packet packet;
-    setPacketID(packet, PacketID::PLAYERJOINED);
+    setPacketID(packet, PacketID::PLAYER_JOINED);
 
     packet << _client->getID();
 
-    for (auto& client : clients)
-    {
-        if (!client)
-        {
-            continue;
-        }
-
-        client->getSocket()->send(packet);
-    }
+    sendPacketToAll(packet);
 }
 
 void TronServer::receivePacket()
@@ -238,7 +244,7 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<Client>& _sen
             sendPacketToAllButSender(_packet, _sender);
         } break;
 
-        case PLAYERSTATE:
+        case PLAYER_STATE:
         {
             sf::Uint8 id;
             sf::Uint8 state;
@@ -264,11 +270,19 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<Client>& _sen
                 if (num_ready == connected_clients)
                 {
                     sf::Packet packet;
-                    setPacketID(packet, PacketID::GAMESTATE);
+                    setPacketID(packet, PacketID::GAME_STATE);
 
+                    server_state = STATE_GAME;
                     packet << static_cast<sf::Uint8>(STATE_GAME);
 
                     sendPacketToAll(packet);
+
+                    for (int i = 0; i < connected_clients; ++i)
+                    {
+                        simulation.addBike();
+                    }
+
+                    fullSimulationSync();
                 }
             }
         } break;
@@ -279,7 +293,7 @@ void TronServer::handlePacket(sf::Packet& _packet, std::unique_ptr<Client>& _sen
             sf::Uint8 dir;
 
             _packet >> id >> dir;
-            // Do something with server's simulation ...
+            simulation.changeBikeDirection(id, static_cast<MoveDirection>(dir));
 
             sendPacketToAllButSender(_packet, _sender);
         } break;
@@ -330,7 +344,6 @@ void TronServer::sendPacketToAllButSender(sf::Packet& _packet, std::unique_ptr<C
             continue;
         }
 
-        // Don't send the sender's message back to themself.
         if (client->getSocket() == _sender->getSocket())
         {
             continue;
@@ -338,4 +351,22 @@ void TronServer::sendPacketToAllButSender(sf::Packet& _packet, std::unique_ptr<C
 
         client->getSocket()->send(_packet);
     }
+}
+
+void TronServer::fullSimulationSync()
+{
+    if (server_state != STATE_GAME)
+    {
+        return;
+    }
+
+    sf::Packet packet;
+    setPacketID(packet, PacketID::SYNC_SIMULATION);
+
+    packet << simulation;
+    sendPacketToAll(packet);
+
+    full_sync_needed = true;
+
+    std::cout << "Full Sync sent" << std::endl;
 }

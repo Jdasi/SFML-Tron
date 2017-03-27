@@ -146,7 +146,7 @@ void NetworkManager::handlePongPacket(sf::Packet& _packet)
 
     sendClientLatency();
 
-    scheduler.invoke([this]() { sendPing(); }, 1.0);
+    scheduler.invoke([this](){ sendPing(); }, 1.0);
 }
 
 void NetworkManager::sendPacket(sf::Packet& _packet)

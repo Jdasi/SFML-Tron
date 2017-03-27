@@ -18,12 +18,6 @@ void GameManager::tick()
 
 void GameManager::startSimulation()
 {
-    // do some initialise stuff.
-    for (auto& player : players)
-    {
-        simulation.addBike();
-    }
-
     simulation_running = true;
 }
 
