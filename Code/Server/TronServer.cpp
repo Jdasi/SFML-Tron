@@ -48,12 +48,12 @@ bool TronServer::run(unsigned int port)
 
 void TronServer::registerPacketHandlers()
 {
-    registerPacketHandler(DISCONNECT,   handleDisconnectPacket);
-    registerPacketHandler(PING,         handlePingPacket);
-    registerPacketHandler(LATENCY,      handleLatencyPacket);
-    registerPacketHandler(MESSAGE,      handleMessagePacket);
-    registerPacketHandler(PLAYER_STATE, handlePlayerStatePacket);
-    registerPacketHandler(DIRECTION,    handleDirectionPacket);
+    registerPacketHandler(PacketID::DISCONNECT,   handleDisconnectPacket);
+    registerPacketHandler(PacketID::PING,         handlePingPacket);
+    registerPacketHandler(PacketID::LATENCY,      handleLatencyPacket);
+    registerPacketHandler(PacketID::MESSAGE,      handleMessagePacket);
+    registerPacketHandler(PacketID::PLAYER_STATE, handlePlayerStatePacket);
+    registerPacketHandler(PacketID::DIRECTION,    handleDirectionPacket);
 }
 
 bool TronServer::bindServerPort()

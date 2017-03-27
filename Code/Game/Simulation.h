@@ -37,6 +37,7 @@ public:
     friend sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation);
 
 private:
+    void configureBikeSide(Bike& _bike) const;
     void moveBike(Bike& _bike);
     Vector2i generatePositionAdjustment(MoveDirection _dir, Vector2i _current_pos) const;
     bool adjustmentWithinBounds(Vector2i _adjustment) const;

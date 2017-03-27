@@ -43,7 +43,7 @@ void Simulation::addBike()
     bike.setID(bikes.size());
     bike.setColour(static_cast<CellColour>(colours_assigned++));
 
-    bike.setPosition({ 0, bike.getID() * 20 }); // Need to change this to properly support multiple bikes...
+    configureBikeSide(bike);
     grid.setCell(bike.getPosition(), { CellValue::HEAD, bike.getColour() });
 
     bikes.push_back(bike);
@@ -94,6 +94,42 @@ void Simulation::changeBikeDirection(unsigned int _bike_id, MoveDirection _dir)
     if (directionChangeValid(bike, _dir))
     {
         bike.setDirection(_dir);
+    }
+}
+
+void Simulation::configureBikeSide(Bike& _bike) const
+{
+    int x_pos_left = 0;
+    int x_pos_right = GRID_SIZE_X - 1;
+
+    int y_pos_top = static_cast<int>(GRID_SIZE_Y * 0.25f);
+    int y_pos_bottom = static_cast<int>(GRID_SIZE_Y * 0.75f);
+
+    switch (_bike.getID())
+    {
+        case 0:
+        {
+            _bike.setPosition({ x_pos_left, y_pos_top });
+        } break;
+
+        case 1:
+        {
+            _bike.setPosition({ x_pos_right, y_pos_bottom });
+            _bike.setDirection(MoveDirection::LEFT);
+        } break;
+
+        case 2:
+        {
+            _bike.setPosition({ x_pos_left, y_pos_bottom });
+        } break;
+
+        case 3:
+        {
+            _bike.setPosition({ x_pos_right, y_pos_top });
+            _bike.setDirection(MoveDirection::LEFT);
+        } break;
+
+        default: {}
     }
 }
 
@@ -245,6 +281,7 @@ sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation)
 
         Bike& bike = bikes[i];
         bike.setID(bike_id);
+        bike.setColour(static_cast<CellColour>(bike_col));
         bike.setDirection(static_cast<MoveDirection>(bike_dir));
         bike.setPosition(bike_pos);
         bike.setAlive(bike_alive);
