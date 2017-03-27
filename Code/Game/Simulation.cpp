@@ -49,15 +49,38 @@ void Simulation::addBike()
     bikes.push_back(bike);
 }
 
-void Simulation::overwriteSimulation(Simulation& _simulation)
+void Simulation::overwrite(const Simulation& _simulation)
 {
     grid = _simulation.grid;
     bikes = _simulation.bikes;
 
     for (auto& listener : listeners)
     {
-        listener->updateAllCells(_simulation.grid.getCells());
+        listener->updateAllCells(grid.getCells());
     }
+}
+
+void Simulation::reset()
+{
+    auto cells = grid.getCells();
+    for (auto& cell : cells)
+    {
+        cell.value = CellValue::NONE;
+    }
+
+    grid.setCells(cells);
+    bikes.clear();
+    colours_assigned = 0;
+}
+
+const Grid& Simulation::getGrid() const
+{
+    return grid;
+}
+
+const std::vector<Bike>& Simulation::getBikes() const
+{
+    return bikes;
 }
 
 void Simulation::changeBikeDirection(unsigned int _bike_id, MoveDirection _dir)
@@ -163,7 +186,7 @@ bool Simulation::directionChangeValid(Bike& _bike, MoveDirection _dir)
 
 sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation)
 {
-    auto& cells = _simulation.grid.getCells();
+    auto& cells = _simulation.getGrid().getCells();
     _packet << static_cast<sf::Uint32>(cells.size());
     for (auto& cell : cells)
     {
@@ -171,7 +194,7 @@ sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation)
                 << static_cast<sf::Uint8>(cell.colour);
     }
 
-    auto& bikes = _simulation.bikes;
+    auto& bikes = _simulation.getBikes();
     _packet << static_cast<sf::Uint8>(bikes.size());
     for (auto& bike : bikes)
     {

@@ -15,7 +15,7 @@ TronClient::TronClient()
     , game_manager(&client_data)
     , input_handler(*this)
     , state_handler()
-    , client_data(&font, &input_handler, &network_manager, game_manager.getSimulation())
+    , client_data(&font, &input_handler, &network_manager, &game_manager)
 {
     if (!font.loadFromFile("../../Resources/arial.ttf"))
     {
@@ -198,7 +198,10 @@ void TronClient::onGameStateChange(int _state)
 
 void TronClient::onFullSync(Simulation& _simulation)
 {
-    game_manager.getSimulation()->overwriteSimulation(_simulation);
+    postEvent([this, _simulation]()
+    {
+        game_manager.getSimulation()->overwrite(_simulation);
+    });
 }
 
 void TronClient::tick()

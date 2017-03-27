@@ -24,13 +24,17 @@ public:
     void tick(double _dt);
 
     void addBike();
-    void overwriteSimulation(Simulation& _simulation);
+    void overwrite(const Simulation& _simulation);
+    void reset();
+
+    const Grid& getGrid() const;
+    const std::vector<Bike>& getBikes() const;
+
+    // INetworkSimulation methods.
+    void changeBikeDirection(unsigned int _bike_id, MoveDirection _dir) override;
 
     friend sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation);
     friend sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation);
-    
-    // INetworkSimulation methods.
-    void changeBikeDirection(unsigned int _bike_id, MoveDirection _dir) override;
 
 private:
     void moveBike(Bike& _bike);

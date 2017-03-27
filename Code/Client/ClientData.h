@@ -9,17 +9,17 @@ namespace sf
 class InputHandler;
 class ObjectFactory;
 class TronNetworkManager;
-class Simulation;
+class GameManager;
 
 struct ClientData
 {
     ClientData(sf::Font* _font, InputHandler* _input_handler, 
-        TronNetworkManager* _network_manager, Simulation* _simulation)
+        TronNetworkManager* _network_manager, GameManager* _game_manager)
         : client_id(0)
         , font(_font)
         , input_handler(_input_handler)
         , network_manager(_network_manager)
-        , simulation(_simulation)
+        , game_manager(_game_manager)
         , exit(false)
         , delta_time(0)
         , play_time(0)
@@ -31,7 +31,7 @@ struct ClientData
     sf::Font* font;
     InputHandler* input_handler;
     TronNetworkManager* network_manager;
-    Simulation* simulation;
+    GameManager* game_manager;
 
     std::atomic<bool> exit;
     double delta_time;

@@ -4,11 +4,12 @@
 #include "ClientData.h"
 #include "ClientStateHandler.h"
 #include "TronNetworkManager.h"
+#include "GameManager.h"
 
 ClientStateGame::ClientStateGame(ClientData* _client_data)
     : ClientState(_client_data)
 {
-    client_data->simulation->attachListener(&pretty_grid);
+    client_data->game_manager->getSimulation()->attachListener(&pretty_grid);
 
     auto title_text = std::make_unique<sf::Text>("StateGame", *client_data->font);
     title_text->setCharacterSize(30);
