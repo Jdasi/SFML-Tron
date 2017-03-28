@@ -106,7 +106,7 @@ void TronServer::listen()
             {
                 full_sync_needed = false;
 
-                scheduler.invoke([this]() { fullSimulationSync(); }, 0.1);
+                scheduler.invoke([this]() { fullSimulationSync(); }, 1.0);
             }
         }
     }
@@ -315,7 +315,7 @@ void TronServer::handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender)
     _packet >> id >> dir;
     simulation.changeBikeDirection(id, static_cast<MoveDirection>(dir));
 
-    sendPacketToAllButSender(_packet, _sender);
+    syncBike(id);
 }
 
 void TronServer::onDisconnect(ClientPtr& _client)
@@ -367,6 +367,16 @@ void TronServer::sendPacketToAllButSender(sf::Packet& _packet, ClientPtr& _sende
 
         client->getSocket()->send(_packet);
     }
+}
+
+void TronServer::syncBike(unsigned int _bike_id)
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::SYNC_BIKE);
+
+    packet << simulation.getBike(_bike_id);
+
+    sendPacketToAll(packet);
 }
 
 void TronServer::fullSimulationSync()

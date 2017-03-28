@@ -2,6 +2,7 @@
 #include "NetworkManager.h"
 
 class Simulation;
+class Bike;
 class INetworkClient;
 enum MoveDirection;
 class Player;
@@ -29,6 +30,7 @@ private:
     void handleDirectionPacket(sf::Packet& _packet);
     void handlePlayerStateChangePacket(sf::Packet& _packet);
     void handleGameStateChangePacket(sf::Packet& _packet);
+    void handleBikeSyncPacket(sf::Packet& _packet);
     void handleFullSyncPacket(sf::Packet& _packet);
 
     // Pass-through functions to talk to the client.
@@ -41,6 +43,7 @@ private:
     void onPlayerJoined(int _id);
     void onPlayerStateChange(int _player_id, PlayerState _state);
     void onGameStateChange(int _state);
+    void onBikeSync(Bike& _bike);
     void onFullSync(Simulation& _simulation);
 
     // TronClient network interface.

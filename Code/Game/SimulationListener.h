@@ -1,11 +1,13 @@
 #pragma once
 #include <vector>
+#include <array>
+
+#include <Game/Constants.h>
+#include <Game/Cell.h>
 
 class Bike;
-enum CellValue;
-enum CellColour;
 enum MoveDirection;
-struct Cell;
+struct Vector2i;
 
 class SimulationListener
 {
@@ -13,7 +15,14 @@ public:
     SimulationListener() = default;
     virtual ~SimulationListener() = default;
 
-    virtual void updateCell(const Bike& _bike, CellValue _value) = 0;
-    virtual void updateAllCells(const std::vector<Cell>& _cells) = 0;
+    virtual void overwriteCell(const Vector2i& _pos,
+        const CellValue _value = CellValue::NONE,
+        const CellColour _colour = CellColour::CYAN) = 0;
+
+    virtual void overwriteCellRange(const std::vector<Vector2i>& _positions,
+        const CellValue _value = CellValue::NONE,
+        const CellColour _colour = CellColour::CYAN) = 0;
+
+    virtual void overwriteAllCells(const std::array<Cell, GRID_AREA>& _cells) = 0;
 
 };

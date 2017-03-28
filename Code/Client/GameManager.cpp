@@ -25,7 +25,7 @@ void GameManager::stopSimulation()
 {
     simulation_running = false;
 
-    // do some reset stuff.
+    simulation.reset();
 }
 
 Simulation* GameManager::getSimulation()

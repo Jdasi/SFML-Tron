@@ -37,6 +37,7 @@ private:
     void onPlayerJoined(int _id) override;
     void onPlayerStateChange(int _player_id, PlayerState _state) override;
     void onGameStateChange(int _state) override;
+    void onBikeSync(Bike& _bike) override;
     void onFullSync(Simulation& _simulation) override;
 
     void tick();

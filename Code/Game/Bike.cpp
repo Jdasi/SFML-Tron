@@ -1,3 +1,5 @@
+#include <SFML/Network.hpp>
+
 #include "Bike.h"
 #include "Constants.h"
 
@@ -7,9 +9,10 @@ Bike::Bike()
     , direction(MoveDirection::RIGHT)
     , move_speed(BIKE_MOVE_SPEED)
     , move_timer(0)
-    , alive(true)
+    , alive(false)
     , boosting(false)
 {
+    line.reserve(GRID_AREA / 10);
 }
 
 int Bike::getID() const
@@ -50,6 +53,18 @@ Vector2i Bike::getPosition() const
 void Bike::setPosition(const Vector2i& _pos)
 {
     pos = _pos;
+
+    line.push_back(_pos);
+}
+
+const std::vector<Vector2i>& Bike::getLine() const
+{
+    return line;
+}
+
+void Bike::setLine(const std::vector<Vector2i>& _line)
+{
+    line = _line;
 }
 
 float Bike::getMoveSpeed() const
@@ -100,4 +115,56 @@ bool Bike::isBoosting() const
 void Bike::setBoosting(bool _value)
 {
     boosting = _value;
+}
+
+sf::Packet& operator<<(sf::Packet& _packet, const Bike& _bike)
+{
+    _packet << static_cast<sf::Uint8>(_bike.id)
+            << static_cast<sf::Uint8>(_bike.colour)
+            << static_cast<sf::Uint8>(_bike.direction)
+            << static_cast<sf::Uint32>(_bike.pos.x)
+            << static_cast<sf::Uint32>(_bike.pos.y)
+            << _bike.alive
+            << _bike.boosting
+            << static_cast<sf::Uint32>(_bike.line.size());
+
+    for (auto& elem : _bike.line)
+    {
+        _packet << static_cast<sf::Uint32>(elem.x) << static_cast<sf::Uint32>(elem.y);
+    }
+
+    return _packet;
+}
+
+sf::Packet& operator>>(sf::Packet& _packet, Bike& _bike)
+{
+    sf::Uint8   bike_id;
+    sf::Uint8   bike_col;
+    sf::Uint8   bike_dir;
+    Vector2i    bike_pos;
+    bool        bike_alive;
+    bool        bike_boosting;
+    sf::Uint32  line_length;
+
+    _bike.line.clear();
+
+    _packet >> bike_id >> bike_col >> bike_dir >> bike_pos.x >> bike_pos.y
+            >> bike_alive >> bike_boosting >> line_length;
+
+    _bike.id = bike_id;
+    _bike.colour = static_cast<CellColour>(bike_col);
+    _bike.direction = static_cast<MoveDirection>(bike_dir);
+    _bike.pos = bike_pos;
+    _bike.alive = bike_alive;
+    _bike.boosting = bike_boosting;
+
+    for (sf::Uint32 i = 0; i < line_length; ++i)
+    {
+        Vector2i pos;
+
+        _packet >> pos.x >> pos.y;
+        _bike.line.push_back(pos);
+    }
+
+    return _packet;
 }

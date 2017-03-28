@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <array>
 
 #include "SimulationListener.h"
 #include "INetworkSimulation.h"
@@ -24,13 +24,12 @@ public:
     void tick(double _dt);
 
     void addBike();
-    void overwrite(const Simulation& _simulation);
     void reset();
 
     const Grid& getGrid() const;
-    const std::vector<Bike>& getBikes() const;
+    const std::array<Bike, MAX_PLAYERS>& getBikes() const;
+    Bike& getBike(unsigned int _bike_id);
 
-    // INetworkSimulation methods.
     void changeBikeDirection(unsigned int _bike_id, MoveDirection _dir) override;
 
     friend sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation);
@@ -44,8 +43,11 @@ private:
     bool adjustmentCollisionCheck(Vector2i _adjustment) const;
     bool directionChangeValid(Bike& _bike, MoveDirection _dir);
 
+    void overwrite(const Simulation& _simulation) override;
+    void overwriteBike(const Bike& _bike) override;
+
     Grid grid;
-    std::vector<Bike> bikes;
-    int colours_assigned;
+    std::array<Bike, MAX_PLAYERS> bikes;
+    int bikes_spawned;
 
 };

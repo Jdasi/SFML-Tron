@@ -45,6 +45,7 @@ private:
     void sendPacketToAll(sf::Packet& _packet);
     void sendPacketToAllButSender(sf::Packet& _packet, ClientPtr& _sender);
 
+    void syncBike(unsigned int _bike_id);
     void fullSimulationSync();
 
     unsigned int tcp_port;

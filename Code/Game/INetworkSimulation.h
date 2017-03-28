@@ -1,5 +1,6 @@
 #pragma once
 
+class Simulation;
 enum MoveDirection;
 
 /* Interface class used by TronClient to reveal only certain aspects of
@@ -15,5 +16,7 @@ public:
     virtual ~INetworkSimulation() = default;
 
     virtual void changeBikeDirection(unsigned int _bike_id, MoveDirection _dir) = 0;
+    virtual void overwrite(const Simulation& _simulation) = 0;
+    virtual void overwriteBike(const Bike& _bike) = 0;
 
 };

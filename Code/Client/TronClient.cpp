@@ -196,11 +196,19 @@ void TronClient::onGameStateChange(int _state)
     });
 }
 
+void TronClient::onBikeSync(Bike& _bike)
+{
+    postEvent([this, _bike]()
+    {
+        game_manager.getNetworkSimulation()->overwriteBike(_bike);
+    });
+}
+
 void TronClient::onFullSync(Simulation& _simulation)
 {
     postEvent([this, _simulation]()
     {
-        game_manager.getSimulation()->overwrite(_simulation);
+        game_manager.getNetworkSimulation()->overwrite(_simulation);
     });
 }
 

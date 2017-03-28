@@ -65,6 +65,7 @@ void TronNetworkManager::registerGamePacketHandlers()
     registerPacketHandler(DIRECTION, std::bind(&TronNetworkManager::handleDirectionPacket, this, _1));
     registerPacketHandler(PLAYER_STATE, std::bind(&TronNetworkManager::handlePlayerStateChangePacket, this, _1));
     registerPacketHandler(GAME_STATE, std::bind(&TronNetworkManager::handleGameStateChangePacket, this, _1));
+    registerPacketHandler(SYNC_BIKE, std::bind(&TronNetworkManager::handleBikeSyncPacket, this, _1));
     registerPacketHandler(SYNC_SIMULATION, std::bind(&TronNetworkManager::handleFullSyncPacket, this, _1));
 }
 
@@ -143,6 +144,14 @@ void TronNetworkManager::handleGameStateChangePacket(sf::Packet& _packet)
     onGameStateChange(state);
 }
 
+void TronNetworkManager::handleBikeSyncPacket(sf::Packet& _packet)
+{
+    Bike bike;
+    _packet >> bike;
+
+    onBikeSync(bike);
+}
+
 void TronNetworkManager::handleFullSyncPacket(sf::Packet& _packet)
 {
     Simulation sim;
@@ -194,6 +203,11 @@ void TronNetworkManager::onPlayerStateChange(int _player_id, PlayerState _state)
 void TronNetworkManager::onGameStateChange(int _state)
 {
     client.onGameStateChange(_state);
+}
+
+void TronNetworkManager::onBikeSync(Bike& _bike)
+{
+    client.onBikeSync(_bike);
 }
 
 void TronNetworkManager::onFullSync(Simulation& _simulation)

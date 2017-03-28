@@ -1,7 +1,6 @@
 #include <Game/Constants.h>
 #include <Game/Vector2i.h>
 #include <Game/CellValue.h>
-#include <Game/Bike.h>
 #include <Game/Cell.h>
 #include "PrettyGrid.h"
 
@@ -26,7 +25,8 @@ void PrettyGrid::draw(sf::RenderWindow& _window)
     }
 }
 
-void PrettyGrid::updateCell(const Bike& _bike, CellValue _value)
+void PrettyGrid::overwriteCell(const Vector2i& _pos,
+    const CellValue _value, const CellColour _colour)
 {
     sf::Color color;
 
@@ -34,31 +34,29 @@ void PrettyGrid::updateCell(const Bike& _bike, CellValue _value)
     {
         case CellValue::NONE: color = sf::Color::Transparent; break;
         case CellValue::HEAD: color = sf::Color::White; break;
-        case CellValue::TRAIL: color = evaluateSFColor(_bike.getColour());
+        case CellValue::TRAIL: color = evaluateSFColor(_colour);
 
-        default: {}
+    default: {}
     }
-    
-    setTileColor(_bike.getPosition(), color);
+
+    setTileColor(_pos, color);
 }
 
-void PrettyGrid::updateAllCells(const std::vector<Cell>& _cells)
+void PrettyGrid::overwriteCellRange(const std::vector<Vector2i>& _positions,
+    const CellValue _value, const CellColour _colour)
 {
-    for (unsigned int i = 0; i < _cells.size(); ++i)
+    for (auto& pos : _positions)
     {
-        sf::Color color;
+        overwriteCell(pos, _value, _colour);
+    }
+}
 
+void PrettyGrid::overwriteAllCells(const std::array<Cell, GRID_AREA>& _cells)
+{
+    for (int i = 0; i < GRID_AREA; ++i)
+    {
         Cell cell = _cells[i];
-        switch (cell.value)
-        {
-            case CellValue::NONE: color = sf::Color::Transparent; break;
-            case CellValue::HEAD: color = sf::Color::White; break;
-            case CellValue::TRAIL: color = evaluateSFColor(cell.colour);
-
-            default: {}
-        }
-
-        tiles[i]->setFillColor(color);
+        overwriteCell({ i % GRID_SIZE_X, i / GRID_SIZE_X }, cell.value, cell.colour);
     }
 }
 
@@ -122,4 +120,9 @@ sf::Color PrettyGrid::evaluateSFColor(CellColour _colour) const
 int PrettyGrid::calculateTilesIndex(int _x, int _y) const
 {
     return (_y * GRID_SIZE_X) + _x;
+}
+
+int PrettyGrid::calculateTilesIndex(const Vector2i& _pos) const
+{
+    return calculateTilesIndex(_pos.x, _pos.y);
 }

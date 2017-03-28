@@ -6,9 +6,8 @@
 #include "Constants.h"
 
 Simulation::Simulation()
-    : colours_assigned(0)
+    : bikes_spawned(0)
 {
-    bikes.reserve(MAX_PLAYERS);
 }
 
 void Simulation::tick(double _dt)
@@ -33,20 +32,21 @@ void Simulation::tick(double _dt)
 
 void Simulation::addBike()
 {
-    if (bikes.size() >= MAX_PLAYERS)
+    if (bikes_spawned >= MAX_PLAYERS)
     {
         return;
     }
 
-    Bike bike;
+    Bike& bike = bikes[bikes_spawned];
 
-    bike.setID(bikes.size());
-    bike.setColour(static_cast<CellColour>(colours_assigned++));
+    bike.setID(bikes_spawned);
+    bike.setColour(static_cast<CellColour>(bikes_spawned));
 
     configureBikeSide(bike);
     grid.setCell(bike.getPosition(), { CellValue::HEAD, bike.getColour() });
 
-    bikes.push_back(bike);
+    bike.setAlive(true);
+    ++bikes_spawned;
 }
 
 void Simulation::overwrite(const Simulation& _simulation)
@@ -56,8 +56,36 @@ void Simulation::overwrite(const Simulation& _simulation)
 
     for (auto& listener : listeners)
     {
-        listener->updateAllCells(grid.getCells());
+        listener->overwriteAllCells(grid.getCells());
     }
+}
+
+void Simulation::overwriteBike(const Bike& _bike)
+{
+    Bike& old_bike = bikes[_bike.getID()];
+    auto* line_positions = &old_bike.getLine();
+
+    // Clear old bike line before overwrite.
+    for (auto& pos : *line_positions)
+    {
+        grid.setCell(pos, { CellValue::NONE, CellColour::CYAN });
+    }
+
+    // Fill grid with new line data.
+    line_positions = &_bike.getLine();
+    for (auto& pos : *line_positions)
+    {
+        grid.setCell(pos, { CellValue::NONE, CellColour::CYAN });
+    }
+
+    for (auto& listener : listeners)
+    {
+        listener->overwriteCellRange(*line_positions, CellValue::TRAIL, _bike.getColour());
+        listener->overwriteCell(_bike.getPosition(), CellValue::HEAD);
+    }
+
+    // Overwrite old bike.
+    old_bike = _bike;
 }
 
 void Simulation::reset()
@@ -69,8 +97,13 @@ void Simulation::reset()
     }
 
     grid.setCells(cells);
-    bikes.clear();
-    colours_assigned = 0;
+    
+    for(auto& bike : bikes)
+    {
+        bike = Bike();
+    }
+
+    bikes_spawned = 0;
 }
 
 const Grid& Simulation::getGrid() const
@@ -78,7 +111,12 @@ const Grid& Simulation::getGrid() const
     return grid;
 }
 
-const std::vector<Bike>& Simulation::getBikes() const
+Bike& Simulation::getBike(unsigned int _bike_id)
+{
+    return bikes[_bike_id];
+}
+
+const std::array<Bike, MAX_PLAYERS>& Simulation::getBikes() const
 {
     return bikes;
 }
@@ -109,7 +147,7 @@ void Simulation::configureBikeSide(Bike& _bike) const
     {
         case 0:
         {
-            _bike.setPosition({ x_pos_left, y_pos_top });
+            //_bike.setPosition({ x_pos_left, y_pos_top });
         } break;
 
         case 1:
@@ -139,7 +177,7 @@ void Simulation::moveBike(Bike& _bike)
 
     for (auto& listener : listeners)
     {
-        listener->updateCell(_bike, CellValue::TRAIL);
+        listener->overwriteCell(_bike.getPosition(), CellValue::TRAIL,_bike.getColour());
     }
 
     MoveDirection dir = _bike.getDirection();
@@ -165,7 +203,7 @@ void Simulation::moveBike(Bike& _bike)
 
         for (auto& listener : listeners)
         {
-            listener->updateCell(_bike, CellValue::HEAD);
+            listener->overwriteCell(_bike.getPosition(), CellValue::HEAD, _bike.getColour());
         }
     }
 }
@@ -234,13 +272,7 @@ sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation)
     _packet << static_cast<sf::Uint8>(bikes.size());
     for (auto& bike : bikes)
     {
-        _packet << static_cast<sf::Uint8>(bike.getID())
-                << static_cast<sf::Uint8>(bike.getColour())
-                << static_cast<sf::Uint8>(bike.getDirection())
-                << static_cast<sf::Uint32>(bike.getPosition().x)
-                << static_cast<sf::Uint32>(bike.getPosition().y)
-                << bike.isAlive()
-                << bike.isBoosting();
+        _packet << bike;
     }
 
     return _packet;
@@ -251,7 +283,7 @@ sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation)
     sf::Uint32 num_cells;
     _packet >> num_cells;
 
-    std::vector<Cell> cells(num_cells);
+    std::array<Cell, GRID_AREA> cells;
     for (sf::Uint32 i = 0; i < num_cells; ++i)
     {
         sf::Uint8 cell_value;
@@ -266,26 +298,10 @@ sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation)
     sf::Uint8 num_bikes;
     _packet >> num_bikes;
 
-    std::vector<Bike> bikes(num_bikes);
+    std::array<Bike, MAX_PLAYERS> bikes;
     for (sf::Uint8 i = 0; i < num_bikes; ++i)
     {
-        sf::Uint8   bike_id;
-        sf::Uint8   bike_col;
-        sf::Uint8   bike_dir;
-        Vector2i    bike_pos;
-        bool        bike_alive;
-        bool        bike_boosting;
-
-        _packet >> bike_id >> bike_col >> bike_dir >> bike_pos.x >> bike_pos.y 
-                >> bike_alive >> bike_boosting;
-
-        Bike& bike = bikes[i];
-        bike.setID(bike_id);
-        bike.setColour(static_cast<CellColour>(bike_col));
-        bike.setDirection(static_cast<MoveDirection>(bike_dir));
-        bike.setPosition(bike_pos);
-        bike.setAlive(bike_alive);
-        bike.setBoosting(bike_boosting);
+        _packet >> bikes[i];
     }
     _simulation.bikes = bikes;
 
