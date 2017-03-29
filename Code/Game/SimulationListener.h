@@ -4,9 +4,9 @@
 
 #include <Game/Constants.h>
 #include <Game/Cell.h>
+#include <Game/MoveDirection.h>
 
 class Bike;
-enum MoveDirection;
 struct Vector2i;
 
 class SimulationListener

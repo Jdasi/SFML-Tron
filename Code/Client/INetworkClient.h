@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
+#include <Game/PlayerState.h>
 
 enum MoveDirection;
 class Player;
-enum PlayerState;
 class Bike;
 class Simulation;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <functional>
+#include <thread>
 
 #include <SFML/Network.hpp>
 

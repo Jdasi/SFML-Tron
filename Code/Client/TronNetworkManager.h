@@ -1,12 +1,12 @@
 #pragma once
 #include "NetworkManager.h"
+#include <Game/PlayerState.h>
+#include <Game/MoveDirection.h>
 
 class Simulation;
 class Bike;
 class INetworkClient;
-enum MoveDirection;
 class Player;
-enum PlayerState;
 
 class TronNetworkManager final : public NetworkManager
 {
