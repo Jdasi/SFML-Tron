@@ -33,7 +33,7 @@ struct ClientData
     TronNetworkManager* network_manager;
     GameManager* game_manager;
 
-    std::atomic<bool> exit;
+    bool exit;
     double delta_time;
     double play_time;
 

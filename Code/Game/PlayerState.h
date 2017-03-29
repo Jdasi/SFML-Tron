@@ -4,5 +4,6 @@ enum PlayerState
 {
     NOTREADY,
     READY,
-    PLAYING
+    PLAYING,
+    AFTERMATH
 };
