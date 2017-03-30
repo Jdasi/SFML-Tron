@@ -2,9 +2,8 @@
 #include <vector>
 #include <array>
 
-#include <Game/Constants.h>
-#include <Game/Cell.h>
-#include <Game/MoveDirection.h>
+#include "Constants.h"
+#include "Cell.h"
 
 class Bike;
 struct Vector2i;

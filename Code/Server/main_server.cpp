@@ -1,10 +1,9 @@
-#include <Game/Constants.h>
 #include "TronServer.h"
 
 int main()
 {
     TronServer server;
-    server.run(SERVER_TCP_PORT);
+    server.run();
 
     return 0;
 }

@@ -62,30 +62,29 @@ void Simulation::overwrite(const Simulation& _simulation)
 
 void Simulation::overwriteBike(const Bike& _bike)
 {
-    Bike& old_bike = bikes[_bike.getID()];
-    auto* line_positions = &old_bike.getLine();
+    Bike& bike = bikes[_bike.getID()];
+    auto& old_positions = bike.getLine();
 
-    // Clear old bike line before overwrite.
-    for (auto& pos : *line_positions)
+    for (auto& pos : old_positions)
     {
         grid.setCell(pos, { CellValue::NONE, CellColour::CYAN });
     }
 
-    // Fill grid with new line data.
-    line_positions = &_bike.getLine();
-    for (auto& pos : *line_positions)
+    bike = _bike;
+    auto& new_positions = bike.getLine();
+
+    for (auto& pos : old_positions)
     {
-        grid.setCell(pos, { CellValue::NONE, CellColour::CYAN });
+        grid.setCell(pos, { CellValue::TRAIL, bike.getColour() });
     }
+
+    grid.setCell(bike.getPosition(), { CellValue::HEAD, bike.getColour() });
 
     for (auto& listener : listeners)
     {
-        listener->overwriteCellRange(*line_positions, CellValue::TRAIL, _bike.getColour());
+        listener->overwriteCellRange(new_positions, CellValue::TRAIL, _bike.getColour());
         listener->overwriteCell(_bike.getPosition(), CellValue::HEAD);
     }
-
-    // Overwrite old bike.
-    old_bike = _bike;
 }
 
 void Simulation::reset()

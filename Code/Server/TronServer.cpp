@@ -10,8 +10,7 @@
 using namespace std::placeholders;
 
 TronServer::TronServer()
-    : tcp_port(0)
-    , connected_clients(0)
+    : connected_clients(0)
     , exit(false)
     , server_name()
     , server_state(STATE_LOBBY)
@@ -27,16 +26,14 @@ TronServer::TronServer()
     }
 }
 
-bool TronServer::run(unsigned int port)
+bool TronServer::run()
 {
-    tcp_port = port;
-
     if (!bindServerPort())
     {
         return false;
     }
 
-    std::cout << "Server launched on port: " << tcp_port << std::endl
+    std::cout << "Server launched on port: " << SERVER_TCP_PORT << std::endl
               << "> Awaiting clients . . ." << std::endl;
 
     socket_selector.add(tcp_listener);
@@ -58,9 +55,9 @@ void TronServer::registerPacketHandlers()
 
 bool TronServer::bindServerPort()
 {
-    if (tcp_listener.listen(tcp_port) != sf::Socket::Done)
+    if (tcp_listener.listen(SERVER_TCP_PORT) != sf::Socket::Done)
     {
-        std::cout << "Could not bind server port: " << tcp_port << std::endl;
+        std::cout << "Could not bind server port: " << SERVER_TCP_PORT << std::endl;
 
         return false;
     }

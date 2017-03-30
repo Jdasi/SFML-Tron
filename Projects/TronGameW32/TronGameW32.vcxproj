@@ -88,9 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Client\GameStateIDs.h" />
-    <ClInclude Include="..\..\Code\Game\Cell.h" />
     <ClInclude Include="..\..\Code\Game\CellValue.h" />
-    <ClInclude Include="..\..\Code\Game\CellColour.h" />
     <ClInclude Include="..\..\Code\Game\Constants.h" />
     <ClInclude Include="..\..\Code\Game\Grid.h" />
     <ClInclude Include="..\..\Code\Game\INetworkSimulation.h" />

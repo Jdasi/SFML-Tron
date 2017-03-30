@@ -18,7 +18,7 @@ public:
     TronServer();
     ~TronServer() = default;
 
-    bool run(unsigned int _port);
+    bool run();
 
 private:
     void registerPacketHandlers();
@@ -48,7 +48,6 @@ private:
     void syncBike(unsigned int _bike_id);
     void fullSimulationSync();
 
-    unsigned int tcp_port;
     sf::TcpListener tcp_listener;
     sf::SocketSelector socket_selector;
     std::vector<ClientPtr> clients;

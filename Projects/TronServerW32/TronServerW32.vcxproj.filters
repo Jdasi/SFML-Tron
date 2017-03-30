@@ -4,9 +4,6 @@
     <Filter Include="Core">
       <UniqueIdentifier>{3ba69b46-ab2e-4c90-a5b8-9d7ef0961ad4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utility">
-      <UniqueIdentifier>{0f58da91-014e-4a52-b325-c0bcc46716ff}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\Server\TronServer.cpp">
