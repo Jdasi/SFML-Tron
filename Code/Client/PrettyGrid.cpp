@@ -1,12 +1,12 @@
 #include <Game/Constants.h>
 #include <Game/Vector2i.h>
 #include <Game/CellValue.h>
-#include <Game/Cell.h>
 #include "PrettyGrid.h"
 
 PrettyGrid::PrettyGrid()
 {
     tiles.reserve(GRID_SIZE_X * GRID_SIZE_Y);
+
     initGrid();
 }
 
@@ -25,39 +25,45 @@ void PrettyGrid::draw(sf::RenderWindow& _window)
     }
 }
 
-void PrettyGrid::overwriteCell(const Vector2i& _pos,
-    const CellValue _value, const CellColour _colour)
+void PrettyGrid::clearCell(const Vector2i& _pos)
 {
-    sf::Color color;
-
-    switch (_value)
-    {
-        case CellValue::NONE: color = sf::Color::Transparent; break;
-        case CellValue::HEAD: color = sf::Color::White; break;
-        case CellValue::TRAIL: color = evaluateSFColor(_colour);
-
-    default: {}
-    }
-
-    setTileColor(_pos, color);
+    setTileColor(_pos, sf::Color::Transparent);
 }
 
-void PrettyGrid::overwriteCellRange(const std::vector<Vector2i>& _positions,
-    const CellValue _value, const CellColour _colour)
+void PrettyGrid::clearCellRange(const std::vector<Vector2i>& _positions)
 {
     for (auto& pos : _positions)
     {
-        overwriteCell(pos, _value, _colour);
+        clearCell(pos);
     }
 }
 
-void PrettyGrid::overwriteAllCells(const std::array<Cell, GRID_AREA>& _cells)
+void PrettyGrid::overwriteCell(const Vector2i& _pos, const CellValue _value)
+{
+    setTileColor(_pos, evaluateSFColor(_value));
+}
+
+void PrettyGrid::overwriteCellRange(const std::vector<Vector2i>& _positions, const CellValue _value)
+{
+    for (auto& pos : _positions)
+    {
+        setTileColor(pos, evaluateSFColor(_value));
+    }
+}
+
+void PrettyGrid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells)
 {
     for (int i = 0; i < GRID_AREA; ++i)
     {
-        Cell cell = _cells[i];
-        overwriteCell({ i % GRID_SIZE_X, i / GRID_SIZE_X }, cell.value, cell.colour);
+        CellValue value = _cells[i];
+        overwriteCell({ i % GRID_SIZE_X, i / GRID_SIZE_X }, value);
     }
+}
+
+void PrettyGrid::updateBikePosition(const Vector2i& _pos, int _bike_id)
+{
+    // TODO: move a player marker to this position based on _bike_id
+    setTileColor(_pos, sf::Color::White);
 }
 
 void PrettyGrid::initGrid()
@@ -99,30 +105,30 @@ void PrettyGrid::setTileColor(int _index, sf::Color _color)
     tiles[_index]->setFillColor(_color);
 }
 
-void PrettyGrid::setTileColor(const Vector2i _pos, sf::Color _color)
+void PrettyGrid::setTileColor(const Vector2i& _pos, sf::Color _color)
 {
-    setTileColor(calculateTilesIndex(_pos.x, _pos.y), _color);
+    setTileColor(calculateIndex(_pos.x, _pos.y), _color);
 }
 
-sf::Color PrettyGrid::evaluateSFColor(CellColour _colour) const
+sf::Color PrettyGrid::evaluateSFColor(CellValue _value) const
 {
-    switch (_colour)
+    switch (_value)
     {
-        case CellColour::CYAN: return sf::Color::Cyan;
-        case CellColour::GREEN: return sf::Color::Green;
-        case CellColour::MAGENTA: return sf::Color::Magenta;
-        case CellColour::YELLOW: return sf::Color::Yellow;
+        case CellValue::CYAN: return sf::Color::Cyan;
+        case CellValue::GREEN: return sf::Color::Green;
+        case CellValue::MAGENTA: return sf::Color::Magenta;
+        case CellValue::YELLOW: return sf::Color::Yellow;
 
         default: return sf::Color::Transparent;
     }
 }
 
-int PrettyGrid::calculateTilesIndex(int _x, int _y) const
+int PrettyGrid::calculateIndex(int _x, int _y) const
 {
     return (_y * GRID_SIZE_X) + _x;
 }
 
-int PrettyGrid::calculateTilesIndex(const Vector2i& _pos) const
+int PrettyGrid::calculateIndex(const Vector2i& _pos) const
 {
-    return calculateTilesIndex(_pos.x, _pos.y);
+    return calculateIndex(_pos.x, _pos.y);
 }

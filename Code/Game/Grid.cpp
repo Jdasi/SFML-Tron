@@ -6,32 +6,52 @@ void Grid::reset()
 {
     for (auto& cell : cells)
     {
-        cell.value = CellValue::NONE;
-        cell.colour = CellColour::CYAN;
+        cell = CellValue::NONE;
     }
 }
 
-Cell Grid::getCell(Vector2i _pos) const
+void Grid::clearCell(const Vector2i& _pos)
 {
-    return cells[calculateCellIndex(_pos)];
+    setCellValue(_pos, CellValue::NONE);
 }
 
-void Grid::setCell(Vector2i _pos, Cell _cell)
+void Grid::clearCellRange(const std::vector<Vector2i>& _positions)
 {
-    cells[calculateCellIndex(_pos)] = _cell;
+    for (auto& pos : _positions)
+    {
+        clearCell(pos);
+    }
 }
 
-const std::array<Cell, GRID_AREA>& Grid::getCells() const
+CellValue Grid::getCellValue(const Vector2i& _pos) const
+{
+    return cells[calculateIndex(_pos)];
+}
+
+void Grid::setCellValue(const Vector2i& _pos, const CellValue _value)
+{
+    cells[calculateIndex(_pos)] = _value;
+}
+
+const std::array<CellValue, GRID_AREA>& Grid::getCells() const
 {
     return cells;
 }
 
-void Grid::setCells(std::array<Cell, GRID_AREA>& _cells)
+void Grid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells)
 {
     cells = _cells;
 }
 
-int Grid::calculateCellIndex(Vector2i _pos) const
+void Grid::setCellRange(const std::vector<Vector2i>& _positions, const CellValue _value)
+{
+    for (auto& pos : _positions)
+    {
+        setCellValue(pos, _value);
+    }
+}
+
+int Grid::calculateIndex(const Vector2i& _pos) const
 {
     return (_pos.y * GRID_SIZE_X) + _pos.x;
 }

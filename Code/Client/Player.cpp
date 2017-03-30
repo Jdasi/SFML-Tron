@@ -3,7 +3,6 @@
 Player::Player(int _id, PlayerState _state)
     : id(_id)
     , state(_state)
-    , is_client(false)
 {
 }
 
@@ -25,14 +24,4 @@ PlayerState Player::getState() const
 void Player::setState(PlayerState _state)
 {
     state = _state;
-}
-
-bool Player::isClient() const
-{
-    return is_client;
-}
-
-void Player::setClient(bool _value)
-{
-    is_client = _value;
 }

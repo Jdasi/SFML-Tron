@@ -3,6 +3,9 @@
 enum CellValue
 {
     NONE,
-    HEAD,
-    TRAIL
+    CYAN,
+    GREEN,
+    MAGENTA,
+    YELLOW,
+    POWERUP
 };

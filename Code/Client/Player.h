@@ -13,12 +13,8 @@ public:
     PlayerState getState() const;
     void setState(PlayerState _state);
 
-    bool isClient() const;
-    void setClient(bool _value);
-
 private:
     int id;
     PlayerState state;
-    bool is_client;
 
 };

@@ -46,11 +46,6 @@ void GameManager::addPlayer(int _id, PlayerState _state)
     }
 
     players.emplace(_id, Player(_id, _state));
-
-    if (_id == client_data->client_id)
-    {
-        players.at(_id).setClient(true);
-    }
 }
 
 void GameManager::removePlayer(int _id)

@@ -1,8 +1,9 @@
 #pragma once
 #include <array>
+#include <vector>
 
 #include "Constants.h"
-#include "Cell.h"
+#include "CellValue.h"
 
 struct Vector2i;
 
@@ -14,15 +15,20 @@ public:
 
     void reset();
 
-    Cell getCell(Vector2i _pos) const;
-    void setCell(Vector2i _pos, Cell _cell);
+    void clearCell(const Vector2i& _pos);
+    void clearCellRange(const std::vector<Vector2i>& _positions);
 
-    const std::array<Cell, GRID_AREA>& getCells() const;
-    void setCells(std::array<Cell, GRID_AREA>& _cells);
+    CellValue getCellValue(const Vector2i& _pos) const;
+    void setCellValue(const Vector2i& _pos, const CellValue _value);
+
+    const std::array<CellValue, GRID_AREA>& getCells() const;
+    void overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells);
+
+    void setCellRange(const std::vector<Vector2i>& _positions, const CellValue _value);
 
 private:
-    int calculateCellIndex(Vector2i _pos) const;
+    int calculateIndex(const Vector2i& _pos) const;
 
-    std::array<Cell, GRID_AREA> cells;
+    std::array<CellValue, GRID_AREA> cells;
 
 };

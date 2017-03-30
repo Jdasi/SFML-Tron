@@ -38,12 +38,14 @@ public:
 private:
     void configureBikeSide(Bike& _bike) const;
     void moveBike(Bike& _bike);
-    Vector2i generatePositionAdjustment(MoveDirection _dir, Vector2i _current_pos) const;
-    bool adjustmentWithinBounds(Vector2i _adjustment) const;
-    bool adjustmentCollisionCheck(Vector2i _adjustment) const;
-    bool directionChangeValid(Bike& _bike, MoveDirection _dir);
+    Vector2i generatePositionAdjustment(MoveDirection _dir, 
+        const Vector2i& _current_pos) const;
 
-    void setBikeIDs();
+    bool adjustmentWithinBounds(const Vector2i& _adjustment) const;
+    bool adjustmentCollisionCheck(const Vector2i& _adjustment) const;
+    bool directionChangeValid(const Bike& _bike, MoveDirection _dir);
+
+    void resetBikes();
     void overwrite(const Simulation& _simulation) override;
     void overwriteBike(const Bike& _bike) override;
 

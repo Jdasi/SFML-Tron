@@ -7,8 +7,8 @@ namespace sf
 }
 
 #include "MoveDirection.h"
-#include "CellColour.h"
 #include "Vector2i.h"
+#include "CellValue.h"
 
 class Bike
 {
@@ -19,8 +19,7 @@ public:
     int getID() const;
     void setID(int _id);
 
-    CellColour getColour() const;
-    void setColour(CellColour _colour);
+    CellValue getCellValue() const;
 
     MoveDirection getDirection() const;
     void setDirection(MoveDirection _direction);
@@ -50,7 +49,6 @@ public:
 
 private:
     int id;
-    CellColour colour;
     MoveDirection direction;
     Vector2i pos;
     std::vector<Vector2i> line;

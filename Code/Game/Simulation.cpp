@@ -7,7 +7,7 @@
 
 Simulation::Simulation()
 {
-    setBikeIDs();
+    resetBikes();
 }
 
 void Simulation::tick(double _dt)
@@ -38,10 +38,9 @@ void Simulation::addBike(unsigned int _id)
     }
 
     Bike& bike = bikes[_id];
-    bike.setColour(static_cast<CellColour>(_id));
 
     configureBikeSide(bike);
-    grid.setCell(bike.getPosition(), { CellValue::HEAD, bike.getColour() });
+    grid.setCellValue(bike.getPosition(), bike.getCellValue());
 
     bike.setAlive(true);
 }
@@ -63,35 +62,26 @@ void Simulation::overwriteBike(const Bike& _bike)
     auto& old_positions = bike.getLine();
 
     // Erase old line.
-    for (auto& pos : old_positions)
-    {
-        grid.setCell(pos, { CellValue::NONE, CellColour::CYAN });
-    }
+    grid.clearCellRange(old_positions);
 
     // Overwrite Bike.
     bike = _bike;
     auto& new_positions = bike.getLine();
 
     // Write new line.
-    for (auto& pos : old_positions)
-    {
-        grid.setCell(pos, { CellValue::TRAIL, bike.getColour() });
-    }
-
-    grid.setCell(bike.getPosition(), { CellValue::HEAD, bike.getColour() });
+    grid.setCellRange(new_positions, bike.getCellValue());
 
     // Inform listeners of update.
     for (auto& listener : listeners)
     {
-        listener->overwriteCellRange(new_positions, CellValue::TRAIL, _bike.getColour());
-        listener->overwriteCell(_bike.getPosition(), CellValue::HEAD);
+        listener->overwriteCellRange(new_positions, bike.getCellValue());
     }
 }
 
 void Simulation::reset()
 {
     grid.reset();
-    setBikeIDs();
+    resetBikes();
 }
 
 const Grid& Simulation::getGrid() const
@@ -161,17 +151,17 @@ void Simulation::configureBikeSide(Bike& _bike) const
 
 void Simulation::moveBike(Bike& _bike)
 {
-    grid.setCell(_bike.getPosition(), { CellValue::TRAIL, _bike.getColour() } );
-
+    grid.setCellValue(_bike.getPosition(), _bike.getCellValue());
+    
     for (auto& listener : listeners)
     {
-        listener->overwriteCell(_bike.getPosition(), CellValue::TRAIL,_bike.getColour());
+        listener->overwriteCell(_bike.getPosition(), _bike.getCellValue());
     }
 
     MoveDirection dir = _bike.getDirection();
     Vector2i pos = _bike.getPosition();
 
-    Vector2i adjustment = pos + generatePositionAdjustment(dir, pos);
+    Vector2i adjustment = generatePositionAdjustment(dir, pos);
 
     if (!adjustmentWithinBounds(adjustment))
     {
@@ -187,29 +177,34 @@ void Simulation::moveBike(Bike& _bike)
     {
         // Path is clear.
         _bike.setPosition(adjustment);
-        grid.setCell(adjustment, { CellValue::HEAD, _bike.getColour() });
+        grid.setCellValue(adjustment, _bike.getCellValue());
 
         for (auto& listener : listeners)
         {
-            listener->overwriteCell(_bike.getPosition(), CellValue::HEAD, _bike.getColour());
+            listener->updateBikePosition(_bike.getPosition(), _bike.getID());
         }
     }
 }
 
-Vector2i Simulation::generatePositionAdjustment(MoveDirection _dir, Vector2i _current_pos) const
+Vector2i Simulation::generatePositionAdjustment(MoveDirection _dir, 
+    const Vector2i& _current_pos) const
 {
+    Vector2i adjustment;
+
     switch (_dir)
     {
-        case MoveDirection::UP:     return {  0, -1 };
-        case MoveDirection::DOWN:   return {  0,  1 };
-        case MoveDirection::LEFT:   return { -1,  0 };
-        case MoveDirection::RIGHT:  return {  1,  0 };
+        case MoveDirection::UP:     adjustment = {  0, -1 }; break;
+        case MoveDirection::DOWN:   adjustment = {  0,  1 }; break;
+        case MoveDirection::LEFT:   adjustment = { -1,  0 }; break;
+        case MoveDirection::RIGHT:  adjustment = {  1,  0 }; break;
 
-        default: return { 0, 0 };
+        default: adjustment = { 0, 0 };
     }
+
+    return _current_pos + adjustment;
 }
 
-bool Simulation::adjustmentWithinBounds(Vector2i _adjustment) const
+bool Simulation::adjustmentWithinBounds(const Vector2i& _adjustment) const
 {
     if (_adjustment.x >= GRID_SIZE_X ||
         _adjustment.x < 0 ||
@@ -222,9 +217,10 @@ bool Simulation::adjustmentWithinBounds(Vector2i _adjustment) const
     return true;
 }
 
-bool Simulation::adjustmentCollisionCheck(Vector2i _adjustment) const
+// Returns true if there is a collision, otherwise returns false.
+bool Simulation::adjustmentCollisionCheck(const Vector2i& _adjustment) const
 {
-    if (grid.getCell(_adjustment).value == CellValue::NONE)
+    if (grid.getCellValue(_adjustment) == CellValue::NONE)
     {
         return false;
     }
@@ -232,7 +228,8 @@ bool Simulation::adjustmentCollisionCheck(Vector2i _adjustment) const
     return true;
 }
 
-bool Simulation::directionChangeValid(Bike& _bike, MoveDirection _dir)
+// Returns true if direction change is valid, otherwise returns false.
+bool Simulation::directionChangeValid(const Bike& _bike, MoveDirection _dir)
 {
     if (_dir == MoveDirection::UP && _bike.getDirection() == MoveDirection::DOWN ||
         _dir == MoveDirection::DOWN && _bike.getDirection() == MoveDirection::UP ||
@@ -246,7 +243,8 @@ bool Simulation::directionChangeValid(Bike& _bike, MoveDirection _dir)
     return true;
 }
 
-void Simulation::setBikeIDs()
+// Goes through the array of bikes and overwrites them with new copies with correct ids.
+void Simulation::resetBikes()
 {
     int id = 0;
     for (auto& bike : bikes)
@@ -260,10 +258,9 @@ sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation)
 {
     auto& cells = _simulation.getGrid().getCells();
     _packet << static_cast<sf::Uint32>(cells.size());
-    for (auto& cell : cells)
+    for (auto& cell_value : cells)
     {
-        _packet << static_cast<sf::Uint8>(cell.value) 
-                << static_cast<sf::Uint8>(cell.colour);
+        _packet << static_cast<sf::Uint8>(cell_value);
     }
 
     auto& bikes = _simulation.getBikes();
@@ -281,17 +278,15 @@ sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation)
     sf::Uint32 num_cells;
     _packet >> num_cells;
 
-    std::array<Cell, GRID_AREA> cells;
+    std::array<CellValue, GRID_AREA> cells;
     for (sf::Uint32 i = 0; i < num_cells; ++i)
     {
         sf::Uint8 cell_value;
-        sf::Uint8 cell_colour;
 
-        _packet >> cell_value >> cell_colour;
-        cells[i].value = static_cast<CellValue>(cell_value);
-        cells[i].colour = static_cast<CellColour>(cell_colour);
+        _packet >> cell_value;
+        cells[i] = static_cast<CellValue>(cell_value);
     }
-    _simulation.grid.setCells(cells);
+    _simulation.grid.overwriteAllCells(cells);
 
     sf::Uint8 num_bikes;
     _packet >> num_bikes;

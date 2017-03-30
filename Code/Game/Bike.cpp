@@ -5,7 +5,6 @@
 
 Bike::Bike()
     : id(0)
-    , colour(CellColour::CYAN)
     , direction(MoveDirection::RIGHT)
     , move_speed(BIKE_MOVE_SPEED)
     , move_timer(0)
@@ -25,14 +24,9 @@ void Bike::setID(int _id)
     id = _id;
 }
 
-CellColour Bike::getColour() const
+CellValue Bike::getCellValue() const
 {
-    return colour;
-}
-
-void Bike::setColour(CellColour _colour)
-{
-    colour = _colour;
+    return static_cast<CellValue>(CellValue::CYAN + id);
 }
 
 MoveDirection Bike::getDirection() const
@@ -120,7 +114,6 @@ void Bike::setBoosting(bool _value)
 sf::Packet& operator<<(sf::Packet& _packet, const Bike& _bike)
 {
     _packet << static_cast<sf::Uint8>(_bike.id)
-            << static_cast<sf::Uint8>(_bike.colour)
             << static_cast<sf::Uint8>(_bike.direction)
             << static_cast<sf::Uint32>(_bike.pos.x)
             << static_cast<sf::Uint32>(_bike.pos.y)
@@ -139,7 +132,6 @@ sf::Packet& operator<<(sf::Packet& _packet, const Bike& _bike)
 sf::Packet& operator>>(sf::Packet& _packet, Bike& _bike)
 {
     sf::Uint8   bike_id;
-    sf::Uint8   bike_col;
     sf::Uint8   bike_dir;
     Vector2i    bike_pos;
     bool        bike_alive;
@@ -148,11 +140,10 @@ sf::Packet& operator>>(sf::Packet& _packet, Bike& _bike)
 
     _bike.line.clear();
 
-    _packet >> bike_id >> bike_col >> bike_dir >> bike_pos.x >> bike_pos.y
+    _packet >> bike_id >> bike_dir >> bike_pos.x >> bike_pos.y
             >> bike_alive >> bike_boosting >> line_length;
 
     _bike.id = bike_id;
-    _bike.colour = static_cast<CellColour>(bike_col);
     _bike.direction = static_cast<MoveDirection>(bike_dir);
     _bike.pos = bike_pos;
     _bike.alive = bike_alive;
