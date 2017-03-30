@@ -9,9 +9,9 @@
 // ======================================================================================
 // WINDOW SETTINGS
 // ======================================================================================
-const int WINDOW_WIDTH                  = 800; // Width of the screen.
-const int WINDOW_HEIGHT                 = 600; // Height of the screen.
-const int WINDOW_MARGIN_X               = 100; // Margin from horizontal screen edges.
+const int WINDOW_WIDTH                  = 1024; // Width of the screen.
+const int WINDOW_HEIGHT                 = 576; // Height of the screen.
+const int WINDOW_MARGIN_X               = 200; // Margin from horizontal screen edges.
 const int WINDOW_MARGIN_Y               = 50; // Margin from vertical screen edges.
 
 constexpr float WINDOW_LEFT_BOUNDARY      = WINDOW_MARGIN_X;

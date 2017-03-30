@@ -4,6 +4,9 @@
 
 using namespace std::placeholders;
 
+#define registerPacketHandler(id, func) \
+    packet_handlers.emplace(id, std::bind(&NetworkManager::func, this, _1))
+
 NetworkManager::NetworkManager(const sf::IpAddress _ip_address, const unsigned int _tcp_port)
     : ip_address(_ip_address)
     , tcp_port(_tcp_port)
@@ -117,14 +120,9 @@ void NetworkManager::stopNetworkingThread()
     network_thread.join();
 }
 
-void NetworkManager::registerPacketHandler(const PacketID _id, const std::function<void(sf::Packet&)> _handler)
-{
-    packet_handlers.emplace(_id, _handler);
-}
-
 void NetworkManager::registerPacketHandlers()
 {
-    registerPacketHandler(PONG, std::bind(&NetworkManager::handlePongPacket, this, _1));
+    registerPacketHandler(PONG, handlePongPacket, this);
 }
 
 void NetworkManager::handlePacket(sf::Packet& _packet)

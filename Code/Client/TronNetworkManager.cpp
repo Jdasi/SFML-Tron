@@ -9,6 +9,9 @@
 
 using namespace std::placeholders;
 
+#define registerPacketHandler(id, func) \
+    packet_handlers.emplace(id, std::bind(&TronNetworkManager::func, this, _1))
+
 TronNetworkManager::TronNetworkManager(INetworkClient& _client, 
     const sf::IpAddress _ip_address, const unsigned int _tcp_port)
     : NetworkManager(_ip_address, _tcp_port)
@@ -58,15 +61,15 @@ void TronNetworkManager::sendBikeDirectionChange(int _player_id, MoveDirection _
 
 void TronNetworkManager::registerGamePacketHandlers()
 {
-    registerPacketHandler(IDENTITY, std::bind(&TronNetworkManager::handleIdentityPacket, this, _1));
-    registerPacketHandler(PLAYER_LIST, std::bind(&TronNetworkManager::handlePlayerListPacket, this, _1));
-    registerPacketHandler(PLAYER_JOINED, std::bind(&TronNetworkManager::handlePlayerJoinedPacket, this, _1));
-    registerPacketHandler(MESSAGE, std::bind(&TronNetworkManager::handleMessagePacket, this, _1));
-    registerPacketHandler(DIRECTION, std::bind(&TronNetworkManager::handleDirectionPacket, this, _1));
-    registerPacketHandler(PLAYER_STATE, std::bind(&TronNetworkManager::handlePlayerStateChangePacket, this, _1));
-    registerPacketHandler(GAME_STATE, std::bind(&TronNetworkManager::handleGameStateChangePacket, this, _1));
-    registerPacketHandler(SYNC_BIKE, std::bind(&TronNetworkManager::handleBikeSyncPacket, this, _1));
-    registerPacketHandler(SYNC_SIMULATION, std::bind(&TronNetworkManager::handleFullSyncPacket, this, _1));
+    registerPacketHandler(IDENTITY,         handleIdentityPacket);
+    registerPacketHandler(PLAYER_LIST,      handlePlayerListPacket);
+    registerPacketHandler(PLAYER_JOINED,    handlePlayerJoinedPacket);
+    registerPacketHandler(MESSAGE,          handleMessagePacket);
+    registerPacketHandler(DIRECTION,        handleDirectionPacket);
+    registerPacketHandler(PLAYER_STATE,     handlePlayerStateChangePacket);
+    registerPacketHandler(GAME_STATE,       handleGameStateChangePacket);
+    registerPacketHandler(SYNC_BIKE,        handleBikeSyncPacket);
+    registerPacketHandler(SYNC_SIMULATION,  handleFullSyncPacket);
 }
 
 void TronNetworkManager::handleIdentityPacket(sf::Packet& _packet)

@@ -26,14 +26,14 @@ public:
     void disconnect();
 
 protected:
-    void registerPacketHandler(const PacketID _id, const std::function<void(sf::Packet&)> _handler);
-
     // Required network events.
     virtual void onConnected() = 0;
     virtual void onDisconnected() = 0;
     virtual void onUpdatePingTime(double _ping) = 0;
 
     void sendPacket(sf::Packet& _packet);
+
+    std::map<PacketID, std::function<void(sf::Packet&)>> packet_handlers;
 
 private:
     void networkingThread();
@@ -64,5 +64,4 @@ private:
 
     std::thread network_thread;
 
-    std::map<PacketID, std::function<void(sf::Packet&)>> packet_handlers;
 };
