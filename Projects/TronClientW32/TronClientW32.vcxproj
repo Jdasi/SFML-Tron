@@ -87,6 +87,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Code\Client\AssetManager.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateEnd.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateGame.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateHandler.cpp" />
@@ -101,6 +102,7 @@
     <ClCompile Include="..\..\Code\Client\TronNetworkManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Code\Client\AssetManager.h" />
     <ClInclude Include="..\..\Code\Client\ClientState.h" />
     <ClInclude Include="..\..\Code\Client\ClientStateEnd.h" />
     <ClInclude Include="..\..\Code\Client\ClientStateGame.h" />

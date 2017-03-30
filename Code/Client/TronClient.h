@@ -11,6 +11,7 @@
 #include "ClientData.h"
 #include "ClientStateHandler.h"
 #include "GameManager.h"
+#include "AssetManager.h"
 
 class TronClient : public INetworkClient, public ThreadDispatcher
 {
@@ -47,6 +48,7 @@ private:
     sf::Font font;
 
     // Core systems.
+    AssetManager asset_manager;
     TronNetworkManager network_manager;
     GameManager game_manager;
     InputHandler input_handler;

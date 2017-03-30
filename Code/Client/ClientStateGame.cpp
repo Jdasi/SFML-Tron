@@ -5,13 +5,17 @@
 #include "ClientStateHandler.h"
 #include "TronNetworkManager.h"
 #include "GameManager.h"
+#include "AssetManager.h"
 
 ClientStateGame::ClientStateGame(ClientData* _client_data)
     : ClientState(_client_data)
+    , pretty_grid(_client_data->asset_manager)
 {
     client_data->game_manager->getSimulation()->attachListener(&pretty_grid);
 
-    auto title_text = std::make_unique<sf::Text>("StateGame", *client_data->font);
+    auto title_text = std::make_unique<sf::Text>("StateGame",
+        *client_data->asset_manager->loadFontTTF("arial"));
+
     title_text->setCharacterSize(30);
     title_text->setStyle(sf::Text::Bold);
     title_text->setFillColor(sf::Color::Red);
@@ -28,6 +32,7 @@ void ClientStateGame::onStateLeave()
 
 void ClientStateGame::tick()
 {
+    pretty_grid.tick(client_data->delta_time);
 }
 
 void ClientStateGame::draw(sf::RenderWindow& _window)

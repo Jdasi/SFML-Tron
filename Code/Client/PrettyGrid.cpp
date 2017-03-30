@@ -2,12 +2,25 @@
 #include <Game/Vector2i.h>
 #include <Game/CellValue.h>
 #include "PrettyGrid.h"
+#include "AssetManager.h"
 
-PrettyGrid::PrettyGrid()
+PrettyGrid::PrettyGrid(AssetManager* _asset_manager)
+    : asset_manager(_asset_manager)
 {
-    tiles.reserve(GRID_SIZE_X * GRID_SIZE_Y);
-
     initGrid();
+}
+
+void PrettyGrid::tick(double _dt)
+{
+    for (auto& marker : player_markers)
+    {
+        if (!marker)
+        {
+            continue;
+        }
+
+        marker->rotate(static_cast<float>(15.0 * _dt));
+    }
 }
 
 void PrettyGrid::draw(sf::RenderWindow& _window)
@@ -22,6 +35,16 @@ void PrettyGrid::draw(sf::RenderWindow& _window)
         }
 
         _window.draw(*tile);
+    }
+
+    for (auto& marker : player_markers)
+    {
+        if (!marker)
+        {
+            continue;
+        }
+
+        _window.draw(*marker);
     }
 }
 
@@ -60,9 +83,26 @@ void PrettyGrid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cell
     }
 }
 
+void PrettyGrid::addPlayerMarker(int _bike_id, const CellValue _value)
+{
+    auto* tex = asset_manager->loadTexturePNG("player_marker");
+
+    auto marker = std::make_unique<sf::Sprite>(*tex);
+    marker->setColor(evaluateSFColor(_value));
+    marker->setOrigin({ 32, 32 });
+    marker->setScale({ 0.75f, 0.75f });
+
+    player_markers[_bike_id] = std::move(marker);
+}
+
+void PrettyGrid::removePlayerMarker(int _bike_id)
+{
+    player_markers[_bike_id].reset();
+}
+
 void PrettyGrid::updateBikePosition(const Vector2i& _pos, int _bike_id)
 {
-    // TODO: move a player marker to this position based on _bike_id
+    player_markers[_bike_id]->setPosition(tiles[calculateIndex(_pos)]->getPosition());
     setTileColor(_pos, sf::Color::White);
 }
 
@@ -72,7 +112,6 @@ void PrettyGrid::initGrid()
     float pane_height = WINDOW_BOTTOM_BOUNDARY - WINDOW_TOP_BOUNDARY;
     sf::Vector2f pane({ pane_width, pane_height });
 
-    border.setOrigin({ 0.5f, 0.5f });
     border.setPosition({ WINDOW_LEFT_BOUNDARY, WINDOW_TOP_BOUNDARY });
     border.setSize(pane);
     border.setFillColor(sf::Color::Transparent);
@@ -87,15 +126,14 @@ void PrettyGrid::initGrid()
     {
         for (int x_cycles = 0; x_cycles < GRID_SIZE_X; ++x_cycles)
         {
-            auto rectangle = std::make_unique<sf::RectangleShape>(rect);
-            rectangle->setOrigin({ 0.5f, 0.5f });
+            auto tile = std::make_unique<sf::RectangleShape>(rect);
 
-            rectangle->setFillColor(sf::Color::Transparent);
+            tile->setFillColor(sf::Color::Transparent);
 
-            rectangle->setPosition({ WINDOW_LEFT_BOUNDARY + (x_cycles * rect.x), 
+            tile->setPosition({ WINDOW_LEFT_BOUNDARY + (x_cycles * rect.x), 
                                      WINDOW_TOP_BOUNDARY + (y_cycles * rect.y) });
 
-            tiles.push_back(std::move(rectangle));
+            tiles[calculateIndex(x_cycles, y_cycles)] = std::move(tile);
         }
     }
 }

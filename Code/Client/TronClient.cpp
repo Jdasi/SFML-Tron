@@ -15,12 +15,9 @@ TronClient::TronClient()
     , game_manager(&client_data)
     , input_handler(*this)
     , state_handler()
-    , client_data(&font, &input_handler, &network_manager, &game_manager)
+    , client_data(&asset_manager, &network_manager, &game_manager, &input_handler)
 {
-    if (!font.loadFromFile("../../Resources/arial.ttf"))
-    {
-        throw std::runtime_error("Font not found");
-    }
+    asset_manager.loadFontTTF("arial");
 }
 
 void TronClient::run()

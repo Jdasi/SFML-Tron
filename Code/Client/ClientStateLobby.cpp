@@ -5,18 +5,21 @@
 #include "ClientStateHandler.h"
 #include "ClientData.h"
 #include "TronNetworkManager.h"
+#include "AssetManager.h"
 
 ClientStateLobby::ClientStateLobby(ClientData* _client_data)
     : ClientState(_client_data)
     , ready(false)
 {
-    auto title_text = std::make_unique<sf::Text>("StateLobby", *client_data->font);
+    auto* font = client_data->asset_manager->loadFontTTF("arial");
+
+    auto title_text = std::make_unique<sf::Text>("StateLobby", *font);
     title_text->setCharacterSize(30);
     title_text->setStyle(sf::Text::Bold);
     title_text->setFillColor(sf::Color::Red);
     drawables.push_back(std::move(title_text));
 
-    auto l_text = std::make_unique<sf::Text>("", *client_data->font);
+    auto l_text = std::make_unique<sf::Text>("", *font);
     l_text->setCharacterSize(30);
     l_text->setStyle(sf::Text::Bold);
     l_text->setFillColor(sf::Color::Red);

@@ -49,6 +49,9 @@
     <ClCompile Include="..\..\Code\Client\GameManager.cpp">
       <Filter>Managerial</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Client\AssetManager.cpp">
+      <Filter>Managerial</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Client\InputHandler.h">
@@ -97,6 +100,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\GameManager.h">
+      <Filter>Managerial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\AssetManager.h">
       <Filter>Managerial</Filter>
     </ClInclude>
   </ItemGroup>

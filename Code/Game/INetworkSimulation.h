@@ -1,7 +1,7 @@
 #pragma once
+#include "MoveDirection.h"
 
 class Simulation;
-enum MoveDirection;
 
 /* Interface class used by TronClient to reveal only certain aspects of
  * the simulation through the GameManager.

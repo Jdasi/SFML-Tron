@@ -2,7 +2,6 @@
 #include <vector>
 #include <Game/PlayerState.h>
 
-enum MoveDirection;
 class Player;
 class Bike;
 class Simulation;

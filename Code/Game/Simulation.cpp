@@ -42,6 +42,11 @@ void Simulation::addBike(unsigned int _id)
     configureBikeSide(bike);
     grid.setCellValue(bike.getPosition(), bike.getCellValue());
 
+    for (auto& listener : listeners)
+    {
+        listener->addPlayerMarker(bike.getID(), bike.getCellValue());
+    }
+
     bike.setAlive(true);
 }
 
@@ -182,6 +187,14 @@ void Simulation::moveBike(Bike& _bike)
         for (auto& listener : listeners)
         {
             listener->updateBikePosition(_bike.getPosition(), _bike.getID());
+        }
+    }
+
+    if (!_bike.isAlive())
+    {
+        for (auto& listener : listeners)
+        {
+            listener->removePlayerMarker(_bike.getID());
         }
     }
 }

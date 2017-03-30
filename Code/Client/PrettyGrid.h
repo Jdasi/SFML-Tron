@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <array>
 #include <memory>
 
@@ -7,14 +8,15 @@
 #include <Game/SimulationListener.h>
 
 struct Vector2i;
-enum CellColour;
+class AssetManager;
 
 class PrettyGrid : public SimulationListener
 {
 public:
-    PrettyGrid();
+    PrettyGrid(AssetManager* _asset_manager);
     ~PrettyGrid() = default;
 
+    void tick(double _dt);
     void draw(sf::RenderWindow& _window);
 
     void clearCell(const Vector2i& _pos) override;
@@ -22,6 +24,8 @@ public:
     void overwriteCell(const Vector2i& _pos, const CellValue _value) override;
     void overwriteCellRange(const std::vector<Vector2i>& _positions, const CellValue _value) override;
     void overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells) override;
+    void addPlayerMarker(int _bike_id, const CellValue _value) override;
+    void removePlayerMarker(int _bike_id) override;
     void updateBikePosition(const Vector2i& _pos, int _bike_id) override;
 
 private:
@@ -33,7 +37,10 @@ private:
     int calculateIndex(int _x, int _y) const;
     int calculateIndex(const Vector2i& _pos) const;
 
+    AssetManager* asset_manager;
+
     sf::RectangleShape border;
-    std::vector<std::unique_ptr<sf::RectangleShape>> tiles;
+    std::array<std::unique_ptr<sf::RectangleShape>, GRID_AREA> tiles;
+    std::array<std::unique_ptr<sf::Sprite>, MAX_PLAYERS> player_markers;
 
 };

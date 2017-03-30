@@ -1,6 +1,7 @@
 #include <Game/Constants.h>
 #include "GameManager.h"
 #include "ClientData.h"
+#include "Player.h"
 
 GameManager::GameManager(ClientData* _client_data)
     : client_data(_client_data)
@@ -18,6 +19,16 @@ void GameManager::tick()
 
 void GameManager::startSimulation()
 {
+    if (simulation_running)
+    {
+        return;
+    }
+
+    for (auto& elem : players)
+    {
+        simulation.addBike(elem.second.getID());
+    }
+
     simulation_running = true;
 }
 
