@@ -2,6 +2,15 @@
 #include "Constants.h"
 #include "Vector2i.h"
 
+void Grid::reset()
+{
+    for (auto& cell : cells)
+    {
+        cell.value = CellValue::NONE;
+        cell.colour = CellColour::CYAN;
+    }
+}
+
 Cell Grid::getCell(Vector2i _pos) const
 {
     return cells[calculateCellIndex(_pos)];

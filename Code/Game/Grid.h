@@ -12,6 +12,8 @@ public:
     Grid() = default;
     ~Grid() = default;
 
+    void reset();
+
     Cell getCell(Vector2i _pos) const;
     void setCell(Vector2i _pos, Cell _cell);
 

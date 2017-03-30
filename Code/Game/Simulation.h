@@ -23,7 +23,7 @@ public:
 
     void tick(double _dt);
 
-    void addBike();
+    void addBike(unsigned int _id);
     void reset();
 
     const Grid& getGrid() const;
@@ -43,11 +43,11 @@ private:
     bool adjustmentCollisionCheck(Vector2i _adjustment) const;
     bool directionChangeValid(Bike& _bike, MoveDirection _dir);
 
+    void setBikeIDs();
     void overwrite(const Simulation& _simulation) override;
     void overwriteBike(const Bike& _bike) override;
 
     Grid grid;
     std::array<Bike, MAX_PLAYERS> bikes;
-    int bikes_spawned;
 
 };

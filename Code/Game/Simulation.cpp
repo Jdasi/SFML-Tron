@@ -6,8 +6,8 @@
 #include "Constants.h"
 
 Simulation::Simulation()
-    : bikes_spawned(0)
 {
+    setBikeIDs();
 }
 
 void Simulation::tick(double _dt)
@@ -30,23 +30,20 @@ void Simulation::tick(double _dt)
     }
 }
 
-void Simulation::addBike()
+void Simulation::addBike(unsigned int _id)
 {
-    if (bikes_spawned >= MAX_PLAYERS)
+    if (_id >= MAX_PLAYERS)
     {
         return;
     }
 
-    Bike& bike = bikes[bikes_spawned];
-
-    bike.setID(bikes_spawned);
-    bike.setColour(static_cast<CellColour>(bikes_spawned));
+    Bike& bike = bikes[_id];
+    bike.setColour(static_cast<CellColour>(_id));
 
     configureBikeSide(bike);
     grid.setCell(bike.getPosition(), { CellValue::HEAD, bike.getColour() });
 
     bike.setAlive(true);
-    ++bikes_spawned;
 }
 
 void Simulation::overwrite(const Simulation& _simulation)
@@ -65,14 +62,17 @@ void Simulation::overwriteBike(const Bike& _bike)
     Bike& bike = bikes[_bike.getID()];
     auto& old_positions = bike.getLine();
 
+    // Erase old line.
     for (auto& pos : old_positions)
     {
         grid.setCell(pos, { CellValue::NONE, CellColour::CYAN });
     }
 
+    // Overwrite Bike.
     bike = _bike;
     auto& new_positions = bike.getLine();
 
+    // Write new line.
     for (auto& pos : old_positions)
     {
         grid.setCell(pos, { CellValue::TRAIL, bike.getColour() });
@@ -80,6 +80,7 @@ void Simulation::overwriteBike(const Bike& _bike)
 
     grid.setCell(bike.getPosition(), { CellValue::HEAD, bike.getColour() });
 
+    // Inform listeners of update.
     for (auto& listener : listeners)
     {
         listener->overwriteCellRange(new_positions, CellValue::TRAIL, _bike.getColour());
@@ -89,20 +90,8 @@ void Simulation::overwriteBike(const Bike& _bike)
 
 void Simulation::reset()
 {
-    auto cells = grid.getCells();
-    for (auto& cell : cells)
-    {
-        cell.value = CellValue::NONE;
-    }
-
-    grid.setCells(cells);
-    
-    for(auto& bike : bikes)
-    {
-        bike = Bike();
-    }
-
-    bikes_spawned = 0;
+    grid.reset();
+    setBikeIDs();
 }
 
 const Grid& Simulation::getGrid() const
@@ -146,7 +135,7 @@ void Simulation::configureBikeSide(Bike& _bike) const
     {
         case 0:
         {
-            //_bike.setPosition({ x_pos_left, y_pos_top });
+            _bike.setPosition({ x_pos_left, y_pos_top });
         } break;
 
         case 1:
@@ -255,6 +244,16 @@ bool Simulation::directionChangeValid(Bike& _bike, MoveDirection _dir)
     }
 
     return true;
+}
+
+void Simulation::setBikeIDs()
+{
+    int id = 0;
+    for (auto& bike : bikes)
+    {
+        bike = Bike();
+        bike.setID(id++);
+    }
 }
 
 sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation)

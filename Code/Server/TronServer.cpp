@@ -294,9 +294,14 @@ void TronServer::handlePlayerStatePacket(sf::Packet& _packet, ClientPtr& _sender
 
             sendPacketToAll(packet);
 
-            for (int i = 0; i < connected_clients; ++i)
+            for (auto& client : clients)
             {
-                simulation.addBike();
+                if (!client)
+                {
+                    continue;
+                }
+
+                simulation.addBike(client->getID());
             }
 
             fullSimulationSync();
