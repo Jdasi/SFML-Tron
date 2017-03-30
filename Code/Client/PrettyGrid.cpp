@@ -19,7 +19,7 @@ void PrettyGrid::tick(double _dt)
             continue;
         }
 
-        marker->rotate(static_cast<float>(15.0 * _dt));
+        marker->rotate(static_cast<float>(MARKER_ROTATE_SPEED * _dt));
     }
 }
 

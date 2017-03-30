@@ -35,6 +35,7 @@ const int GRID_SIZE_Y                   = 125; // Height (in tiles) of the playi
 constexpr int GRID_AREA                 = GRID_SIZE_X * GRID_SIZE_Y;
 
 const float BIKE_MOVE_SPEED             = 0.04f; // Rate at which the bike moves.
+const float MARKER_ROTATE_SPEED         = 15.0f; // Speed of the player marker rotation.
 
 // ======================================================================================
 // COMMON PATH STRINGS
