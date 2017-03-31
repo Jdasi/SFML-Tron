@@ -141,7 +141,7 @@ bool Bike::isBoosting() const
 
 void Bike::boost()
 {
-    if (boosting || boost_charges <= 0)
+    if (!alive || boosting || boost_charges <= 0)
     {
         return;
     }
