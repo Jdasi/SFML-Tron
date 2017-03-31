@@ -103,7 +103,7 @@ void TronServer::listen()
             {
                 bike_sync_needed = false;
 
-                scheduler.invoke([this]() { syncAllBikes(); }, 0.2);
+                scheduler.invoke([this]() { syncAllBikes(); }, 0.5);
             }
         }
     }
@@ -385,6 +385,8 @@ void TronServer::syncAllBikes()
 {
     if (server_state != STATE_GAME)
     {
+        bike_sync_needed = true;
+
         return;
     }
 

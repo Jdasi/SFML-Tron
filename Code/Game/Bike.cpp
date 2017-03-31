@@ -6,6 +6,7 @@
 Bike::Bike()
     : id(0)
     , direction(MoveDirection::RIGHT)
+    , line_sync_index(0)
     , move_speed(BIKE_MOVE_SPEED)
     , move_timer(0)
     , alive(false)
@@ -14,12 +15,12 @@ Bike::Bike()
     line.reserve(GRID_AREA / 10);
 }
 
-int Bike::getID() const
+unsigned int Bike::getID() const
 {
     return id;
 }
 
-void Bike::setID(int _id)
+void Bike::setID(const unsigned int _id)
 {
     id = _id;
 }
@@ -34,7 +35,7 @@ MoveDirection Bike::getDirection() const
     return direction;
 }
 
-void Bike::setDirection(MoveDirection _direction)
+void Bike::setDirection(const MoveDirection _direction)
 {
     direction = _direction;
 }
@@ -61,12 +62,22 @@ void Bike::setLine(const std::vector<Vector2i>& _line)
     line = _line;
 }
 
+unsigned Bike::getSyncIndex() const
+{
+    return line_sync_index;
+}
+
+void Bike::setSyncIndex(const unsigned int _value)
+{
+    line_sync_index = _value;
+}
+
 float Bike::getMoveSpeed() const
 {
     return move_speed;
 }
 
-void Bike::setMoveSpeed(float _speed)
+void Bike::setMoveSpeed(const float _speed)
 {
     move_speed = _speed;
 }
@@ -76,7 +87,7 @@ double Bike::getMoveTimer() const
     return move_timer;
 }
 
-void Bike::setMoveTimer(double _value)
+void Bike::setMoveTimer(const double _value)
 {
     move_timer = _value;
 }
@@ -86,7 +97,7 @@ void Bike::resetMoveTimer()
     move_timer = 0;
 }
 
-void Bike::modifyMoveTimer(double _dt)
+void Bike::modifyMoveTimer(const double _dt)
 {
     move_timer += _dt;
 }
@@ -96,7 +107,7 @@ bool Bike::isAlive() const
     return alive;
 }
 
-void Bike::setAlive(bool _value)
+void Bike::setAlive(const bool _value)
 {
     alive = _value;
 }
@@ -106,12 +117,12 @@ bool Bike::isBoosting() const
     return boosting;
 }
 
-void Bike::setBoosting(bool _value)
+void Bike::setBoosting(const bool _value)
 {
     boosting = _value;
 }
 
-sf::Packet& operator<<(sf::Packet& _packet, const Bike& _bike)
+sf::Packet& operator<<(sf::Packet& _packet, Bike& _bike)
 {
     _packet << static_cast<sf::Uint8>(_bike.id)
             << static_cast<sf::Uint8>(_bike.direction)
@@ -119,12 +130,17 @@ sf::Packet& operator<<(sf::Packet& _packet, const Bike& _bike)
             << static_cast<sf::Uint32>(_bike.pos.y)
             << _bike.alive
             << _bike.boosting
+            << static_cast<sf::Uint32>(_bike.line.size() - _bike.line_sync_index)
             << static_cast<sf::Uint32>(_bike.line.size());
 
-    for (auto& elem : _bike.line)
+    for (unsigned int i = _bike.line_sync_index; i < _bike.line.size(); ++i)
     {
-        _packet << static_cast<sf::Uint32>(elem.x) << static_cast<sf::Uint32>(elem.y);
+        auto& pos = _bike.line[i];
+
+        _packet << static_cast<sf::Uint32>(pos.x) << static_cast<sf::Uint32>(pos.y);
     }
+
+    _bike.line_sync_index = _bike.line.size();
 
     return _packet;
 }
@@ -137,17 +153,19 @@ sf::Packet& operator>>(sf::Packet& _packet, Bike& _bike)
     bool        bike_alive;
     bool        bike_boosting;
     sf::Uint32  line_length;
+    sf::Uint32  line_sync_index;
 
     _bike.line.clear();
 
     _packet >> bike_id >> bike_dir >> bike_pos.x >> bike_pos.y
-            >> bike_alive >> bike_boosting >> line_length;
+            >> bike_alive >> bike_boosting >> line_length >> line_sync_index;
 
     _bike.id = bike_id;
     _bike.direction = static_cast<MoveDirection>(bike_dir);
     _bike.pos = bike_pos;
     _bike.alive = bike_alive;
     _bike.boosting = bike_boosting;
+    _bike.line_sync_index = line_sync_index;
 
     for (sf::Uint32 i = 0; i < line_length; ++i)
     {

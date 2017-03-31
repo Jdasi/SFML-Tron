@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <SFML/Network.hpp>
 
 #include "Simulation.h"
@@ -64,17 +66,23 @@ void Simulation::overwrite(const Simulation& _simulation)
 void Simulation::overwriteBike(const Bike& _bike)
 {
     Bike& bike = bikes[_bike.getID()];
-    auto& old_positions = bike.getLine();
 
     // Erase old line.
-    grid.clearCellRange(old_positions);
+    auto& old_positions = bike.getLine();
+    for (unsigned int i = bike.getSyncIndex(); i < old_positions.size(); ++i)
+    {
+        grid.clearCell(old_positions[i]);
+    }
+
+    // Write new line.
+    auto& new_positions = _bike.getLine();
+    for (unsigned int i = bike.getSyncIndex(); i < new_positions.size(); ++i)
+    {
+        grid.setCellValue(new_positions[i], bike.idToCellValue());
+    }
 
     // Overwrite Bike.
     bike = _bike;
-    auto& new_positions = bike.getLine();
-
-    // Write new line.
-    grid.overwriteCellRange(new_positions, bike.idToCellValue());
 
     // Inform listeners of update.
     for (auto& listener : listeners)
@@ -87,6 +95,11 @@ void Simulation::overwriteBikes(const std::array<Bike, MAX_PLAYERS>& _bikes)
 {
     for (auto& bike : _bikes)
     {
+        if (!bike.isAlive())
+        {
+            continue;
+        }
+
         overwriteBike(bike);
     }
 }
@@ -107,7 +120,7 @@ Bike& Simulation::getBike(unsigned int _bike_id)
     return bikes[_bike_id];
 }
 
-const std::array<Bike, MAX_PLAYERS>& Simulation::getBikes() const
+std::array<Bike, MAX_PLAYERS>& Simulation::getBikes()
 {
     return bikes;
 }
@@ -275,7 +288,7 @@ void Simulation::resetBikes()
     }
 }
 
-sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation)
+sf::Packet& operator<<(sf::Packet& _packet, Simulation& _simulation)
 {
     auto& cells = _simulation.getGrid().getCells();
     _packet << static_cast<sf::Uint32>(cells.size());
@@ -285,7 +298,6 @@ sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation)
     }
 
     auto& bikes = _simulation.getBikes();
-    _packet << static_cast<sf::Uint8>(bikes.size());
     for (auto& bike : bikes)
     {
         _packet << bike;
@@ -309,11 +321,8 @@ sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation)
     }
     _simulation.grid.overwriteAllCells(cells);
 
-    sf::Uint8 num_bikes;
-    _packet >> num_bikes;
-
     std::array<Bike, MAX_PLAYERS> bikes;
-    for (sf::Uint8 i = 0; i < num_bikes; ++i)
+    for (sf::Uint8 i = 0; i < MAX_PLAYERS; ++i)
     {
         _packet >> bikes[i];
     }

@@ -27,12 +27,12 @@ public:
     void reset();
 
     const Grid& getGrid() const;
-    const std::array<Bike, MAX_PLAYERS>& getBikes() const;
+    std::array<Bike, MAX_PLAYERS>& getBikes();
     Bike& getBike(unsigned int _bike_id);
 
     void changeBikeDirection(unsigned int _bike_id, MoveDirection _dir) override;
 
-    friend sf::Packet& operator<<(sf::Packet& _packet, const Simulation& _simulation);
+    friend sf::Packet& operator<<(sf::Packet& _packet, Simulation& _simulation);
     friend sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation);
 
 private:
