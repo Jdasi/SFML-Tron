@@ -11,8 +11,25 @@ Bike::Bike()
     , move_timer(0)
     , alive(false)
     , boosting(false)
+    , boost_timer(0)
+    , boost_charges(STARTING_BOOST_CHARGES)
 {
     line.reserve(GRID_AREA / 10);
+}
+
+void Bike::tick(double _dt)
+{
+    if (boost_timer > 0)
+    {
+        boost_timer -= _dt;
+    }
+    else
+    {
+        if (boosting)
+        {
+            boosting = false;
+        }
+    }
 }
 
 unsigned int Bike::getID() const
@@ -74,6 +91,11 @@ void Bike::setSyncIndex(const unsigned int _value)
 
 float Bike::getMoveSpeed() const
 {
+    if (boosting)
+    {
+        return move_speed / BIKE_BOOST_DIVISOR;
+    }
+    
     return move_speed;
 }
 
@@ -117,9 +139,16 @@ bool Bike::isBoosting() const
     return boosting;
 }
 
-void Bike::setBoosting(const bool _value)
+void Bike::boost()
 {
-    boosting = _value;
+    if (boosting || boost_charges <= 0)
+    {
+        return;
+    }
+
+    boosting = true;
+    boost_timer = BIKE_BOOST_DURATION;
+    --boost_charges;
 }
 
 sf::Packet& operator<<(sf::Packet& _packet, Bike& _bike)
@@ -128,8 +157,11 @@ sf::Packet& operator<<(sf::Packet& _packet, Bike& _bike)
             << static_cast<sf::Uint8>(_bike.direction)
             << static_cast<sf::Uint32>(_bike.pos.x)
             << static_cast<sf::Uint32>(_bike.pos.y)
+            << _bike.move_timer
             << _bike.alive
             << _bike.boosting
+            << _bike.boost_timer
+            << static_cast<sf::Int32>(_bike.boost_charges)
             << static_cast<sf::Uint32>(_bike.line.size() - _bike.line_sync_index)
             << static_cast<sf::Uint32>(_bike.line.size());
 
@@ -150,22 +182,37 @@ sf::Packet& operator>>(sf::Packet& _packet, Bike& _bike)
     sf::Uint8   bike_id;
     sf::Uint8   bike_dir;
     Vector2i    bike_pos;
+    double      move_timer;
     bool        bike_alive;
     bool        bike_boosting;
+    double      boost_timer;
+    sf::Int32   boost_charges;
     sf::Uint32  line_length;
     sf::Uint32  line_sync_index;
 
     _bike.line.clear();
 
-    _packet >> bike_id >> bike_dir >> bike_pos.x >> bike_pos.y
-            >> bike_alive >> bike_boosting >> line_length >> line_sync_index;
+    _packet >> bike_id 
+            >> bike_dir
+            >> bike_pos.x
+            >> bike_pos.y
+            >> move_timer 
+            >> bike_alive 
+            >> bike_boosting 
+            >> boost_timer
+            >> boost_charges
+            >> line_length 
+            >> line_sync_index;
 
-    _bike.id = bike_id;
-    _bike.direction = static_cast<MoveDirection>(bike_dir);
-    _bike.pos = bike_pos;
-    _bike.alive = bike_alive;
-    _bike.boosting = bike_boosting;
-    _bike.line_sync_index = line_sync_index;
+    _bike.id                = bike_id;
+    _bike.direction         = static_cast<MoveDirection>(bike_dir);
+    _bike.pos               = bike_pos;
+    _bike.move_timer        = move_timer;
+    _bike.alive             = bike_alive;
+    _bike.boosting          = bike_boosting;
+    _bike.boost_timer       = boost_timer;
+    _bike.boost_charges     = boost_charges;
+    _bike.line_sync_index   = line_sync_index;
 
     for (sf::Uint32 i = 0; i < line_length; ++i)
     {

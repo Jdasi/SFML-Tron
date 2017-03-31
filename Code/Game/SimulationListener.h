@@ -24,9 +24,12 @@ public:
 
     virtual void overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells) = 0;
 
-    virtual void addPlayerMarker(int _bike_id, const CellValue _value) = 0;
-    virtual void removePlayerMarker(int _bike_id) = 0;
+    virtual void addPlayerMarker(const unsigned int _bike_id, const CellValue _value) = 0;
+    virtual void updatePlayerMarkerSize(const unsigned int _bike_id, const bool _enlarged) = 0;
+
+    virtual void removePlayerMarker(const unsigned int _bike_id) = 0;
     virtual void removeAllPlayerMarkers() = 0 ;
-    virtual void updateBikePosition(const Vector2i& _pos, int _bike_id) = 0;
+
+    virtual void updateBikePosition(const Vector2i& _pos, const unsigned int _bike_id) = 0;
 
 };

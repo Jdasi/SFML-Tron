@@ -19,6 +19,7 @@ void Simulation::tick(double _dt)
             continue;
         }
 
+        bike.tick(_dt);
         bike.modifyMoveTimer(_dt);
 
         if (bike.getMoveTimer() > bike.getMoveSpeed())
@@ -82,10 +83,11 @@ void Simulation::overwriteBike(const Bike& _bike)
     // Overwrite Bike.
     bike = _bike;
 
-    // Inform listeners of line update.
+    // Inform listeners of bike changes.
     for (auto& listener : listeners)
     {
         listener->overwriteCellRange(new_positions, bike.idToCellValue());
+        listener->updatePlayerMarkerSize(bike.getID(), bike.isBoosting());
     }
 
     handleBikeDeath(bike);

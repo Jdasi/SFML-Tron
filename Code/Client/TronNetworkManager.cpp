@@ -57,6 +57,17 @@ void TronNetworkManager::sendBikeDirectionChange(const MoveDirection _dir)
     });
 }
 
+void TronNetworkManager::sendBikeBoost()
+{
+    postEvent([this]()
+    {
+        sf::Packet packet;
+        setPacketID(packet, PacketID::BOOST);
+
+        sendPacket(packet);
+    });
+}
+
 void TronNetworkManager::registerGamePacketHandlers()
 {
     registerPacketHandler(IDENTITY,         handleIdentityPacket);

@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <Game/SimulationListener.h>
+#include "PlayerMarker.h"
 
 struct Vector2i;
 class AssetManager;
@@ -28,24 +29,26 @@ public:
         const CellValue _value) override;
     void overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells) override;
 
-    void addPlayerMarker(int _bike_id, const CellValue _value) override;
-    void removePlayerMarker(int _bike_id) override;
+    void addPlayerMarker(const unsigned int _bike_id, const CellValue _value) override;
+    void updatePlayerMarkerSize(const unsigned int _bike_id, const bool _enlarged) override;
+
+    void removePlayerMarker(const unsigned int _bike_id) override;
     void removeAllPlayerMarkers() override;
-    void updateBikePosition(const Vector2i& _pos, int _bike_id) override;
+    void updateBikePosition(const Vector2i& _pos, const unsigned int _bike_id) override;
 
 private:
     void initGrid();
-    void setTileColor(int _index, sf::Color _color);
-    void setTileColor(const Vector2i& _pos, sf::Color _color);
-    sf::Color evaluateSFColor(CellValue _colour) const;
+    void setTileColor(const unsigned int _index, const sf::Color& _color);
+    void setTileColor(const Vector2i& _pos, const sf::Color& _color);
+    sf::Color evaluateSFColor(const CellValue _value) const;
 
-    int calculateIndex(int _x, int _y) const;
+    int calculateIndex(const int _x, const int _y) const;
     int calculateIndex(const Vector2i& _pos) const;
 
     AssetManager* asset_manager;
 
     sf::RectangleShape border;
     std::array<std::unique_ptr<sf::RectangleShape>, GRID_AREA> tiles;
-    std::array<std::unique_ptr<sf::Sprite>, MAX_PLAYERS> player_markers;
+    std::array<std::unique_ptr<PlayerMarker>, MAX_PLAYERS> player_markers;
 
 };

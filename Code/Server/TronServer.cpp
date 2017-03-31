@@ -17,6 +17,7 @@ TronServer::TronServer()
     , server_name()
     , server_state(STATE_LOBBY)
     , bike_sync_needed(true)
+    , full_sync_needed(true)
 {
     registerPacketHandlers();
 
@@ -53,6 +54,7 @@ void TronServer::registerPacketHandlers()
     registerPacketHandler(PacketID::MESSAGE,      handleMessagePacket);
     registerPacketHandler(PacketID::PLAYER_STATE, handlePlayerStatePacket);
     registerPacketHandler(PacketID::DIRECTION,    handleDirectionPacket);
+    registerPacketHandler(PacketID::BOOST,        handleBoostPacket);
 }
 
 bool TronServer::bindServerPort()
@@ -150,6 +152,13 @@ void TronServer::performStateBehaviour(const double _dt)
                 bike_sync_needed = false;
 
                 scheduler.invoke([this]() { syncAllBikes(); }, 0.5);
+            }
+
+            if (full_sync_needed)
+            {
+                full_sync_needed = false;
+
+                scheduler.invoke([this]() { syncSimulation(); }, 5.0);
             }
         } break;
 
@@ -371,6 +380,13 @@ void TronServer::handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender)
     syncBike(_sender->getID());
 }
 
+void TronServer::handleBoostPacket(sf::Packet& _packet, ClientPtr& _sender)
+{
+    simulation.getBike(_sender->getID()).boost();
+
+    syncBike(_sender->getID());
+}
+
 void TronServer::disconnectClient(ClientPtr& _client)
 {
     socket_selector.remove(*_client->getSocket());
@@ -510,7 +526,18 @@ void TronServer::syncAllBikes()
         packet << bike;
     }
 
-    sendPacketToAll(packet);
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            continue;
+        }
+
+        if (client->getState() == PlayerState::PLAYING)
+        {
+            sendPacketToClient(packet, client);
+        }
+    }
 
     bike_sync_needed = true;
 
@@ -521,6 +548,8 @@ void TronServer::syncSimulation()
 {
     if (server_state != STATE_GAME)
     {
+        full_sync_needed = true;
+
         return;
     }
 
@@ -541,6 +570,8 @@ void TronServer::syncSimulation()
             sendPacketToClient(packet, client);
         }
     }
+
+    full_sync_needed = true;
 
     std::cout << "Full Sync sent" << std::endl;
 }

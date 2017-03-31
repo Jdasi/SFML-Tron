@@ -16,6 +16,8 @@ public:
     Bike();
     ~Bike() = default;
 
+    void tick(double _dt);
+
     unsigned int getID() const;
     void setID(const unsigned int _id);
 
@@ -45,7 +47,7 @@ public:
     void setAlive(const bool _value);
 
     bool isBoosting() const;
-    void setBoosting(const bool _value);
+    void boost();
 
     friend sf::Packet& operator<<(sf::Packet& _packet, Bike& _bike);
     friend sf::Packet& operator>>(sf::Packet& _packet, Bike& _bike);
@@ -60,5 +62,7 @@ private:
     double move_timer;
     bool alive;
     bool boosting;
+    double boost_timer;
+    int boost_charges;
 
 };

@@ -19,7 +19,7 @@ void PrettyGrid::tick(double _dt)
             continue;
         }
 
-        marker->rotate(static_cast<float>(MARKER_ROTATE_SPEED * _dt));
+        marker->tick(_dt);
     }
 }
 
@@ -44,7 +44,7 @@ void PrettyGrid::draw(sf::RenderWindow& _window)
             continue;
         }
 
-        _window.draw(*marker);
+        marker->draw(_window);
     }
 }
 
@@ -91,20 +91,25 @@ void PrettyGrid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cell
     }
 }
 
-void PrettyGrid::addPlayerMarker(int _bike_id, const CellValue _value)
+void PrettyGrid::addPlayerMarker(const unsigned int _bike_id, const CellValue _value)
 {
     auto* tex = asset_manager->loadTexture(PLAYER_MARKER);
 
-    auto marker = std::make_unique<sf::Sprite>(*tex);
-    marker->setPosition({ -100, -100 });
-    marker->setColor(evaluateSFColor(_value));
-    marker->setOrigin({ 32, 32 });
-    marker->setScale({ 0.75f, 0.75f });
+    sf::Sprite marker(*tex);
+    marker.setPosition({ -100, -100 });
+    marker.setColor(evaluateSFColor(_value));
+    marker.setOrigin({ 32, 32 });
+    marker.setScale({ 0.75f, 0.75f });
 
-    player_markers[_bike_id] = std::move(marker);
+    player_markers[_bike_id] = std::make_unique<PlayerMarker>(marker);
 }
 
-void PrettyGrid::removePlayerMarker(int _bike_id)
+void PrettyGrid::updatePlayerMarkerSize(const unsigned int _bike_id, const bool _enlarged)
+{
+    player_markers[_bike_id]->enlarge(_enlarged);
+}
+
+void PrettyGrid::removePlayerMarker(const unsigned int _bike_id)
 {
     player_markers[_bike_id].reset();
 }
@@ -117,7 +122,7 @@ void PrettyGrid::removeAllPlayerMarkers()
     }
 }
 
-void PrettyGrid::updateBikePosition(const Vector2i& _pos, int _bike_id)
+void PrettyGrid::updateBikePosition(const Vector2i& _pos, const unsigned int _bike_id)
 {
     player_markers[_bike_id]->setPosition(tiles[calculateIndex(_pos)]->getPosition());
     setTileColor(_pos, sf::Color::White);
@@ -155,17 +160,17 @@ void PrettyGrid::initGrid()
     }
 }
 
-void PrettyGrid::setTileColor(int _index, sf::Color _color)
+void PrettyGrid::setTileColor(const unsigned int _index, const sf::Color& _color)
 {
     tiles[_index]->setFillColor(_color);
 }
 
-void PrettyGrid::setTileColor(const Vector2i& _pos, sf::Color _color)
+void PrettyGrid::setTileColor(const Vector2i& _pos, const sf::Color& _color)
 {
     setTileColor(calculateIndex(_pos.x, _pos.y), _color);
 }
 
-sf::Color PrettyGrid::evaluateSFColor(CellValue _value) const
+sf::Color PrettyGrid::evaluateSFColor(const CellValue _value) const
 {
     switch (_value)
     {
@@ -178,7 +183,7 @@ sf::Color PrettyGrid::evaluateSFColor(CellValue _value) const
     }
 }
 
-int PrettyGrid::calculateIndex(int _x, int _y) const
+int PrettyGrid::calculateIndex(const int _x, const int _y) const
 {
     return (_y * GRID_SIZE_X) + _x;
 }

@@ -15,6 +15,7 @@ enum PacketID
     LATENCY,
     MESSAGE,
     DIRECTION,
+    BOOST,
     SYNC_BIKE,
     SYNC_ALL_BIKES,
     SYNC_SIMULATION

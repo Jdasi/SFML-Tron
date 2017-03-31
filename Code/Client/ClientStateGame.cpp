@@ -94,4 +94,12 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
             client_data->network_manager->sendBikeDirectionChange(dir);
         }
     }
+
+    if (_action == GameAction::SPECIAL)
+    {
+        if (_action_state == ActionState::PRESSED)
+        {
+            client_data->network_manager->sendBikeBoost();
+        }
+    }
 }

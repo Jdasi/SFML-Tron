@@ -18,6 +18,7 @@ public:
     void sendChatMessage(const std::string& _message);
     void sendPlayerStateChange();
     void sendBikeDirectionChange(const MoveDirection _dir);
+    void sendBikeBoost();
 
 private:
     void registerGamePacketHandlers();

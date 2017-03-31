@@ -44,6 +44,7 @@ private:
     void handleMessagePacket(sf::Packet& _packet, ClientPtr& _sender);
     void handlePlayerStatePacket(const sf::Packet& _packet, ClientPtr& _sender);
     void handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender);
+    void handleBoostPacket(sf::Packet& _packet, ClientPtr& _sender);
 
     void disconnectClient(ClientPtr& _client);
 
@@ -74,5 +75,6 @@ private:
 
     int server_state;
     bool bike_sync_needed;
+    bool full_sync_needed;
 
 };

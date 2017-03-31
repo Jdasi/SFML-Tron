@@ -63,7 +63,7 @@ void TronClient::initKeyBindings()
     input_handler.registerKey(sf::Keyboard::Key::S, GameAction::MOVE_DOWN);
     input_handler.registerKey(sf::Keyboard::Key::A, GameAction::MOVE_LEFT);
     input_handler.registerKey(sf::Keyboard::Key::D, GameAction::MOVE_RIGHT);
-    input_handler.registerKey(sf::Keyboard::Key::E, GameAction::INTERACT);
+    input_handler.registerKey(sf::Keyboard::Key::Space, GameAction::SPECIAL);
 }
 
 void TronClient::initClientStates()

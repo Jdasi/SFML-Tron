@@ -32,8 +32,8 @@ public:
      */
     void detachListener(T* _listener)
     {
-        listeners.erase(std::remove
-            (listeners.begin(), listeners.end(), _listener), listeners.end());
+        listeners.erase(std::remove(listeners.begin(), listeners.end(), _listener), 
+            listeners.end());
     }
 
     /* Detatch all attached listeners/observers.
