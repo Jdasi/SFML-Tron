@@ -84,11 +84,13 @@ void Simulation::overwriteBike(const Bike& _bike)
     // Overwrite Bike.
     bike = _bike;
 
-    // Inform listeners of update.
+    // Inform listeners of line update.
     for (auto& listener : listeners)
     {
         listener->overwriteCellRange(new_positions, bike.idToCellValue());
     }
+
+    handleBikeDeath(bike);
 }
 
 void Simulation::overwriteBikes(const std::array<Bike, MAX_PLAYERS>& _bikes)
@@ -211,13 +213,7 @@ void Simulation::moveBike(Bike& _bike)
         }
     }
 
-    if (!_bike.isAlive())
-    {
-        for (auto& listener : listeners)
-        {
-            listener->removePlayerMarker(_bike.getID());
-        }
-    }
+    handleBikeDeath(_bike);
 }
 
 Vector2i Simulation::generatePositionAdjustment(MoveDirection _dir, 
@@ -236,6 +232,17 @@ Vector2i Simulation::generatePositionAdjustment(MoveDirection _dir,
     }
 
     return _current_pos + adjustment;
+}
+
+void Simulation::handleBikeDeath(const Bike& _bike)
+{
+    if (!_bike.isAlive())
+    {
+        for (auto& listener : listeners)
+        {
+            listener->removePlayerMarker(_bike.getID());
+        }
+    }
 }
 
 bool Simulation::adjustmentWithinBounds(const Vector2i& _adjustment) const

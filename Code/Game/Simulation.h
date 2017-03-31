@@ -40,6 +40,7 @@ private:
     void moveBike(Bike& _bike);
     Vector2i generatePositionAdjustment(MoveDirection _dir, 
         const Vector2i& _current_pos) const;
+    void handleBikeDeath(const Bike& _bike);
 
     bool adjustmentWithinBounds(const Vector2i& _adjustment) const;
     bool adjustmentCollisionCheck(const Vector2i& _adjustment) const;
