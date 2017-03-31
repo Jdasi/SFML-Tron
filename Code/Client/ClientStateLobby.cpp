@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <Game/PlayerState.h>
+#include <Game/Constants.h>
 #include "ClientStateLobby.h"
 #include "ClientStateHandler.h"
 #include "ClientData.h"
@@ -11,7 +12,7 @@ ClientStateLobby::ClientStateLobby(ClientData* _client_data)
     : ClientState(_client_data)
     , ready(false)
 {
-    auto* font = client_data->asset_manager->loadFontTTF("arial");
+    auto* font = client_data->asset_manager->loadFont(DEFAULT_FONT);
 
     auto title_text = std::make_unique<sf::Text>("StateLobby", *font);
     title_text->setCharacterSize(30);

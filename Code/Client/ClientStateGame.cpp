@@ -14,7 +14,7 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
     client_data->game_manager->getSimulation()->attachListener(&pretty_grid);
 
     auto title_text = std::make_unique<sf::Text>("StateGame",
-        *client_data->asset_manager->loadFontTTF("arial"));
+        *client_data->asset_manager->loadFont(DEFAULT_FONT));
 
     title_text->setCharacterSize(30);
     title_text->setStyle(sf::Text::Bold);

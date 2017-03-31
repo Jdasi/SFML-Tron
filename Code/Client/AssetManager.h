@@ -11,8 +11,8 @@ public:
     AssetManager() = default;
     ~AssetManager() = default;
 
-    sf::Font* loadFontTTF(const std::string& _file);
-    sf::Texture* loadTexturePNG(const std::string& _file);
+    sf::Font* loadFont(const std::string& _file);
+    sf::Texture* loadTexture(const std::string& _file);
 
 private:
     std::map<std::string, std::unique_ptr<sf::Font>> fonts;

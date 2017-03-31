@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 
+#include <Game/Constants.h>
 #include "ClientStateEnd.h"
 #include "ClientStateHandler.h"
 #include "ClientData.h"
@@ -10,7 +11,7 @@ ClientStateEnd::ClientStateEnd(ClientData* _client_data)
     : ClientState(_client_data)
 {
     auto title_text = std::make_unique<sf::Text>("StateEnd", 
-        *client_data->asset_manager->loadFontTTF("arial"));
+        *client_data->asset_manager->loadFont(DEFAULT_FONT));
 
     title_text->setCharacterSize(30);
     title_text->setStyle(sf::Text::Bold);
