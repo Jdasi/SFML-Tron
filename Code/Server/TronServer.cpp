@@ -382,7 +382,10 @@ void TronServer::handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender)
 
 void TronServer::handleBoostPacket(sf::Packet& _packet, ClientPtr& _sender)
 {
-    simulation.getBike(_sender->getID()).boost();
+    if (!simulation.getBike(_sender->getID()).boost())
+    {
+        return;
+    }
 
     syncBike(_sender->getID());
 }

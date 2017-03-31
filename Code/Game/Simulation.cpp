@@ -87,7 +87,6 @@ void Simulation::overwriteBike(const Bike& _bike)
     for (auto& listener : listeners)
     {
         listener->overwriteCellRange(new_positions, bike.idToCellValue());
-        listener->updatePlayerMarkerSize(bike.getID(), bike.isBoosting());
     }
 
     handleBikeDeath(bike);
@@ -228,6 +227,7 @@ void Simulation::moveBike(Bike& _bike)
         for (auto& listener : listeners)
         {
             listener->updateBikePosition(_bike.getPosition(), _bike.getID());
+            listener->updatePlayerMarkerSize(_bike.getID(), _bike.isBoosting());
         }
     }
 

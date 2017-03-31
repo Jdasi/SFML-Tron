@@ -139,16 +139,18 @@ bool Bike::isBoosting() const
     return boosting;
 }
 
-void Bike::boost()
+bool Bike::boost()
 {
     if (!alive || boosting || boost_charges <= 0)
     {
-        return;
+        return false;
     }
 
     boosting = true;
     boost_timer = BIKE_BOOST_DURATION;
     --boost_charges;
+
+    return true;
 }
 
 sf::Packet& operator<<(sf::Packet& _packet, Bike& _bike)

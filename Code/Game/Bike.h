@@ -47,7 +47,7 @@ public:
     void setAlive(const bool _value);
 
     bool isBoosting() const;
-    void boost();
+    bool boost();
 
     friend sf::Packet& operator<<(sf::Packet& _packet, Bike& _bike);
     friend sf::Packet& operator>>(sf::Packet& _packet, Bike& _bike);
