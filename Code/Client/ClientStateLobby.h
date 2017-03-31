@@ -23,6 +23,5 @@ public:
 
 private:
     sf::Text* latency_text;
-    bool ready;
 
 };

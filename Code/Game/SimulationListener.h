@@ -16,6 +16,7 @@ public:
 
     virtual void clearCell(const Vector2i& _pos) = 0;
     virtual void clearCellRange(const std::vector<Vector2i>& _positions) = 0;
+    virtual void clearAllCells() = 0;
 
     virtual void overwriteCell(const Vector2i& _pos, const CellValue _value) = 0;
     virtual void overwriteCellRange(const std::vector<Vector2i>& _positions,
@@ -25,6 +26,7 @@ public:
 
     virtual void addPlayerMarker(int _bike_id, const CellValue _value) = 0;
     virtual void removePlayerMarker(int _bike_id) = 0;
+    virtual void removeAllPlayerMarkers() = 0 ;
     virtual void updateBikePosition(const Vector2i& _pos, int _bike_id) = 0;
 
 };

@@ -16,8 +16,8 @@ public:
     ~TronNetworkManager() = default;
 
     void sendChatMessage(const std::string& _message);
-    void sendPlayerStateChange(int _player_id, PlayerState _state);
-    void sendBikeDirectionChange(int _player_id, MoveDirection _dir);
+    void sendPlayerStateChange();
+    void sendBikeDirectionChange(const MoveDirection _dir);
 
 private:
     void registerGamePacketHandlers();

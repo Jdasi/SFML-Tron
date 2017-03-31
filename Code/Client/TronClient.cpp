@@ -24,6 +24,8 @@ void TronClient::run()
     initKeyBindings();
     initClientStates();
 
+    network_manager.connect();
+
     while (!client_data.exit)
     {
         // Crude delta-time system.

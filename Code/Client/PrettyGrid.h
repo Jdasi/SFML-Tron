@@ -21,11 +21,16 @@ public:
 
     void clearCell(const Vector2i& _pos) override;
     void clearCellRange(const std::vector<Vector2i>& _positions) override;
+    void clearAllCells() override;
+
     void overwriteCell(const Vector2i& _pos, const CellValue _value) override;
-    void overwriteCellRange(const std::vector<Vector2i>& _positions, const CellValue _value) override;
+    void overwriteCellRange(const std::vector<Vector2i>& _positions, 
+        const CellValue _value) override;
     void overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells) override;
+
     void addPlayerMarker(int _bike_id, const CellValue _value) override;
     void removePlayerMarker(int _bike_id) override;
+    void removeAllPlayerMarkers() override;
     void updateBikePosition(const Vector2i& _pos, int _bike_id) override;
 
 private:

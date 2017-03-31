@@ -48,4 +48,12 @@ void ClientStateEnd::onCommand(const GameAction _action, const ActionState _acti
             client_data->exit = true;
         }
     }
+
+    if (_action == GameAction::ACCEPT)
+    {
+        if (_action_state == ActionState::PRESSED)
+        {
+            client_data->network_manager->sendPlayerStateChange();
+        }
+    }
 }

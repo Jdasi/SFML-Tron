@@ -154,8 +154,7 @@ void NetworkManager::sendPacket(sf::Packet& _packet)
 
 void NetworkManager::calculatePlayTime()
 {
-    auto delta_time = timer.getTimeDifference();
-    play_time += delta_time;
+    play_time += timer.getTimeDifference();
     timer.reset();
 }
 
@@ -164,7 +163,6 @@ void NetworkManager::sendClientLatency()
     sf::Packet packet;
     setPacketID(packet, PacketID::LATENCY);
 
-    // Inform server of client latency.
     packet << latency;
     
     sendPacket(packet);
@@ -177,7 +175,6 @@ void NetworkManager::sendPing()
     sf::Packet packet;
     setPacketID(packet, PacketID::PING);
 
-    // Send next ping to server.
     packet << play_time;
-    sendPacket(packet);;
+    sendPacket(packet);
 }

@@ -22,14 +22,19 @@ public:
 
 private:
     void registerPacketHandlers();
-
     bool bindServerPort();
+
+    void mainLoop();
     void listen();
+    void handleServerReset();
+    void performStateBehaviour(const double _dt);
+
     void acceptClient();
     int generateUniqueID() const;
-    void sendClientIdentity(ClientPtr& _client) const;
-    void sendClientList(ClientPtr& _client);
-    void sendClientJoined(ClientPtr& _client);
+    void sendClientIdentity(const ClientPtr& _client) const;
+    void sendClientList(const ClientPtr& _client);
+    void sendClientJoined(const ClientPtr& _client);
+    void sendUpdatedClientState(const ClientPtr& _client);
     void receivePacket();
 
     void handlePacket(sf::Packet& _packet, ClientPtr& _sender);
@@ -37,13 +42,17 @@ private:
     void handlePingPacket(sf::Packet& _packet, ClientPtr& _sender);
     void handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender);
     void handleMessagePacket(sf::Packet& _packet, ClientPtr& _sender);
-    void handlePlayerStatePacket(sf::Packet& _packet, ClientPtr& _sender);
+    void handlePlayerStatePacket(const sf::Packet& _packet, ClientPtr& _sender);
     void handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender);
 
-    void onDisconnect(ClientPtr& _client);
+    void disconnectClient(ClientPtr& _client);
 
+    void sendPacketToClient(sf::Packet& _packet, const ClientPtr& _client) const;
     void sendPacketToAll(sf::Packet& _packet);
-    void sendPacketToAllButSender(sf::Packet& _packet, ClientPtr& _sender);
+    void sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& _sender);
+
+    void startSimulation();
+    void stopSimulation();
 
     void syncBike(unsigned int _bike_id);
     void syncAllBikes();

@@ -56,7 +56,7 @@ private:
 
     volatile bool has_connected;
     volatile bool running;
-    volatile double latency;
+    double latency;
     double play_time;
 
     SimpleTimer timer;

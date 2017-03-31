@@ -30,7 +30,9 @@ public:
     std::array<Bike, MAX_PLAYERS>& getBikes();
     Bike& getBike(unsigned int _bike_id);
 
-    void changeBikeDirection(unsigned int _bike_id, MoveDirection _dir) override;
+    bool allBikesDead() const;
+
+    void changeBikeDirection(unsigned int _bike_id, const MoveDirection _dir) override;
 
     friend sf::Packet& operator<<(sf::Packet& _packet, Simulation& _simulation);
     friend sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation);

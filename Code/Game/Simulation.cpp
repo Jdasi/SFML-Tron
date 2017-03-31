@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <SFML/Network.hpp>
 
 #include "Simulation.h"
@@ -110,6 +108,11 @@ void Simulation::reset()
 {
     grid.reset();
     resetBikes();
+
+    for (auto& listener : listeners)
+    {
+        listener->clearAllCells();
+    }
 }
 
 const Grid& Simulation::getGrid() const
@@ -122,12 +125,25 @@ Bike& Simulation::getBike(unsigned int _bike_id)
     return bikes[_bike_id];
 }
 
+bool Simulation::allBikesDead() const
+{
+    for (auto& bike : bikes)
+    {
+        if (bike.isAlive())
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 std::array<Bike, MAX_PLAYERS>& Simulation::getBikes()
 {
     return bikes;
 }
 
-void Simulation::changeBikeDirection(unsigned int _bike_id, MoveDirection _dir)
+void Simulation::changeBikeDirection(unsigned int _bike_id, const MoveDirection _dir)
 {
     if (_bike_id > bikes.size() || bikes.empty())
     {
@@ -272,11 +288,12 @@ bool Simulation::adjustmentCollisionCheck(const Vector2i& _adjustment) const
 // Returns true if direction change is valid, otherwise returns false.
 bool Simulation::directionChangeValid(const Bike& _bike, MoveDirection _dir)
 {
-    if (_dir == MoveDirection::UP && _bike.getDirection() == MoveDirection::DOWN ||
-        _dir == MoveDirection::DOWN && _bike.getDirection() == MoveDirection::UP ||
-        _dir == MoveDirection::LEFT && _bike.getDirection() == MoveDirection::RIGHT ||
-        _dir == MoveDirection::RIGHT && _bike.getDirection() == MoveDirection::LEFT ||
-        _dir == _bike.getDirection())
+    if ((_dir == MoveDirection::UP && _bike.getDirection() == MoveDirection::DOWN) ||
+        (_dir == MoveDirection::DOWN && _bike.getDirection() == MoveDirection::UP) ||
+        (_dir == MoveDirection::LEFT && _bike.getDirection() == MoveDirection::RIGHT) ||
+        (_dir == MoveDirection::RIGHT && _bike.getDirection() == MoveDirection::LEFT) ||
+        (_dir == _bike.getDirection()) ||
+        !_bike.isAlive())
     {
         return false;
     }
@@ -292,6 +309,11 @@ void Simulation::resetBikes()
     {
         bike = Bike();
         bike.setID(id++);
+    }
+
+    for (auto& listener : listeners)
+    {
+        listener->removeAllPlayerMarkers();
     }
 }
 

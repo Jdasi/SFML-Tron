@@ -1,4 +1,6 @@
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 #include <Game/Constants.h>
 #include <Game/GameStateIDs.h>
@@ -38,7 +40,7 @@ bool TronServer::run()
 
     socket_selector.add(tcp_listener);
 
-    listen();
+    mainLoop();
 
     return true;
 }
@@ -65,7 +67,7 @@ bool TronServer::bindServerPort()
     return true;
 }
 
-void TronServer::listen()
+void TronServer::mainLoop()
 {
     while (!exit)
     {
@@ -73,31 +75,75 @@ void TronServer::listen()
         simple_timer.reset();
         scheduler.update();
 
-        if (socket_selector.wait(sf::milliseconds(1)))
+        listen();
+
+        if (server_state != STATE_LOBBY && connected_clients == 0)
         {
-            if (socket_selector.isReady(tcp_listener))
-            {
-                // New connection request.
-                acceptClient();
-            }
-            else
-            {
-                // Packet received.
-                receivePacket();
-            }
+            handleServerReset();
         }
 
-        if (server_state == STATE_GAME)
+        performStateBehaviour(dt);
+    }
+}
+
+void TronServer::listen()
+{
+    if (socket_selector.wait(sf::milliseconds(1)))
+    {
+        if (socket_selector.isReady(tcp_listener))
+        {
+            // New connection request.
+            acceptClient();
+        }
+        else
+        {
+            // Packet received.
+            receivePacket();
+        }
+    }
+}
+
+void TronServer::handleServerReset()
+{
+    server_state = STATE_LOBBY;
+    simulation.reset();
+}
+
+void TronServer::performStateBehaviour(const double _dt)
+{
+    switch (server_state)
+    {
+        case STATE_LOBBY:
         {
             if (connected_clients == 0)
             {
-                server_state = STATE_LOBBY;
-                simulation.reset();
-
-                continue;
+                return;
             }
 
-            simulation.tick(dt);
+            for (auto& client : clients)
+            {
+                if (!client)
+                {
+                    continue;
+                }
+
+                if (client->getState() == PlayerState::NOTREADY)
+                {
+                    return;
+                }
+            }
+
+            startSimulation();
+        } break;
+
+        case STATE_GAME:
+        {
+            simulation.tick(_dt);
+
+            if (simulation.allBikesDead())
+            {
+                stopSimulation();
+            }
 
             if (bike_sync_needed)
             {
@@ -105,7 +151,27 @@ void TronServer::listen()
 
                 scheduler.invoke([this]() { syncAllBikes(); }, 0.5);
             }
-        }
+        } break;
+
+        case STATE_END:
+        {
+            for (auto& client : clients)
+            {
+                if (!client)
+                {
+                    continue;
+                }
+
+                if (client->getState() == PlayerState::VIEWING_RESULTS)
+                {
+                    return;
+                }
+            }
+
+            server_state = STATE_LOBBY;
+        } break;
+
+        default: {}
     }
 }
 
@@ -149,7 +215,7 @@ int TronServer::generateUniqueID() const
     return MAX_PLAYERS;
 }
 
-void TronServer::sendClientIdentity(ClientPtr& _client) const
+void TronServer::sendClientIdentity(const ClientPtr& _client) const
 {
     sf::Packet packet;
     setPacketID(packet, PacketID::IDENTITY);
@@ -159,13 +225,8 @@ void TronServer::sendClientIdentity(ClientPtr& _client) const
     _client->getSocket()->send(packet);
 }
 
-void TronServer::sendClientList(ClientPtr& _client)
+void TronServer::sendClientList(const ClientPtr& _client)
 {
-    if (clients.size() == 0)
-    {
-        return;
-    }
-
     sf::Packet packet;
     setPacketID(packet, PacketID::PLAYER_LIST);
 
@@ -182,12 +243,22 @@ void TronServer::sendClientList(ClientPtr& _client)
     _client->getSocket()->send(packet);
 }
 
-void TronServer::sendClientJoined(ClientPtr& _client)
+void TronServer::sendClientJoined(const ClientPtr& _client)
 {
     sf::Packet packet;
     setPacketID(packet, PacketID::PLAYER_JOINED);
 
     packet << _client->getID();
+
+    sendPacketToAll(packet);
+}
+
+void TronServer::sendUpdatedClientState(const ClientPtr& _client)
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::PLAYER_STATE);
+
+    packet << _client->getID() << static_cast<sf::Uint8>(_client->getState());
 
     sendPacketToAll(packet);
 }
@@ -206,7 +277,7 @@ void TronServer::receivePacket()
             sf::Packet packet;
             if (sender->getSocket()->receive(packet) == sf::Socket::Disconnected)
             {
-                return onDisconnect(sender);
+                return disconnectClient(sender);
             }
 
             handlePacket(packet, sender);
@@ -222,7 +293,7 @@ void TronServer::handlePacket(sf::Packet& _packet, ClientPtr& _sender)
 
 void TronServer::handleDisconnectPacket(sf::Packet& _packet, ClientPtr& _sender)
 {
-    onDisconnect(_sender);
+    disconnectClient(_sender);
 }
 
 // Send a PONG packet back to _sender to inform their latency.
@@ -256,71 +327,51 @@ void TronServer::handleMessagePacket(sf::Packet& _packet, ClientPtr& _sender)
 {
     std::string msg;
     _packet >> msg;
+
     std::cout << msg << std::endl;
 
     sendPacketToAllButSender(_packet, _sender);
 }
 
-void TronServer::handlePlayerStatePacket(sf::Packet& _packet, ClientPtr& _sender)
+void TronServer::handlePlayerStatePacket(const sf::Packet& _packet, ClientPtr& _sender)
 {
-    sf::Uint8 id;
-    sf::Uint8 state;
-
-    _packet >> id >> state;
-    clients[id]->setState(static_cast<PlayerState>(state));
-
-    sendPacketToAll(_packet);
-
-    if (server_state == STATE_LOBBY)
+    switch (server_state)
     {
-        int num_ready = 0;
-        for (auto& client : clients)
+        case STATE_LOBBY:
         {
-            if (!client)
-            {
-                continue;
-            }
+            _sender->setState(_sender->getState() == PlayerState::NOTREADY ?
+                PlayerState::READY : PlayerState::NOTREADY);
+        } break;
 
-            num_ready += client->getState() == PlayerState::READY ? 1 : -1;
-        }
-
-        if (num_ready == connected_clients)
+        case STATE_END:
         {
+            _sender->setState(PlayerState::NOTREADY);
+
             sf::Packet packet;
             setPacketID(packet, PacketID::GAME_STATE);
 
-            server_state = STATE_GAME;
-            packet << static_cast<sf::Uint8>(STATE_GAME);
+            packet << static_cast<sf::Uint8>(STATE_LOBBY);
 
-            sendPacketToAll(packet);
+            sendPacketToClient(packet, _sender);
+        } break;
 
-            for (auto& client : clients)
-            {
-                if (!client)
-                {
-                    continue;
-                }
-
-                simulation.addBike(client->getID());
-            }
-
-            syncSimulation();
-        }
+        default: {}
     }
+
+    sendUpdatedClientState(_sender);
 }
 
 void TronServer::handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender)
 {
-    sf::Uint8 id;
     sf::Uint8 dir;
+    _packet >> dir;
 
-    _packet >> id >> dir;
-    simulation.changeBikeDirection(id, static_cast<MoveDirection>(dir));
+    simulation.changeBikeDirection(_sender->getID(), static_cast<MoveDirection>(dir));
 
-    syncBike(id);
+    syncBike(_sender->getID());
 }
 
-void TronServer::onDisconnect(ClientPtr& _client)
+void TronServer::disconnectClient(ClientPtr& _client)
 {
     socket_selector.remove(*_client->getSocket());
     _client->getSocket()->disconnect();
@@ -340,6 +391,11 @@ void TronServer::onDisconnect(ClientPtr& _client)
     --connected_clients;
 }
 
+void TronServer::sendPacketToClient(sf::Packet& _packet, const ClientPtr& _client) const
+{
+    _client->getSocket()->send(_packet);
+}
+
 void TronServer::sendPacketToAll(sf::Packet& _packet)
 {
     for (auto& client : clients)
@@ -353,7 +409,7 @@ void TronServer::sendPacketToAll(sf::Packet& _packet)
     }
 }
 
-void TronServer::sendPacketToAllButSender(sf::Packet& _packet, ClientPtr& _sender)
+void TronServer::sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& _sender)
 {
     for (auto& client : clients)
     {
@@ -369,6 +425,61 @@ void TronServer::sendPacketToAllButSender(sf::Packet& _packet, ClientPtr& _sende
 
         client->getSocket()->send(_packet);
     }
+}
+
+void TronServer::startSimulation()
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::GAME_STATE);
+
+    server_state = STATE_GAME;
+    packet << static_cast<sf::Uint8>(server_state);
+
+    sendPacketToAll(packet);
+
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            continue;
+        }
+
+        if (client->getState() == PlayerState::READY)
+        {
+            client->setState(PlayerState::PLAYING);
+            simulation.addBike(client->getID());
+        }
+    }
+
+    syncSimulation();
+}
+
+void TronServer::stopSimulation()
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::GAME_STATE);
+
+    server_state = STATE_END;
+    packet << static_cast<sf::Uint8>(server_state);
+
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            continue;
+        }
+
+        // Send End state only to clients who were playing last round.
+        if (client->getState() == PlayerState::PLAYING)
+        {
+            sendPacketToClient(packet, client);
+
+            client->setState(PlayerState::VIEWING_RESULTS);
+            sendUpdatedClientState(client);
+        }
+    }
+
+    simulation.reset();
 }
 
 void TronServer::syncBike(unsigned int _bike_id)
@@ -417,7 +528,19 @@ void TronServer::syncSimulation()
     setPacketID(packet, PacketID::SYNC_SIMULATION);
 
     packet << simulation;
-    sendPacketToAll(packet);
+
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            continue;
+        }
+
+        if (client->getState() == PlayerState::PLAYING)
+        {
+            sendPacketToClient(packet, client);
+        }
+    }
 
     std::cout << "Full Sync sent" << std::endl;
 }

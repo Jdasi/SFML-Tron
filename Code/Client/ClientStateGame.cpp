@@ -47,8 +47,6 @@ void ClientStateGame::draw(sf::RenderWindow& _window)
 
 void ClientStateGame::onCommand(const GameAction _action, const ActionState _action_state)
 {
-    auto id = client_data->client_id;
-
     if (_action == GameAction::QUIT)
     {
         if (_action_state == ActionState::PRESSED)
@@ -63,7 +61,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
         {
             auto dir = MoveDirection::UP;
 
-            client_data->network_manager->sendBikeDirectionChange(id, dir);
+            client_data->network_manager->sendBikeDirectionChange(dir);
         }
     }
 
@@ -73,7 +71,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
         {
             auto dir = MoveDirection::DOWN;
 
-            client_data->network_manager->sendBikeDirectionChange(id, dir);
+            client_data->network_manager->sendBikeDirectionChange(dir);
         }
     }
 
@@ -83,7 +81,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
         {
             auto dir = MoveDirection::LEFT;
 
-            client_data->network_manager->sendBikeDirectionChange(id, dir);
+            client_data->network_manager->sendBikeDirectionChange(dir);
         }
     }
 
@@ -93,7 +91,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
         {
             auto dir = MoveDirection::RIGHT;
 
-            client_data->network_manager->sendBikeDirectionChange(id, dir);
+            client_data->network_manager->sendBikeDirectionChange(dir);
         }
     }
 }

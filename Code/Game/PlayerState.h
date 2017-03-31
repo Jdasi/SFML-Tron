@@ -5,5 +5,5 @@ enum PlayerState
     NOTREADY,
     READY,
     PLAYING,
-    AFTERMATH
+    VIEWING_RESULTS
 };

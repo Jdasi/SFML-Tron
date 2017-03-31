@@ -10,7 +10,6 @@
 
 ClientStateLobby::ClientStateLobby(ClientData* _client_data)
     : ClientState(_client_data)
-    , ready(false)
 {
     auto* font = client_data->asset_manager->loadFont(DEFAULT_FONT);
 
@@ -31,7 +30,6 @@ ClientStateLobby::ClientStateLobby(ClientData* _client_data)
 
 void ClientStateLobby::onStateEnter()
 {
-    client_data->network_manager->connect();
 }
 
 void ClientStateLobby::onStateLeave()
@@ -65,10 +63,7 @@ void ClientStateLobby::onCommand(const GameAction _action, const ActionState _ac
     {
         if (_action_state == ActionState::PRESSED)
         {
-            ready = !ready;
-
-            PlayerState state = ready ? PlayerState::READY : PlayerState::NOTREADY;
-            client_data->network_manager->sendPlayerStateChange(client_data->client_id, state);
+            client_data->network_manager->sendPlayerStateChange();
         }
     }
 }

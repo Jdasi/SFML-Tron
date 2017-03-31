@@ -33,27 +33,25 @@ void TronNetworkManager::sendChatMessage(const std::string& _message)
     });
 }
 
-void TronNetworkManager::sendPlayerStateChange(int _player_id, PlayerState _state)
+void TronNetworkManager::sendPlayerStateChange()
 {
-    postEvent([this, _player_id, _state]()
+    postEvent([this]()
     {
         sf::Packet packet;
         setPacketID(packet, PacketID::PLAYER_STATE);
-
-        packet << static_cast<sf::Uint8>(_player_id) << static_cast<sf::Uint8>(_state);
 
         sendPacket(packet);
     });
 }
 
-void TronNetworkManager::sendBikeDirectionChange(int _player_id, MoveDirection _dir)
+void TronNetworkManager::sendBikeDirectionChange(const MoveDirection _dir)
 {
-    postEvent([this, _player_id, _dir]()
+    postEvent([this, _dir]()
     {
         sf::Packet packet;
         setPacketID(packet, PacketID::DIRECTION);
 
-        packet << static_cast<sf::Uint8>(_player_id) << static_cast<sf::Uint8>(_dir);
+        packet << static_cast<sf::Uint8>(_dir);
 
         sendPacket(packet);
     });
@@ -112,6 +110,7 @@ void TronNetworkManager::handleMessagePacket(sf::Packet& _packet) const
 {
     std::string str;
     _packet >> str;
+
     std::cout << str << std::endl;
 }
 

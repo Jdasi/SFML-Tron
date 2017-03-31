@@ -61,6 +61,14 @@ void PrettyGrid::clearCellRange(const std::vector<Vector2i>& _positions)
     }
 }
 
+void PrettyGrid::clearAllCells()
+{
+    for (auto& tile : tiles)
+    {
+        tile->setFillColor(sf::Color::Transparent);
+    }
+}
+
 void PrettyGrid::overwriteCell(const Vector2i& _pos, const CellValue _value)
 {
     setTileColor(_pos, evaluateSFColor(_value));
@@ -88,6 +96,7 @@ void PrettyGrid::addPlayerMarker(int _bike_id, const CellValue _value)
     auto* tex = asset_manager->loadTexture(PLAYER_MARKER);
 
     auto marker = std::make_unique<sf::Sprite>(*tex);
+    marker->setPosition({ -100, -100 });
     marker->setColor(evaluateSFColor(_value));
     marker->setOrigin({ 32, 32 });
     marker->setScale({ 0.75f, 0.75f });
@@ -98,6 +107,14 @@ void PrettyGrid::addPlayerMarker(int _bike_id, const CellValue _value)
 void PrettyGrid::removePlayerMarker(int _bike_id)
 {
     player_markers[_bike_id].reset();
+}
+
+void PrettyGrid::removeAllPlayerMarkers()
+{
+    for (auto& marker : player_markers)
+    {
+        marker.reset();
+    }
 }
 
 void PrettyGrid::updateBikePosition(const Vector2i& _pos, int _bike_id)
