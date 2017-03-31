@@ -48,6 +48,7 @@ private:
     void resetBikes();
     void overwrite(const Simulation& _simulation) override;
     void overwriteBike(const Bike& _bike) override;
+    void overwriteBikes(const std::array<Bike, MAX_PLAYERS>& _bikes) override;
 
     Grid grid;
     std::array<Bike, MAX_PLAYERS> bikes;

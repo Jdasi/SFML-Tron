@@ -85,7 +85,7 @@ void PrettyGrid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cell
 
 void PrettyGrid::addPlayerMarker(int _bike_id, const CellValue _value)
 {
-    auto* tex = asset_manager->loadTexturePNG("player_marker");
+    auto* tex = asset_manager->loadTexture(PLAYER_MARKER);
 
     auto marker = std::make_unique<sf::Sprite>(*tex);
     marker->setColor(evaluateSFColor(_value));

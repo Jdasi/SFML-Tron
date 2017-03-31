@@ -16,6 +16,7 @@ enum PacketID
     MESSAGE,
     DIRECTION,
     SYNC_BIKE,
+    SYNC_ALL_BIKES,
     SYNC_SIMULATION
 };
 

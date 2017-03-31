@@ -43,7 +43,7 @@ void Grid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells)
     cells = _cells;
 }
 
-void Grid::setCellRange(const std::vector<Vector2i>& _positions, const CellValue _value)
+void Grid::overwriteCellRange(const std::vector<Vector2i>& _positions, const CellValue _value)
 {
     for (auto& pos : _positions)
     {

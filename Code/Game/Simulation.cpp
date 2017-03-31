@@ -40,11 +40,11 @@ void Simulation::addBike(unsigned int _id)
     Bike& bike = bikes[_id];
 
     configureBikeSide(bike);
-    grid.setCellValue(bike.getPosition(), bike.getCellValue());
+    grid.setCellValue(bike.getPosition(), bike.idToCellValue());
 
     for (auto& listener : listeners)
     {
-        listener->addPlayerMarker(bike.getID(), bike.getCellValue());
+        listener->addPlayerMarker(bike.getID(), bike.idToCellValue());
     }
 
     bike.setAlive(true);
@@ -74,12 +74,20 @@ void Simulation::overwriteBike(const Bike& _bike)
     auto& new_positions = bike.getLine();
 
     // Write new line.
-    grid.setCellRange(new_positions, bike.getCellValue());
+    grid.overwriteCellRange(new_positions, bike.idToCellValue());
 
     // Inform listeners of update.
     for (auto& listener : listeners)
     {
-        listener->overwriteCellRange(new_positions, bike.getCellValue());
+        listener->overwriteCellRange(new_positions, bike.idToCellValue());
+    }
+}
+
+void Simulation::overwriteBikes(const std::array<Bike, MAX_PLAYERS>& _bikes)
+{
+    for (auto& bike : _bikes)
+    {
+        overwriteBike(bike);
     }
 }
 
@@ -156,11 +164,11 @@ void Simulation::configureBikeSide(Bike& _bike) const
 
 void Simulation::moveBike(Bike& _bike)
 {
-    grid.setCellValue(_bike.getPosition(), _bike.getCellValue());
+    grid.setCellValue(_bike.getPosition(), _bike.idToCellValue());
     
     for (auto& listener : listeners)
     {
-        listener->overwriteCell(_bike.getPosition(), _bike.getCellValue());
+        listener->overwriteCell(_bike.getPosition(), _bike.idToCellValue());
     }
 
     MoveDirection dir = _bike.getDirection();
@@ -182,7 +190,7 @@ void Simulation::moveBike(Bike& _bike)
     {
         // Path is clear.
         _bike.setPosition(adjustment);
-        grid.setCellValue(adjustment, _bike.getCellValue());
+        grid.setCellValue(adjustment, _bike.idToCellValue());
 
         for (auto& listener : listeners)
         {

@@ -46,7 +46,8 @@ private:
     void sendPacketToAllButSender(sf::Packet& _packet, ClientPtr& _sender);
 
     void syncBike(unsigned int _bike_id);
-    void fullSimulationSync();
+    void syncAllBikes();
+    void syncSimulation();
 
     sf::TcpListener tcp_listener;
     sf::SocketSelector socket_selector;
@@ -63,6 +64,6 @@ private:
     Scheduler scheduler;
 
     int server_state;
-    bool full_sync_needed;
+    bool bike_sync_needed;
 
 };

@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <array>
+
 #include <Game/PlayerState.h>
 
 class Player;
@@ -22,13 +24,13 @@ public:
     virtual void onDisconnected() = 0;
 
     virtual void onUpdatePingTime(double _ping) = 0;
-    virtual void onBikeDirectionChange(int _id, MoveDirection _dir) = 0;
     virtual void onIdentity(int _id) = 0;
-    virtual void onPlayerList(std::vector<Player> _players) = 0;
+    virtual void onPlayerList(const std::vector<Player>& _players) = 0;
     virtual void onPlayerJoined(int _id) = 0;
-    virtual void onPlayerStateChange(int _player_id, PlayerState _state) = 0;
+    virtual void onPlayerStateChange(int _player_id, const PlayerState _state) = 0;
     virtual void onGameStateChange(int _state) = 0;
-    virtual void onBikeSync(Bike& _bike) = 0;
-    virtual void onFullSync(Simulation& _simulation) = 0;
+    virtual void onBikeSync(const Bike& _bike) = 0;
+    virtual void onFullBikeSync(const std::array<Bike, MAX_PLAYERS>& _bikes) = 0;
+    virtual void onFullSync(const Simulation& _simulation) = 0;
 
 };

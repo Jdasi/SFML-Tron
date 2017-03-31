@@ -14,7 +14,7 @@ TronServer::TronServer()
     , exit(false)
     , server_name()
     , server_state(STATE_LOBBY)
-    , full_sync_needed(true)
+    , bike_sync_needed(true)
 {
     registerPacketHandlers();
 
@@ -99,11 +99,11 @@ void TronServer::listen()
 
             simulation.tick(dt);
 
-            if (full_sync_needed)
+            if (bike_sync_needed)
             {
-                full_sync_needed = false;
+                bike_sync_needed = false;
 
-                scheduler.invoke([this]() { fullSimulationSync(); }, 1.0);
+                scheduler.invoke([this]() { syncAllBikes(); }, 0.2);
             }
         }
     }
@@ -304,7 +304,7 @@ void TronServer::handlePlayerStatePacket(sf::Packet& _packet, ClientPtr& _sender
                 simulation.addBike(client->getID());
             }
 
-            fullSimulationSync();
+            syncSimulation();
         }
     }
 }
@@ -381,7 +381,30 @@ void TronServer::syncBike(unsigned int _bike_id)
     sendPacketToAll(packet);
 }
 
-void TronServer::fullSimulationSync()
+void TronServer::syncAllBikes()
+{
+    if (server_state != STATE_GAME)
+    {
+        return;
+    }
+
+    sf::Packet packet;
+    setPacketID(packet, PacketID::SYNC_ALL_BIKES);
+
+    auto& bikes = simulation.getBikes();
+    for (auto& bike : bikes)
+    {
+        packet << bike;
+    }
+
+    sendPacketToAll(packet);
+
+    bike_sync_needed = true;
+
+    std::cout << "Full Bike Sync sent" << std::endl;
+}
+
+void TronServer::syncSimulation()
 {
     if (server_state != STATE_GAME)
     {
@@ -393,8 +416,6 @@ void TronServer::fullSimulationSync()
 
     packet << simulation;
     sendPacketToAll(packet);
-
-    full_sync_needed = true;
 
     std::cout << "Full Sync sent" << std::endl;
 }

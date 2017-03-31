@@ -32,14 +32,14 @@ private:
     void onConnected() override;
     void onDisconnected() override;
     void onUpdatePingTime(double _ping) override;
-    void onBikeDirectionChange(int _id, MoveDirection _dir) override;
     void onIdentity(int _id) override;
-    void onPlayerList(std::vector<Player> _players) override;
+    void onPlayerList(const std::vector<Player>& _players) override;
     void onPlayerJoined(int _id) override;
-    void onPlayerStateChange(int _player_id, PlayerState _state) override;
+    void onPlayerStateChange(int _player_id, const PlayerState _state) override;
     void onGameStateChange(int _state) override;
-    void onBikeSync(Bike& _bike) override;
-    void onFullSync(Simulation& _simulation) override;
+    void onBikeSync(const Bike& _bike) override;
+    void onFullBikeSync(const std::array<Bike, MAX_PLAYERS>& _bikes) override;
+    void onFullSync(const Simulation& _simulation) override;
 
     void tick();
     void draw();

@@ -19,7 +19,7 @@ public:
     int getID() const;
     void setID(int _id);
 
-    CellValue getCellValue() const;
+    CellValue idToCellValue() const;
 
     MoveDirection getDirection() const;
     void setDirection(MoveDirection _direction);

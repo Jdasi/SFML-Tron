@@ -17,7 +17,6 @@ TronClient::TronClient()
     , state_handler()
     , client_data(&asset_manager, &network_manager, &game_manager, &input_handler)
 {
-    asset_manager.loadFontTTF("arial");
 }
 
 void TronClient::run()
@@ -118,15 +117,6 @@ void TronClient::onUpdatePingTime(double _ping)
     });
 }
 
-// Called by TronNetworkManager when the server sends a player direction change.
-void TronClient::onBikeDirectionChange(int _id, MoveDirection _dir)
-{
-    postEvent([this, _id, _dir]()
-    {
-        game_manager.getNetworkSimulation()->changeBikeDirection(_id, _dir);
-    });
-}
-
 void TronClient::onIdentity(int _id)
 {
     postEvent([this, _id]()
@@ -138,7 +128,7 @@ void TronClient::onIdentity(int _id)
     });
 }
 
-void TronClient::onPlayerList(std::vector<Player> _players)
+void TronClient::onPlayerList(const std::vector<Player>& _players)
 {
     postEvent([this, _players]()
     {
@@ -193,7 +183,7 @@ void TronClient::onGameStateChange(int _state)
     });
 }
 
-void TronClient::onBikeSync(Bike& _bike)
+void TronClient::onBikeSync(const Bike& _bike)
 {
     postEvent([this, _bike]()
     {
@@ -201,7 +191,15 @@ void TronClient::onBikeSync(Bike& _bike)
     });
 }
 
-void TronClient::onFullSync(Simulation& _simulation)
+void TronClient::onFullBikeSync(const std::array<Bike, MAX_PLAYERS>& _bikes)
+{
+    postEvent([this, _bikes]()
+    {
+        game_manager.getNetworkSimulation()->overwriteBikes(_bikes);
+    });
+}
+
+void TronClient::onFullSync(const Simulation& _simulation)
 {
     postEvent([this, _simulation]()
     {

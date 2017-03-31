@@ -24,7 +24,7 @@ void Bike::setID(int _id)
     id = _id;
 }
 
-CellValue Bike::getCellValue() const
+CellValue Bike::idToCellValue() const
 {
     return static_cast<CellValue>(CellValue::CYAN + id);
 }

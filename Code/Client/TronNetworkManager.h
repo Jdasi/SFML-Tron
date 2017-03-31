@@ -27,24 +27,24 @@ private:
     void handlePlayerListPacket(sf::Packet& _packet);
     void handlePlayerJoinedPacket(sf::Packet& _packet);
     void handleMessagePacket(sf::Packet& _packet) const;
-    void handleDirectionPacket(sf::Packet& _packet);
     void handlePlayerStateChangePacket(sf::Packet& _packet);
     void handleGameStateChangePacket(sf::Packet& _packet);
     void handleBikeSyncPacket(sf::Packet& _packet);
+    void handleFullBikeSyncPacket(sf::Packet& _packet);
     void handleFullSyncPacket(sf::Packet& _packet);
 
     // Pass-through functions to talk to the client.
     void onConnected() override;
     void onDisconnected() override;
     void onUpdatePingTime(double _ping) override;
-    void onBikeDirectionChange(int _id, MoveDirection _dir);
     void onIdentity(int _id);
-    void onPlayerList(std::vector<Player> _players);
+    void onPlayerList(const std::vector<Player>& _players);
     void onPlayerJoined(int _id);
-    void onPlayerStateChange(int _player_id, PlayerState _state);
+    void onPlayerStateChange(int _player_id, const PlayerState _state);
     void onGameStateChange(int _state);
-    void onBikeSync(Bike& _bike);
-    void onFullSync(Simulation& _simulation);
+    void onBikeSync(const Bike& _bike);
+    void onFullBikeSync(const std::array<Bike, MAX_PLAYERS>& _bike);
+    void onFullSync(const Simulation& _simulation);
 
     // TronClient network interface.
     INetworkClient& client;

@@ -65,10 +65,10 @@ void TronNetworkManager::registerGamePacketHandlers()
     registerPacketHandler(PLAYER_LIST,      handlePlayerListPacket);
     registerPacketHandler(PLAYER_JOINED,    handlePlayerJoinedPacket);
     registerPacketHandler(MESSAGE,          handleMessagePacket);
-    registerPacketHandler(DIRECTION,        handleDirectionPacket);
     registerPacketHandler(PLAYER_STATE,     handlePlayerStateChangePacket);
     registerPacketHandler(GAME_STATE,       handleGameStateChangePacket);
     registerPacketHandler(SYNC_BIKE,        handleBikeSyncPacket);
+    registerPacketHandler(SYNC_ALL_BIKES,   handleFullBikeSyncPacket);
     registerPacketHandler(SYNC_SIMULATION,  handleFullSyncPacket);
 }
 
@@ -115,19 +115,6 @@ void TronNetworkManager::handleMessagePacket(sf::Packet& _packet) const
     std::cout << str << std::endl;
 }
 
-void TronNetworkManager::handleDirectionPacket(sf::Packet& _packet)
-{
-    sf::Uint8 temp_id;
-    sf::Uint8 temp_dir;
-
-    _packet >> temp_id >> temp_dir;
-
-    int id = static_cast<int>(temp_id);
-    MoveDirection dir = static_cast<MoveDirection>(temp_dir);
-
-    onBikeDirectionChange(id, dir);
-}
-
 void TronNetworkManager::handlePlayerStateChangePacket(sf::Packet& _packet)
 {
     sf::Uint8 temp_id;
@@ -141,7 +128,6 @@ void TronNetworkManager::handlePlayerStateChangePacket(sf::Packet& _packet)
 void TronNetworkManager::handleGameStateChangePacket(sf::Packet& _packet)
 {
     sf::Uint8 state;
-
     _packet >> state;
 
     onGameStateChange(state);
@@ -153,6 +139,18 @@ void TronNetworkManager::handleBikeSyncPacket(sf::Packet& _packet)
     _packet >> bike;
 
     onBikeSync(bike);
+}
+
+void TronNetworkManager::handleFullBikeSyncPacket(sf::Packet& _packet)
+{
+    std::array<Bike, MAX_PLAYERS> bikes;
+
+    for (int i = 0; i < MAX_PLAYERS; ++i)
+    {
+        _packet >> bikes[i];
+    }
+
+    onFullBikeSync(bikes);
 }
 
 void TronNetworkManager::handleFullSyncPacket(sf::Packet& _packet)
@@ -178,12 +176,7 @@ void TronNetworkManager::onUpdatePingTime(double _ping)
     client.onUpdatePingTime(_ping);
 }
 
-void TronNetworkManager::onBikeDirectionChange(int _id, MoveDirection _dir)
-{
-    client.onBikeDirectionChange(_id, _dir);
-}
-
-void TronNetworkManager::onPlayerList(std::vector<Player> _players)
+void TronNetworkManager::onPlayerList(const std::vector<Player>& _players)
 {
     client.onPlayerList(_players);
 }
@@ -208,12 +201,17 @@ void TronNetworkManager::onGameStateChange(int _state)
     client.onGameStateChange(_state);
 }
 
-void TronNetworkManager::onBikeSync(Bike& _bike)
+void TronNetworkManager::onBikeSync(const Bike& _bike)
 {
     client.onBikeSync(_bike);
 }
 
-void TronNetworkManager::onFullSync(Simulation& _simulation)
+void TronNetworkManager::onFullBikeSync(const std::array<Bike, MAX_PLAYERS>& _bikes)
+{
+    client.onFullBikeSync(_bikes);
+}
+
+void TronNetworkManager::onFullSync(const Simulation& _simulation)
 {
     client.onFullSync(_simulation);
 }
