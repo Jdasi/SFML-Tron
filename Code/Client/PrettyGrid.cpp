@@ -106,12 +106,24 @@ void PrettyGrid::addPlayerMarker(const unsigned int _bike_id, const CellValue _v
 
 void PrettyGrid::updatePlayerMarkerSize(const unsigned int _bike_id, const bool _enlarged)
 {
-    player_markers[_bike_id]->enlarge(_enlarged);
+    auto& marker = player_markers[_bike_id];
+    if (!marker)
+    {
+        return;
+    }
+
+    marker->enlarge(_enlarged);
 }
 
 void PrettyGrid::removePlayerMarker(const unsigned int _bike_id)
 {
-    player_markers[_bike_id].reset();
+    auto& marker = player_markers[_bike_id];
+    if (!marker)
+    {
+        return;
+    }
+
+    marker.reset();
 }
 
 void PrettyGrid::removeAllPlayerMarkers()
@@ -124,7 +136,13 @@ void PrettyGrid::removeAllPlayerMarkers()
 
 void PrettyGrid::updateBikePosition(const Vector2i& _pos, const unsigned int _bike_id)
 {
-    player_markers[_bike_id]->setPosition(tiles[calculateIndex(_pos)]->getPosition());
+    auto& marker = player_markers[_bike_id];
+    if (!marker)
+    {
+        return;
+    }
+
+    marker->setPosition(tiles[calculateIndex(_pos)]->getPosition());
     setTileColor(_pos, sf::Color::White);
 }
 
