@@ -9,7 +9,7 @@ sf::Font* AssetManager::loadFont(const std::string& _file)
     }
 
     auto font = std::make_unique<sf::Font>();
-    font->loadFromFile("../../Resources/" + _file);
+    font->loadFromFile("Resources/" + _file);
     auto* p_font = font.get();
 
     fonts[_file] = std::move(font);
@@ -25,7 +25,7 @@ sf::Texture* AssetManager::loadTexture(const std::string& _file)
     }
 
     auto texture = std::make_unique<sf::Texture>();
-    texture->loadFromFile("../../Resources/" + _file);
+    texture->loadFromFile("Resources/" + _file);
     auto* p_texture = texture.get();
 
     textures[_file] = std::move(texture);
