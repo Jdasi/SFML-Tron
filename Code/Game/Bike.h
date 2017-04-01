@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "BikeState.h"
 
 namespace sf
 {
@@ -22,6 +23,9 @@ public:
     void setID(const unsigned int _id);
 
     CellValue idToCellValue() const;
+
+    BikeState getState() const;
+    void overwriteState(const BikeState& _state);
 
     MoveDirection getDirection() const;
     void setDirection(const MoveDirection _direction);
@@ -46,19 +50,7 @@ public:
     bool isBoosting() const;
     bool boost();
 
-    friend sf::Packet& operator<<(sf::Packet& _packet, Bike& _bike);
-    friend sf::Packet& operator>>(sf::Packet& _packet, Bike& _bike);
-
 private:
-    unsigned int id;
-    MoveDirection direction;
-    Vector2i pos;
-    std::vector<Vector2i> line;
-    float move_speed;
-    double move_timer;
-    bool alive;
-    bool boosting;
-    double boost_timer;
-    int boost_charges;
+    BikeState state;
 
 };

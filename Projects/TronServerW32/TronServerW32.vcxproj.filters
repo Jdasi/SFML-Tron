@@ -13,12 +13,21 @@
     <ClCompile Include="..\..\Code\Server\Client.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Server\SimulationThread.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Server\TronServer.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Server\Client.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Server\SimulationThread.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Server\ISimulationServer.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

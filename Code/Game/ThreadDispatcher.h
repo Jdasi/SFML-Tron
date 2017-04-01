@@ -12,10 +12,10 @@ public:
 protected:
     ThreadDispatcher() = default;
 
-    void postEvent(std::function<void()> method)
+    void postEvent(std::function<void()> _method)
     {
         std::lock_guard<std::mutex> guard(mutex);
-        queue.push(method);
+        queue.push(_method);
     }
 
     void executeDispatchedMethods()
@@ -42,8 +42,10 @@ private:
     std::queue<std::function<void()>> getQueueCopy()
     {
         std::lock_guard<std::mutex> guard(mutex);
+
         auto queue_copy = queue;
         clearQueue();
+
         return queue_copy;
     }
 

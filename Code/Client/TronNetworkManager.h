@@ -1,12 +1,12 @@
 #pragma once
-#include "NetworkManager.h"
 #include <Game/PlayerState.h>
 #include <Game/MoveDirection.h>
+#include "NetworkManager.h"
 
-class Simulation;
-class Bike;
 class INetworkClient;
 class Player;
+struct SimulationState;
+struct BikeState;
 
 class TronNetworkManager final : public NetworkManager
 {
@@ -43,9 +43,9 @@ private:
     void onPlayerJoined(int _id);
     void onPlayerStateChange(int _player_id, const PlayerState _state);
     void onGameStateChange(int _state);
-    void onBikeSync(const Bike& _bike);
-    void onFullBikeSync(const std::array<Bike, MAX_PLAYERS>& _bike);
-    void onFullSync(const Simulation& _simulation);
+    void onBikeSync(const BikeState& _bike_state);
+    void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states);
+    void onFullSync(const SimulationState& _simulation_state);
 
     // TronClient network interface.
     INetworkClient& client;

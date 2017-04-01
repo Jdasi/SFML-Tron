@@ -7,6 +7,8 @@
 #include "Grid.h"
 #include "ListenerSubject.h"
 #include "Bike.h"
+#include "SimulationState.h"
+#include "Noncopyable.h"
 
 namespace sf
 {
@@ -15,27 +17,28 @@ namespace sf
 
 enum MoveDirection;
 
-class Simulation final : public INetworkSimulation, public ListenerSubject<SimulationListener>
+class Simulation final : public Noncopyable, public INetworkSimulation, 
+                         public ListenerSubject<SimulationListener>
 {
 public:
     Simulation();
     ~Simulation() = default;
 
     void tick(double _dt);
-
-    void addBike(unsigned int _id);
     void reset();
 
-    const Grid& getGrid() const;
-    std::array<Bike, MAX_PLAYERS>& getBikes();
+    void addBike(unsigned int _id);
     Bike& getBike(unsigned int _bike_id);
-
     bool allBikesDead() const;
 
-    void changeBikeDirection(unsigned int _bike_id, const MoveDirection _dir) override;
+    const Grid& getGrid() const;
 
-    friend sf::Packet& operator<<(sf::Packet& _packet, Simulation& _simulation);
-    friend sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation);
+    SimulationState getState() const;
+    std::array<BikeState, MAX_PLAYERS> getBikes();
+
+    void overwriteState(const SimulationState& _state);
+
+    void changeBikeDirection(unsigned int _bike_id, const MoveDirection _dir) override;
 
 private:
     void configureBikeSide(Bike& _bike) const;
@@ -49,9 +52,9 @@ private:
     bool directionChangeValid(const Bike& _bike, const MoveDirection _new_dir) const;
 
     void resetBikes();
-    void overwrite(const Simulation& _simulation) override;
-    void overwriteBike(const Bike& _bike) override;
-    void overwriteBikes(const std::array<Bike, MAX_PLAYERS>& _bikes) override;
+    void overwrite(const SimulationState& _simulation_state) override;
+    void overwriteBike(const BikeState& _bike_state) override;
+    void overwriteBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
 
     Grid grid;
     std::array<Bike, MAX_PLAYERS> bikes;

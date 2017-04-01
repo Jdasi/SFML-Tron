@@ -145,30 +145,30 @@ void TronNetworkManager::handleGameStateChangePacket(sf::Packet& _packet)
 
 void TronNetworkManager::handleBikeSyncPacket(sf::Packet& _packet)
 {
-    Bike bike;
-    _packet >> bike;
+    BikeState bike_state;
+    _packet >> bike_state;
 
-    onBikeSync(bike);
+    onBikeSync(bike_state);
 }
 
 void TronNetworkManager::handleFullBikeSyncPacket(sf::Packet& _packet)
 {
-    std::array<Bike, MAX_PLAYERS> bikes;
+    std::array<BikeState, MAX_PLAYERS> bike_states;
 
     for (int i = 0; i < MAX_PLAYERS; ++i)
     {
-        _packet >> bikes[i];
+        _packet >> bike_states[i];
     }
 
-    onFullBikeSync(bikes);
+    onFullBikeSync(bike_states);
 }
 
 void TronNetworkManager::handleFullSyncPacket(sf::Packet& _packet)
 {
-    Simulation sim;
-    _packet >> sim;
+    SimulationState simulation_state;
+    _packet >> simulation_state;
 
-    onFullSync(sim);
+    onFullSync(simulation_state);
 }
 
 void TronNetworkManager::onConnected()
@@ -201,7 +201,7 @@ void TronNetworkManager::onPlayerJoined(int _id)
     client.onPlayerJoined(_id);
 }
 
-void TronNetworkManager::onPlayerStateChange(int _player_id, PlayerState _state)
+void TronNetworkManager::onPlayerStateChange(int _player_id, const PlayerState _state)
 {
     client.onPlayerStateChange(_player_id, _state);
 }
@@ -211,17 +211,17 @@ void TronNetworkManager::onGameStateChange(int _state)
     client.onGameStateChange(_state);
 }
 
-void TronNetworkManager::onBikeSync(const Bike& _bike)
+void TronNetworkManager::onBikeSync(const BikeState& _bike)
 {
     client.onBikeSync(_bike);
 }
 
-void TronNetworkManager::onFullBikeSync(const std::array<Bike, MAX_PLAYERS>& _bikes)
+void TronNetworkManager::onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states)
 {
-    client.onFullBikeSync(_bikes);
+    client.onFullBikeSync(_bike_states);
 }
 
-void TronNetworkManager::onFullSync(const Simulation& _simulation)
+void TronNetworkManager::onFullSync(const SimulationState& _simulation_state)
 {
-    client.onFullSync(_simulation);
+    client.onFullSync(_simulation_state);
 }

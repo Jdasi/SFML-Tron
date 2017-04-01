@@ -6,13 +6,14 @@
 #include <SFML/Network.hpp>
 
 #include <Game/PacketID.h>
-#include <Game/Simulation.h>
 #include <Game/Scheduler.h>
 #include "Client.h"
+#include "ISimulationServer.h"
+#include "SimulationThread.h"
 
 using ClientPtr = std::unique_ptr<Client>;
 
-class TronServer
+class TronServer : public ISimulationServer, public ThreadDispatcher
 {
 public:
     TronServer();
@@ -28,10 +29,11 @@ private:
     void listen();
     void handleServerReset();
 
-    void performStateBehaviour(const double _dt);
-    void lobbyStateBehaviour(const double _dt);
-    void gameStateBehaviour(const double _dt);
-    void endStateBehaviour(const double _dt);
+    void performStateBehaviour();
+    void lobbyStateBehaviour();
+    void gameStateBehaviour();
+    void endStateBehaviour();
+    void allClientsReady();
 
     void acceptClient();
     int generateUniqueID() const;
@@ -55,12 +57,12 @@ private:
     void sendPacketToAll(sf::Packet& _packet);
     void sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& _sender);
 
-    void startSimulation();
-    void stopSimulation();
 
-    void syncBike(unsigned int _bike_id);
-    void syncAllBikes();
-    void syncSimulation();
+    void onSyncSimulation(const SimulationState& _simulation_state) override;
+    void onSyncBike(const BikeState& _bike_state) override;
+    void onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
+    void onSimulationStarted() override;
+    void onSimulationEnded() override;
 
     sf::TcpListener tcp_listener;
     sf::SocketSelector socket_selector;
@@ -71,13 +73,9 @@ private:
     bool exit;
     std::string server_name;
     std::string welcome_message;
-
-    Simulation simulation;
-    SimpleTimer simple_timer;
-    Scheduler scheduler;
-
     int server_state;
-    bool bike_sync_needed;
-    bool full_sync_needed;
+
+    SimulationThread simulation_thread;
+    Scheduler scheduler;
 
 };

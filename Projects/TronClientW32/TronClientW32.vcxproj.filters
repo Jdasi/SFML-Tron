@@ -78,9 +78,6 @@
     <ClInclude Include="..\..\Code\Client\NetworkManager.h">
       <Filter>Managerial</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Client\ThreadDispatcher.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\Client\TronNetworkManager.h">
       <Filter>Managerial</Filter>
     </ClInclude>

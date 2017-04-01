@@ -1,10 +1,7 @@
-#include <SFML/Network.hpp>
-
 #include "Simulation.h"
 #include "Grid.h"
 #include "Bike.h"
 #include "Constants.h"
-#include <iostream>
 
 Simulation::Simulation()
 {
@@ -53,10 +50,14 @@ void Simulation::addBike(unsigned int _id)
     bike.setAlive(true);
 }
 
-void Simulation::overwrite(const Simulation& _simulation)
+void Simulation::overwrite(const SimulationState& _simulation_state)
 {
-    grid = _simulation.grid;
-    bikes = _simulation.bikes;
+    grid.overwriteAllCells(_simulation_state.cells);
+
+    for (int i = 0; i < MAX_PLAYERS; ++i)
+    {
+        bikes[i].overwriteState(_simulation_state.bikes[i]);
+    }
 
     for (auto& listener : listeners)
     {
@@ -64,9 +65,9 @@ void Simulation::overwrite(const Simulation& _simulation)
     }
 }
 
-void Simulation::overwriteBike(const Bike& _bike)
+void Simulation::overwriteBike(const BikeState& _bike_state)
 {
-    Bike& bike = bikes[_bike.getID()];
+    Bike& bike = bikes[_bike_state.id];
 
     // Erase old line.
     grid.clearCellRange(bike.getLine());
@@ -77,7 +78,7 @@ void Simulation::overwriteBike(const Bike& _bike)
     }
 
     // Overwrite Bike.
-    bike = _bike;
+    bike.overwriteState(_bike_state);
 
     // Write new line.
     grid.overwriteCellRange(bike.getLine(), bike.idToCellValue());
@@ -90,16 +91,11 @@ void Simulation::overwriteBike(const Bike& _bike)
     handleBikeDeath(bike);
 }
 
-void Simulation::overwriteBikes(const std::array<Bike, MAX_PLAYERS>& _bikes)
+void Simulation::overwriteBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states)
 {
-    for (auto& bike : _bikes)
+    for (int i = 0; i < MAX_PLAYERS; ++i)
     {
-        if (!bike.isAlive())
-        {
-            continue;
-        }
-
-        overwriteBike(bike);
+        overwriteBike(_bike_states[i]);
     }
 }
 
@@ -117,6 +113,30 @@ void Simulation::reset()
 const Grid& Simulation::getGrid() const
 {
     return grid;
+}
+
+SimulationState Simulation::getState() const
+{
+    SimulationState state;
+
+    state.cells = grid.getCells();
+    
+    for (int i = 0; i < MAX_PLAYERS; ++i)
+    {
+        state.bikes[i] = bikes[i].getState();
+    }
+
+    return state;
+}
+
+void Simulation::overwriteState(const SimulationState& _state)
+{
+    grid.overwriteAllCells(_state.cells);
+
+    for (int i = 0; i < MAX_PLAYERS; ++i)
+    {
+        bikes[i].overwriteState(bikes[i].getState());
+    }
 }
 
 Bike& Simulation::getBike(unsigned int _bike_id)
@@ -137,9 +157,16 @@ bool Simulation::allBikesDead() const
     return true;
 }
 
-std::array<Bike, MAX_PLAYERS>& Simulation::getBikes()
+std::array<BikeState, MAX_PLAYERS> Simulation::getBikes()
 {
-    return bikes;
+    std::array<BikeState, MAX_PLAYERS> bike_states;
+
+    for (int i = 0; i < MAX_PLAYERS; ++i)
+    {
+        bike_states[i] = bikes[i].getState();
+    }
+
+    return bike_states;
 }
 
 void Simulation::changeBikeDirection(unsigned int _bike_id, const MoveDirection _dir)
@@ -317,43 +344,4 @@ void Simulation::resetBikes()
     {
         listener->removeAllPlayerMarkers();
     }
-}
-
-sf::Packet& operator<<(sf::Packet& _packet, Simulation& _simulation)
-{
-    auto& cells = _simulation.getGrid().getCells();
-    for (auto& cell_value : cells)
-    {
-        _packet << static_cast<sf::Uint8>(cell_value);
-    }
-
-    auto& bikes = _simulation.getBikes();
-    for (auto& bike : bikes)
-    {
-        _packet << bike;
-    }
-
-    return _packet;
-}
-
-sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation)
-{
-    std::array<CellValue, GRID_AREA> cells;
-    for (unsigned int i = 0; i < GRID_AREA; ++i)
-    {
-        sf::Uint8 cell_value;
-
-        _packet >> cell_value;
-        cells[i] = static_cast<CellValue>(cell_value);
-    }
-    _simulation.grid.overwriteAllCells(cells);
-
-    std::array<Bike, MAX_PLAYERS> bikes;
-    for (sf::Uint8 i = 0; i < MAX_PLAYERS; ++i)
-    {
-        _packet >> bikes[i];
-    }
-    _simulation.bikes = bikes;
-
-    return _packet;
 }

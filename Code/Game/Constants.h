@@ -22,7 +22,9 @@ constexpr float WINDOW_BOTTOM_BOUNDARY  = WINDOW_HEIGHT - WINDOW_MARGIN_Y;
 // ======================================================================================
 // NETWORK SETTINGS
 // ======================================================================================
-const std::string SERVER_IP             { "127.0.0.1" };
+//const std::string SERVER_IP             { "dgm.no-ip.org" };
+//const std::string SERVER_IP             { "127.0.0.1" };
+const std::string SERVER_IP             { "86.31.186.180" };
 const unsigned int SERVER_TCP_PORT      = 1337;
 
 // ======================================================================================

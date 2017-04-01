@@ -4,8 +4,8 @@
 // TronClient includes headers for its members to avoid linking errors in main.
 #include <Game/SimpleTimer.h>
 #include <Game/Simulation.h>
+#include <Game/ThreadDispatcher.h>
 #include "INetworkClient.h"
-#include "ThreadDispatcher.h"
 #include "TronNetworkManager.h"
 #include "InputHandler.h"
 #include "ClientData.h"
@@ -20,6 +20,8 @@ public:
     ~TronClient() = default;
 
     void run();
+    void mainLoop();
+
     void onCommand(GameAction _action, ActionState _action_state) const;
 
 private:
@@ -37,9 +39,9 @@ private:
     void onPlayerJoined(int _id) override;
     void onPlayerStateChange(int _player_id, const PlayerState _state) override;
     void onGameStateChange(int _state) override;
-    void onBikeSync(const Bike& _bike) override;
-    void onFullBikeSync(const std::array<Bike, MAX_PLAYERS>& _bikes) override;
-    void onFullSync(const Simulation& _simulation) override;
+    void onBikeSync(const BikeState& _bike_state) override;
+    void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
+    void onFullSync(const SimulationState& _simulation_state) override;
 
     void tick();
     void draw();

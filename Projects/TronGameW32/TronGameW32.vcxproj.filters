@@ -80,9 +80,6 @@
     <ClInclude Include="..\..\Code\Game\PlayerState.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Game\INetworkSimulation.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\Game\PacketID.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -93,6 +90,18 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\GameStateIDs.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\ThreadDispatcher.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\BikeState.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\SimulationState.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\INetworkSimulation.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,8 @@
 #pragma once
 #include "MoveDirection.h"
 
-class Simulation;
+struct SimulationState;
+struct BikeState;
 
 /* Interface class used by TronClient to reveal only certain aspects of
  * the simulation through the GameManager.
@@ -16,8 +17,8 @@ public:
     virtual ~INetworkSimulation() = default;
 
     virtual void changeBikeDirection(unsigned int _bike_id, const MoveDirection _dir) = 0;
-    virtual void overwrite(const Simulation& _simulation) = 0;
-    virtual void overwriteBike(const Bike& _bike) = 0;
-    virtual void overwriteBikes(const std::array<Bike, MAX_PLAYERS>& _bikes) = 0;
+    virtual void overwrite(const SimulationState& _simulation_state) = 0;
+    virtual void overwriteBike(const BikeState& _bike_state) = 0;
+    virtual void overwriteBikes(const std::array<BikeState, MAX_PLAYERS>& _bikes_states) = 0;
 
 };

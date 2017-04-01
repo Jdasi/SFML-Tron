@@ -86,10 +86,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\Server\main_server.cpp" />
+    <ClCompile Include="..\..\Code\Server\SimulationThread.cpp" />
     <ClCompile Include="..\..\Code\Server\TronServer.cpp" />
     <ClCompile Include="..\..\Code\Server\Client.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Code\Server\ISimulationServer.h" />
+    <ClInclude Include="..\..\Code\Server\SimulationThread.h" />
     <ClInclude Include="..\..\Code\Server\TronServer.h" />
     <ClInclude Include="..\..\Code\Server\Client.h" />
   </ItemGroup>

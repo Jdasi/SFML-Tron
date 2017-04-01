@@ -32,7 +32,6 @@ NetworkManager::NetworkManager(const sf::IpAddress _ip_address, const unsigned i
 NetworkManager::~NetworkManager()
 {
     stopNetworkingThread();
-    std::cout << "Networking thread stopped." << std::endl;
 }
 
 void NetworkManager::connect()
@@ -118,6 +117,7 @@ void NetworkManager::stopNetworkingThread()
 {
     running = false;
     network_thread.join();
+    std::cout << "Networking thread stopped." << std::endl;
 }
 
 void NetworkManager::registerPacketHandlers()

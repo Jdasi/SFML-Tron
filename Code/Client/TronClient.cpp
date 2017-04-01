@@ -26,6 +26,13 @@ void TronClient::run()
 
     network_manager.connect();
 
+    mainLoop();
+
+    window.close();
+}
+
+void TronClient::mainLoop()
+{
     while (!client_data.exit)
     {
         // Crude delta-time system.
@@ -45,8 +52,6 @@ void TronClient::run()
             handleEvent(event);
         }
     }
-
-    window.close();
 }
 
 // Forwards any input-based commands to the current state for processing.
@@ -185,27 +190,27 @@ void TronClient::onGameStateChange(int _state)
     });
 }
 
-void TronClient::onBikeSync(const Bike& _bike)
+void TronClient::onBikeSync(const BikeState& _bike_state)
 {
-    postEvent([this, _bike]()
+    postEvent([this, _bike_state]()
     {
-        game_manager.getNetworkSimulation()->overwriteBike(_bike);
+        game_manager.getNetworkSimulation()->overwriteBike(_bike_state);
     });
 }
 
-void TronClient::onFullBikeSync(const std::array<Bike, MAX_PLAYERS>& _bikes)
+void TronClient::onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states)
 {
-    postEvent([this, _bikes]()
+    postEvent([this, _bike_states]()
     {
-        game_manager.getNetworkSimulation()->overwriteBikes(_bikes);
+        game_manager.getNetworkSimulation()->overwriteBikes(_bike_states);
     });
 }
 
-void TronClient::onFullSync(const Simulation& _simulation)
+void TronClient::onFullSync(const SimulationState& _simulation_state)
 {
-    postEvent([this, _simulation]()
+    postEvent([this, _simulation_state]()
     {
-        game_manager.getNetworkSimulation()->overwrite(_simulation);
+        game_manager.getNetworkSimulation()->overwrite(_simulation_state);
     });
 }
 

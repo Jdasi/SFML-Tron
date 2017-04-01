@@ -8,7 +8,7 @@
 #include <Game/PacketID.h>
 #include <Game/Scheduler.h>
 #include <Game/SimpleTimer.h>
-#include "ThreadDispatcher.h"
+#include <Game/ThreadDispatcher.h>
 
 class NetworkException : public std::runtime_error
 {

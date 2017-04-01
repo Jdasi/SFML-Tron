@@ -5,8 +5,8 @@
 #include <Game/PlayerState.h>
 
 class Player;
-class Bike;
-class Simulation;
+struct SimulationState;
+struct BikeState;
 
 /* Interface class used by TronNetworkManager to decouple networking from
  * the TronClient.
@@ -29,8 +29,8 @@ public:
     virtual void onPlayerJoined(int _id) = 0;
     virtual void onPlayerStateChange(int _player_id, const PlayerState _state) = 0;
     virtual void onGameStateChange(int _state) = 0;
-    virtual void onBikeSync(const Bike& _bike) = 0;
-    virtual void onFullBikeSync(const std::array<Bike, MAX_PLAYERS>& _bikes) = 0;
-    virtual void onFullSync(const Simulation& _simulation) = 0;
+    virtual void onBikeSync(const BikeState& _bike_state) = 0;
+    virtual void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) = 0;
+    virtual void onFullSync(const SimulationState& _simulation_state) = 0;
 
 };
