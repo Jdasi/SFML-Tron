@@ -104,7 +104,7 @@ void SimulationThread::simulationThreadLoop()
                 eventStopSimulation();
             }
 
-            scheduleAllBikeSync(0.2);
+            scheduleAllBikeSync(0.25);
             scheduleSimulationSync(5.0);
         }
     }
@@ -156,7 +156,7 @@ void SimulationThread::scheduleAllBikeSync(double _time)
             bike_sync_needed = true;
 
             std::cout << "Sync all bikes event" << std::endl;
-        }, 0.2);
+        }, _time);
     }
 }
 
@@ -172,6 +172,6 @@ void SimulationThread::scheduleSimulationSync(double _time)
             full_sync_needed = true;
 
             std::cout << "Sync simulation event" << std::endl;
-        }, 5.0);
+        }, _time);
     }
 }
