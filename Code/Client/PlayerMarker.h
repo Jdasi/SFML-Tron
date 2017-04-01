@@ -11,10 +11,12 @@ public:
     void draw(sf::RenderWindow& _window) const;
 
     void setSprite(const sf::Sprite& _sprite);
-    void setVisible(const bool _value);
     void setPosition(const sf::Vector2f& _pos);
 
-    void enlarge(const bool _value);
+    bool isVisible() const;
+    void setVisible(const bool _value);
+
+    void setEnlarged(const bool _value);
 
 private:
     sf::Sprite sprite;

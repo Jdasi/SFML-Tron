@@ -44,7 +44,6 @@ void Simulation::addBike(unsigned int _id)
     for (auto& listener : listeners)
     {
         listener->updateBikePosition(bike.getPosition(), bike.getID());
-        //listener->addPlayerMarker(bike.getID(), bike.idToCellValue());
     }
 
     bike.setAlive(true);
@@ -62,6 +61,16 @@ void Simulation::overwrite(const SimulationState& _simulation_state)
     for (auto& listener : listeners)
     {
         listener->overwriteAllCells(grid.getCells());
+
+        for (auto& bike : bikes)
+        {
+            if (!bike.isAlive())
+            {
+                return;
+            }
+            
+            listener->addPlayerMarker(bike.getID(), bike.idToCellValue());
+        }
     }
 }
 
@@ -86,6 +95,7 @@ void Simulation::overwriteBike(const BikeState& _bike_state)
     for (auto& listener : listeners)
     {
         listener->overwriteCellRange(bike.getLine(), bike.idToCellValue());
+        listener->updatePlayerMarkerSize(bike.getID(), bike.isBoosting());
     }
 
     handleBikeDeath(bike);

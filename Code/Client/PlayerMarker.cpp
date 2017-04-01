@@ -33,17 +33,22 @@ void PlayerMarker::setSprite(const sf::Sprite& _sprite)
     sprite = _sprite;
 }
 
-void PlayerMarker::setVisible(const bool _value)
-{
-    visible = _value;
-}
-
 void PlayerMarker::setPosition(const sf::Vector2f& _pos)
 {
     sprite.setPosition(_pos);
 }
 
-void PlayerMarker::enlarge(const bool _value)
+bool PlayerMarker::isVisible() const
+{
+    return visible;
+}
+
+void PlayerMarker::setVisible(const bool _value)
+{
+    visible = _value;
+}
+
+void PlayerMarker::setEnlarged(const bool _value)
 {
     enlarged = _value;
 

@@ -83,6 +83,11 @@ void PrettyGrid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cell
 
 void PrettyGrid::addPlayerMarker(const unsigned int _bike_id, const CellValue _value)
 {
+    if (player_markers[_bike_id].isVisible())
+    {
+        return;
+    }
+
     auto* tex = asset_manager->loadTexture(PLAYER_MARKER);
 
     sf::Sprite sprite(*tex);
@@ -98,7 +103,7 @@ void PrettyGrid::addPlayerMarker(const unsigned int _bike_id, const CellValue _v
 
 void PrettyGrid::updatePlayerMarkerSize(const unsigned int _bike_id, const bool _enlarged)
 {
-    player_markers[_bike_id].enlarge(_enlarged);
+    player_markers[_bike_id].setEnlarged(_enlarged);
 }
 
 void PrettyGrid::removePlayerMarker(const unsigned int _bike_id)
