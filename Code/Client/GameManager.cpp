@@ -24,11 +24,6 @@ void GameManager::startSimulation()
         return;
     }
 
-    for (auto& elem : players)
-    {
-        simulation.addBike(elem.second.getID());
-    }
-
     simulation_running = true;
 }
 

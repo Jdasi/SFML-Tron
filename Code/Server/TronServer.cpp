@@ -1,6 +1,4 @@
 #include <iostream>
-#include <thread>
-#include <chrono>
 
 #include <Game/Constants.h>
 #include <Game/GameStateIDs.h>
@@ -117,71 +115,86 @@ void TronServer::performStateBehaviour(const double _dt)
     {
         case STATE_LOBBY:
         {
-            if (connected_clients == 0)
-            {
-                return;
-            }
-
-            for (auto& client : clients)
-            {
-                if (!client)
-                {
-                    continue;
-                }
-
-                if (client->getState() == PlayerState::NOTREADY)
-                {
-                    return;
-                }
-            }
-
-            startSimulation();
+            lobbyStateBehaviour(_dt);
         } break;
 
         case STATE_GAME:
         {
-            simulation.tick(_dt);
-
-            if (simulation.allBikesDead())
-            {
-                stopSimulation();
-            }
-
-            if (bike_sync_needed)
-            {
-                bike_sync_needed = false;
-
-                scheduler.invoke([this]() { syncAllBikes(); }, 0.5);
-            }
-
-            if (full_sync_needed)
-            {
-                full_sync_needed = false;
-
-                scheduler.invoke([this]() { syncSimulation(); }, 5.0);
-            }
+            gameStateBehaviour(_dt);
         } break;
 
         case STATE_END:
         {
-            for (auto& client : clients)
-            {
-                if (!client)
-                {
-                    continue;
-                }
-
-                if (client->getState() == PlayerState::VIEWING_RESULTS)
-                {
-                    return;
-                }
-            }
-
-            server_state = STATE_LOBBY;
+            endStateBehaviour(_dt);
         } break;
 
         default: {}
     }
+}
+
+void TronServer::lobbyStateBehaviour(const double _dt)
+{
+    if (connected_clients == 0)
+    {
+        return;
+    }
+
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            continue;
+        }
+
+        if (client->getState() == PlayerState::NOTREADY)
+        {
+            return;
+        }
+    }
+
+    startSimulation();
+}
+
+void TronServer::gameStateBehaviour(const double _dt)
+{
+    simulation.tick(_dt);
+
+    if (simulation.allBikesDead())
+    {
+        stopSimulation();
+    }
+
+    if (bike_sync_needed)
+    {
+        bike_sync_needed = false;
+
+        scheduler.invoke([this]() { syncAllBikes(); }, 0.5);
+    }
+
+    if (full_sync_needed)
+    {
+        full_sync_needed = false;
+
+        scheduler.invoke([this]() { syncSimulation(); }, 5.0);
+    }
+}
+
+void TronServer::endStateBehaviour(const double _dt)
+{
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            continue;
+        }
+
+        if (client->getState() == PlayerState::VIEWING_RESULTS)
+        {
+            return;
+        }
+    }
+
+    server_state = STATE_LOBBY;
 }
 
 void TronServer::acceptClient()
@@ -372,6 +385,11 @@ void TronServer::handlePlayerStatePacket(const sf::Packet& _packet, ClientPtr& _
 
 void TronServer::handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender)
 {
+    if (server_state != STATE_GAME)
+    {
+        return;
+    }
+
     sf::Uint8 dir;
     _packet >> dir;
 
@@ -382,6 +400,11 @@ void TronServer::handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender)
 
 void TronServer::handleBoostPacket(sf::Packet& _packet, ClientPtr& _sender)
 {
+    if (server_state != STATE_GAME)
+    {
+        return;
+    }
+
     if (!simulation.getBike(_sender->getID()).boost())
     {
         return;
@@ -463,11 +486,8 @@ void TronServer::startSimulation()
             continue;
         }
 
-        if (client->getState() == PlayerState::READY)
-        {
-            client->setState(PlayerState::PLAYING);
-            simulation.addBike(client->getID());
-        }
+        client->setState(PlayerState::PLAYING);
+        simulation.addBike(client->getID());
     }
 
     syncSimulation();

@@ -31,9 +31,6 @@ public:
 
     const std::vector<Vector2i>& getLine() const;
     void setLine(const std::vector<Vector2i>& _line);
-
-    unsigned int getSyncIndex() const;
-    void setSyncIndex(const unsigned int _value);
     
     float getMoveSpeed() const;
     void setMoveSpeed(const float _speed);
@@ -57,7 +54,6 @@ private:
     MoveDirection direction;
     Vector2i pos;
     std::vector<Vector2i> line;
-    unsigned int line_sync_index;
     float move_speed;
     double move_timer;
     bool alive;

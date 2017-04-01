@@ -6,7 +6,6 @@
 Bike::Bike()
     : id(0)
     , direction(MoveDirection::RIGHT)
-    , line_sync_index(0)
     , move_speed(BIKE_MOVE_SPEED)
     , move_timer(0)
     , alive(false)
@@ -77,16 +76,6 @@ const std::vector<Vector2i>& Bike::getLine() const
 void Bike::setLine(const std::vector<Vector2i>& _line)
 {
     line = _line;
-}
-
-unsigned Bike::getSyncIndex() const
-{
-    return line_sync_index;
-}
-
-void Bike::setSyncIndex(const unsigned int _value)
-{
-    line_sync_index = _value;
 }
 
 float Bike::getMoveSpeed() const
@@ -164,17 +153,12 @@ sf::Packet& operator<<(sf::Packet& _packet, Bike& _bike)
             << _bike.boosting
             << _bike.boost_timer
             << static_cast<sf::Int32>(_bike.boost_charges)
-            << static_cast<sf::Uint32>(_bike.line.size() - _bike.line_sync_index)
             << static_cast<sf::Uint32>(_bike.line.size());
 
-    for (unsigned int i = _bike.line_sync_index; i < _bike.line.size(); ++i)
+    for (auto& pos : _bike.line)
     {
-        auto& pos = _bike.line[i];
-
         _packet << static_cast<sf::Uint32>(pos.x) << static_cast<sf::Uint32>(pos.y);
     }
-
-    _bike.line_sync_index = _bike.line.size();
 
     return _packet;
 }
@@ -190,7 +174,6 @@ sf::Packet& operator>>(sf::Packet& _packet, Bike& _bike)
     double      boost_timer;
     sf::Int32   boost_charges;
     sf::Uint32  line_length;
-    sf::Uint32  line_sync_index;
 
     _bike.line.clear();
 
@@ -203,8 +186,7 @@ sf::Packet& operator>>(sf::Packet& _packet, Bike& _bike)
             >> bike_boosting 
             >> boost_timer
             >> boost_charges
-            >> line_length 
-            >> line_sync_index;
+            >> line_length;
 
     _bike.id                = bike_id;
     _bike.direction         = static_cast<MoveDirection>(bike_dir);
@@ -214,7 +196,6 @@ sf::Packet& operator>>(sf::Packet& _packet, Bike& _bike)
     _bike.boosting          = bike_boosting;
     _bike.boost_timer       = boost_timer;
     _bike.boost_charges     = boost_charges;
-    _bike.line_sync_index   = line_sync_index;
 
     for (sf::Uint32 i = 0; i < line_length; ++i)
     {

@@ -14,12 +14,7 @@ void PrettyGrid::tick(double _dt)
 {
     for (auto& marker : player_markers)
     {
-        if (!marker)
-        {
-            continue;
-        }
-
-        marker->tick(_dt);
+        marker.tick(_dt);
     }
 }
 
@@ -39,12 +34,7 @@ void PrettyGrid::draw(sf::RenderWindow& _window)
 
     for (auto& marker : player_markers)
     {
-        if (!marker)
-        {
-            continue;
-        }
-
-        marker->draw(_window);
+        marker.draw(_window);
     }
 }
 
@@ -95,54 +85,38 @@ void PrettyGrid::addPlayerMarker(const unsigned int _bike_id, const CellValue _v
 {
     auto* tex = asset_manager->loadTexture(PLAYER_MARKER);
 
-    sf::Sprite marker(*tex);
-    marker.setPosition({ -100, -100 });
-    marker.setColor(evaluateSFColor(_value));
-    marker.setOrigin({ 32, 32 });
-    marker.setScale({ 0.75f, 0.75f });
+    sf::Sprite sprite(*tex);
+    sprite.setPosition({ -100, -100 });
+    sprite.setColor(evaluateSFColor(_value));
+    sprite.setOrigin({ 32, 32 });
+    sprite.setScale({ 0.75f, 0.75f });
 
-    player_markers[_bike_id] = std::make_unique<PlayerMarker>(marker);
+    auto& marker = player_markers[_bike_id];
+    marker.setSprite(sprite);
+    marker.setVisible(true);
 }
 
 void PrettyGrid::updatePlayerMarkerSize(const unsigned int _bike_id, const bool _enlarged)
 {
-    auto& marker = player_markers[_bike_id];
-    if (!marker)
-    {
-        return;
-    }
-
-    marker->enlarge(_enlarged);
+    player_markers[_bike_id].enlarge(_enlarged);
 }
 
 void PrettyGrid::removePlayerMarker(const unsigned int _bike_id)
 {
-    auto& marker = player_markers[_bike_id];
-    if (!marker)
-    {
-        return;
-    }
-
-    marker.reset();
+    player_markers[_bike_id].setVisible(false);
 }
 
 void PrettyGrid::removeAllPlayerMarkers()
 {
     for (auto& marker : player_markers)
     {
-        marker.reset();
+        marker.setVisible(false);
     }
 }
 
 void PrettyGrid::updateBikePosition(const Vector2i& _pos, const unsigned int _bike_id)
 {
-    auto& marker = player_markers[_bike_id];
-    if (!marker)
-    {
-        return;
-    }
-
-    marker->setPosition(tiles[calculateIndex(_pos)]->getPosition());
+    player_markers[_bike_id].setPosition(tiles[calculateIndex(_pos)]->getPosition());
     setTileColor(_pos, sf::Color::White);
 }
 

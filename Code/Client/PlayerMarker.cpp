@@ -1,21 +1,41 @@
 #include <Game/Constants.h>
 #include "PlayerMarker.h"
 
-PlayerMarker::PlayerMarker(const sf::Sprite& _sprite)
-    : sprite(_sprite)
+PlayerMarker::PlayerMarker()
+    : visible(false)
     , enlarged(false)
 {
 }
 
 void PlayerMarker::tick(double _dt)
 {
+    if (!visible)
+    {
+        return;
+    }
+
     float modifier = enlarged ? MARKER_ROTATE_MODIFIER : 1.0f;
     sprite.rotate(static_cast<float>(MARKER_ROTATE_SPEED * modifier * _dt));
 }
 
 void PlayerMarker::draw(sf::RenderWindow& _window) const
 {
+    if (!visible)
+    {
+        return;
+    }
+
     _window.draw(sprite);
+}
+
+void PlayerMarker::setSprite(const sf::Sprite& _sprite)
+{
+    sprite = _sprite;
+}
+
+void PlayerMarker::setVisible(const bool _value)
+{
+    visible = _value;
 }
 
 void PlayerMarker::setPosition(const sf::Vector2f& _pos)

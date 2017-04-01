@@ -4,6 +4,7 @@
 #include "Grid.h"
 #include "Bike.h"
 #include "Constants.h"
+#include <iostream>
 
 Simulation::Simulation()
 {
@@ -45,7 +46,8 @@ void Simulation::addBike(unsigned int _id)
 
     for (auto& listener : listeners)
     {
-        listener->addPlayerMarker(bike.getID(), bike.idToCellValue());
+        listener->updateBikePosition(bike.getPosition(), bike.getID());
+        //listener->addPlayerMarker(bike.getID(), bike.idToCellValue());
     }
 
     bike.setAlive(true);
@@ -67,26 +69,22 @@ void Simulation::overwriteBike(const Bike& _bike)
     Bike& bike = bikes[_bike.getID()];
 
     // Erase old line.
-    auto& old_positions = bike.getLine();
-    for (unsigned int i = bike.getSyncIndex(); i < old_positions.size(); ++i)
-    {
-        grid.clearCell(old_positions[i]);
-    }
+    grid.clearCellRange(bike.getLine());
 
-    // Write new line.
-    auto& new_positions = _bike.getLine();
-    for (unsigned int i = bike.getSyncIndex(); i < new_positions.size(); ++i)
+    for (auto& listener : listeners)
     {
-        grid.setCellValue(new_positions[i], bike.idToCellValue());
+        listener->clearCellRange(bike.getLine());
     }
 
     // Overwrite Bike.
     bike = _bike;
 
-    // Inform listeners of bike changes.
+    // Write new line.
+    grid.overwriteCellRange(bike.getLine(), bike.idToCellValue());
+
     for (auto& listener : listeners)
     {
-        listener->overwriteCellRange(new_positions, bike.idToCellValue());
+        listener->overwriteCellRange(bike.getLine(), bike.idToCellValue());
     }
 
     handleBikeDeath(bike);
@@ -215,7 +213,7 @@ void Simulation::moveBike(Bike& _bike)
     }
     else if (adjustmentCollisionCheck(adjustment))
     {
-        // Bike hit a trail.
+        // Bike hit a line.
         _bike.setAlive(false);
     }
     else
@@ -227,14 +225,13 @@ void Simulation::moveBike(Bike& _bike)
         for (auto& listener : listeners)
         {
             listener->updateBikePosition(_bike.getPosition(), _bike.getID());
-            listener->updatePlayerMarkerSize(_bike.getID(), _bike.isBoosting());
         }
     }
 
     handleBikeDeath(_bike);
 }
 
-Vector2i Simulation::generatePositionAdjustment(MoveDirection _dir, 
+Vector2i Simulation::generatePositionAdjustment(const MoveDirection _dir, 
     const Vector2i& _current_pos) const
 {
     Vector2i adjustment;
@@ -263,44 +260,47 @@ void Simulation::handleBikeDeath(const Bike& _bike)
     }
 }
 
+// Returns true if adjustment points to a grid space, otherwise returns false.
 bool Simulation::adjustmentWithinBounds(const Vector2i& _adjustment) const
 {
-    if (_adjustment.x >= GRID_SIZE_X ||
-        _adjustment.x < 0 ||
-        _adjustment.y >= GRID_SIZE_Y ||
-        _adjustment.y < 0)
+    if (_adjustment.x < GRID_SIZE_X &&
+        _adjustment.x >= 0 &&
+        _adjustment.y < GRID_SIZE_Y &&
+        _adjustment.y >= 0)
     {
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 // Returns true if there is a collision, otherwise returns false.
 bool Simulation::adjustmentCollisionCheck(const Vector2i& _adjustment) const
 {
-    if (grid.getCellValue(_adjustment) == CellValue::NONE)
+    if (grid.getCellValue(_adjustment) != CellValue::NONE)
     {
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 // Returns true if direction change is valid, otherwise returns false.
-bool Simulation::directionChangeValid(const Bike& _bike, MoveDirection _dir)
+bool Simulation::directionChangeValid(const Bike& _bike, const MoveDirection _new_dir) const
 {
-    if ((_dir == MoveDirection::UP && _bike.getDirection() == MoveDirection::DOWN) ||
-        (_dir == MoveDirection::DOWN && _bike.getDirection() == MoveDirection::UP) ||
-        (_dir == MoveDirection::LEFT && _bike.getDirection() == MoveDirection::RIGHT) ||
-        (_dir == MoveDirection::RIGHT && _bike.getDirection() == MoveDirection::LEFT) ||
-        (_dir == _bike.getDirection()) ||
-        !_bike.isAlive())
+    MoveDirection bike_dir = _bike.getDirection();
+
+    if (_bike.isAlive() &&
+        (bike_dir != _new_dir) &&
+        (bike_dir == MoveDirection::UP && _new_dir != MoveDirection::DOWN) ||
+        (bike_dir == MoveDirection::DOWN && _new_dir != MoveDirection::UP) ||
+        (bike_dir == MoveDirection::LEFT && _new_dir != MoveDirection::RIGHT) ||
+        (bike_dir == MoveDirection::RIGHT && _new_dir != MoveDirection::LEFT))
     {
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 // Goes through the array of bikes and overwrites them with new copies with correct ids.
@@ -322,7 +322,6 @@ void Simulation::resetBikes()
 sf::Packet& operator<<(sf::Packet& _packet, Simulation& _simulation)
 {
     auto& cells = _simulation.getGrid().getCells();
-    _packet << static_cast<sf::Uint32>(cells.size());
     for (auto& cell_value : cells)
     {
         _packet << static_cast<sf::Uint8>(cell_value);
@@ -339,11 +338,8 @@ sf::Packet& operator<<(sf::Packet& _packet, Simulation& _simulation)
 
 sf::Packet& operator>>(sf::Packet& _packet, Simulation& _simulation)
 {
-    sf::Uint32 num_cells;
-    _packet >> num_cells;
-
     std::array<CellValue, GRID_AREA> cells;
-    for (sf::Uint32 i = 0; i < num_cells; ++i)
+    for (unsigned int i = 0; i < GRID_AREA; ++i)
     {
         sf::Uint8 cell_value;
 

@@ -49,6 +49,6 @@ private:
 
     sf::RectangleShape border;
     std::array<std::unique_ptr<sf::RectangleShape>, GRID_AREA> tiles;
-    std::array<std::unique_ptr<PlayerMarker>, MAX_PLAYERS> player_markers;
+    std::array<PlayerMarker, MAX_PLAYERS> player_markers;
 
 };

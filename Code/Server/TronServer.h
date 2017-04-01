@@ -27,7 +27,11 @@ private:
     void mainLoop();
     void listen();
     void handleServerReset();
+
     void performStateBehaviour(const double _dt);
+    void lobbyStateBehaviour(const double _dt);
+    void gameStateBehaviour(const double _dt);
+    void endStateBehaviour(const double _dt);
 
     void acceptClient();
     int generateUniqueID() const;
@@ -47,7 +51,6 @@ private:
     void handleBoostPacket(sf::Packet& _packet, ClientPtr& _sender);
 
     void disconnectClient(ClientPtr& _client);
-
     void sendPacketToClient(sf::Packet& _packet, const ClientPtr& _client) const;
     void sendPacketToAll(sf::Packet& _packet);
     void sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& _sender);
