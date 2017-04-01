@@ -17,12 +17,8 @@ find_package(SFML 2 REQUIRED system window graphics network audio)
 add_library(TronGame STATIC
     Code/Game/Bike.cpp
     Code/Game/Bike.h
-    Code/Game/Cell.h
-    Code/Game/CellColour.h
     Code/Game/CellValue.h
     Code/Game/Constants.h
-    Code/Game/GamePacket.cpp
-    Code/Game/GamePacket.h
     Code/Game/GameStateIDs.h
     Code/Game/Grid.cpp
     Code/Game/Grid.h
@@ -43,7 +39,6 @@ add_library(TronGame STATIC
     Code/Game/SimulationListener.h
     Code/Game/State.h
     Code/Game/StateHandler.h
-    Code/Game/TronEvent.h
     Code/Game/Vector2f.h
     Code/Game/Vector2i.h
 )
@@ -60,6 +55,8 @@ target_link_libraries(TronGame
 ###############################################################################
 
 add_executable(TronClient
+    Code/Client/AssetManager.cpp
+    Code/Client/AssetManager.h
     Code/Client/ClientData.h
     Code/Client/ClientState.h
     Code/Client/ClientStateEnd.cpp
@@ -81,6 +78,8 @@ add_executable(TronClient
     Code/Client/NetworkManager.h
     Code/Client/Player.cpp
     Code/Client/Player.h
+    Code/Client/PlayerMarker.cpp
+    Code/Client/PlayerMarker.h
     Code/Client/PrettyGrid.cpp
     Code/Client/PrettyGrid.h
     Code/Client/ThreadDispatcher.h
