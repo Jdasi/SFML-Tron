@@ -1,6 +1,8 @@
+#include <iostream>
+
 #include <Game/Constants.h>
 #include <Game/Vector2i.h>
-#include <Game/CellValue.h>
+#include <Game/BikeState.h>
 #include "PrettyGrid.h"
 #include "AssetManager.h"
 
@@ -8,6 +10,7 @@ PrettyGrid::PrettyGrid(AssetManager* _asset_manager)
     : asset_manager(_asset_manager)
 {
     initGrid();
+    initPlayerMarkers();
 }
 
 void PrettyGrid::tick(double _dt)
@@ -81,34 +84,19 @@ void PrettyGrid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cell
     }
 }
 
-void PrettyGrid::addPlayerMarker(const unsigned int _bike_id, const CellValue _value)
+void PrettyGrid::updatePlayerMarker(const BikeState& _bike_state)
 {
-    if (player_markers[_bike_id].isVisible())
+    auto& marker = player_markers[_bike_state.id];
+
+    if (!_bike_state.alive)
     {
+        marker.setVisible(false);
         return;
     }
 
-    auto* tex = asset_manager->loadTexture(PLAYER_MARKER);
-
-    sf::Sprite sprite(*tex);
-    sprite.setPosition({ -100, -100 });
-    sprite.setColor(evaluateSFColor(_value));
-    sprite.setOrigin({ 32, 32 });
-    sprite.setScale({ 0.75f, 0.75f });
-
-    auto& marker = player_markers[_bike_id];
-    marker.setSprite(sprite);
     marker.setVisible(true);
-}
-
-void PrettyGrid::updatePlayerMarkerSize(const unsigned int _bike_id, const bool _enlarged)
-{
-    player_markers[_bike_id].setEnlarged(_enlarged);
-}
-
-void PrettyGrid::removePlayerMarker(const unsigned int _bike_id)
-{
-    player_markers[_bike_id].setVisible(false);
+    marker.setEnlarged(_bike_state.boosting);
+    marker.setPosition(tiles[calculateIndex(_bike_state.pos)]->getPosition());
 }
 
 void PrettyGrid::removeAllPlayerMarkers()
@@ -154,6 +142,22 @@ void PrettyGrid::initGrid()
 
             tiles[calculateIndex(x_cycles, y_cycles)] = std::move(tile);
         }
+    }
+}
+
+void PrettyGrid::initPlayerMarkers()
+{
+    auto* tex = asset_manager->loadTexture(PLAYER_MARKER);
+
+    sf::Sprite sprite(*tex);
+    sprite.setPosition({ -100, -100 });
+    sprite.setOrigin({ 32, 32 });
+    sprite.setScale({ 0.75f, 0.75f });
+
+    for (int i = 0; i < MAX_PLAYERS; ++i)
+    {
+        sprite.setColor(evaluateSFColor(static_cast<CellValue>(CellValue::CYAN + i)));
+        player_markers[i].setSprite(sprite);
     }
 }
 

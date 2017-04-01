@@ -29,15 +29,14 @@ public:
         const CellValue _value) override;
     void overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells) override;
 
-    void addPlayerMarker(const unsigned int _bike_id, const CellValue _value) override;
-    void updatePlayerMarkerSize(const unsigned int _bike_id, const bool _enlarged) override;
-
-    void removePlayerMarker(const unsigned int _bike_id) override;
+    void updatePlayerMarker(const BikeState& _bike_state) override;
     void removeAllPlayerMarkers() override;
     void updateBikePosition(const Vector2i& _pos, const unsigned int _bike_id) override;
 
 private:
     void initGrid();
+    void initPlayerMarkers();
+
     void setTileColor(const unsigned int _index, const sf::Color& _color);
     void setTileColor(const Vector2i& _pos, const sf::Color& _color);
     sf::Color evaluateSFColor(const CellValue _value) const;

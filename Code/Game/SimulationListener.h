@@ -5,7 +5,7 @@
 #include "Constants.h"
 #include "CellValue.h"
 
-class Bike;
+struct BikeState;
 struct Vector2i;
 
 class SimulationListener
@@ -24,10 +24,7 @@ public:
 
     virtual void overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells) = 0;
 
-    virtual void addPlayerMarker(const unsigned int _bike_id, const CellValue _value) = 0;
-    virtual void updatePlayerMarkerSize(const unsigned int _bike_id, const bool _enlarged) = 0;
-
-    virtual void removePlayerMarker(const unsigned int _bike_id) = 0;
+    virtual void updatePlayerMarker(const BikeState& _bike_state) = 0;
     virtual void removeAllPlayerMarkers() = 0 ;
 
     virtual void updateBikePosition(const Vector2i& _pos, const unsigned int _bike_id) = 0;

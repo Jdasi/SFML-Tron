@@ -50,6 +50,11 @@ void PlayerMarker::setVisible(const bool _value)
 
 void PlayerMarker::setEnlarged(const bool _value)
 {
+    if (enlarged == _value)
+    {
+        return;
+    }
+
     enlarged = _value;
 
     if (enlarged)

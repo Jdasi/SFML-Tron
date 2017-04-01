@@ -56,21 +56,16 @@ void Simulation::overwrite(const SimulationState& _simulation_state)
     for (int i = 0; i < MAX_PLAYERS; ++i)
     {
         bikes[i].overwriteState(_simulation_state.bikes[i]);
+
+        for (auto& listener : listeners)
+        {
+            listener->updatePlayerMarker(_simulation_state.bikes[i]);
+        }
     }
 
     for (auto& listener : listeners)
     {
         listener->overwriteAllCells(grid.getCells());
-
-        for (auto& bike : bikes)
-        {
-            if (!bike.isAlive())
-            {
-                return;
-            }
-            
-            listener->addPlayerMarker(bike.getID(), bike.idToCellValue());
-        }
     }
 }
 
@@ -95,10 +90,8 @@ void Simulation::overwriteBike(const BikeState& _bike_state)
     for (auto& listener : listeners)
     {
         listener->overwriteCellRange(bike.getLine(), bike.idToCellValue());
-        listener->updatePlayerMarkerSize(bike.getID(), bike.isBoosting());
+        listener->updatePlayerMarker(_bike_state);
     }
-
-    handleBikeDeath(bike);
 }
 
 void Simulation::overwriteBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states)
@@ -264,8 +257,6 @@ void Simulation::moveBike(Bike& _bike)
             listener->updateBikePosition(_bike.getPosition(), _bike.getID());
         }
     }
-
-    handleBikeDeath(_bike);
 }
 
 Vector2i Simulation::generatePositionAdjustment(const MoveDirection _dir, 
@@ -284,17 +275,6 @@ Vector2i Simulation::generatePositionAdjustment(const MoveDirection _dir,
     }
 
     return _current_pos + adjustment;
-}
-
-void Simulation::handleBikeDeath(const Bike& _bike)
-{
-    if (!_bike.isAlive())
-    {
-        for (auto& listener : listeners)
-        {
-            listener->removePlayerMarker(_bike.getID());
-        }
-    }
 }
 
 // Returns true if adjustment points to a grid space, otherwise returns false.
