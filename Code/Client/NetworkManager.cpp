@@ -8,7 +8,8 @@ using namespace std::placeholders;
     packet_handlers.emplace(id, std::bind(&NetworkManager::func, this, _1))
 
 NetworkManager::NetworkManager(const sf::IpAddress _ip_address, const unsigned int _tcp_port)
-    : ip_address(_ip_address)
+    : packet_handlers()
+    , ip_address(_ip_address)
     , tcp_port(_tcp_port)
     , socket()
     , has_connected(false)
@@ -17,7 +18,6 @@ NetworkManager::NetworkManager(const sf::IpAddress _ip_address, const unsigned i
     , play_time(0)
     , timer()
     , scheduler()
-    , packet_handlers()
 {
     registerPacketHandlers();
 
