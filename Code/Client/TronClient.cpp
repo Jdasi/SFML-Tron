@@ -64,10 +64,17 @@ void TronClient::initKeyBindings()
 {
     input_handler.registerKey(sf::Keyboard::Key::Escape, GameAction::QUIT);
     input_handler.registerKey(sf::Keyboard::Key::Return, GameAction::ACCEPT);
+
     input_handler.registerKey(sf::Keyboard::Key::W, GameAction::MOVE_UP);
     input_handler.registerKey(sf::Keyboard::Key::S, GameAction::MOVE_DOWN);
     input_handler.registerKey(sf::Keyboard::Key::A, GameAction::MOVE_LEFT);
     input_handler.registerKey(sf::Keyboard::Key::D, GameAction::MOVE_RIGHT);
+
+    input_handler.registerKey(sf::Keyboard::Key::Up, GameAction::MOVE_UP);
+    input_handler.registerKey(sf::Keyboard::Key::Down, GameAction::MOVE_DOWN);
+    input_handler.registerKey(sf::Keyboard::Key::Left, GameAction::MOVE_LEFT);
+    input_handler.registerKey(sf::Keyboard::Key::Right, GameAction::MOVE_RIGHT);
+
     input_handler.registerKey(sf::Keyboard::Key::Space, GameAction::SPECIAL);
 }
 
