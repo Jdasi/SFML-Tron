@@ -11,7 +11,7 @@
 ClientStateLobby::ClientStateLobby(ClientData* _client_data)
     : ClientState(_client_data)
 {
-    auto* font = client_data->asset_manager->loadFont(DEFAULT_FONT);
+    auto font = client_data->asset_manager->loadFont(DEFAULT_FONT);
 
     auto title_text = std::make_unique<sf::Text>("StateLobby", *font);
     title_text->setCharacterSize(30);

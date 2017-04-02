@@ -8,7 +8,7 @@
 PrettyGrid::PrettyGrid(AssetManager* _asset_manager)
     : asset_manager(_asset_manager)
 {
-    backdrop.setTexture(*_asset_manager->loadTexture("ClientStateGame.png"));
+    backdrop.setTexture(*_asset_manager->loadTexture(GAME_BACKDROP));
 
     initGrid();
     initPlayerMarkers();

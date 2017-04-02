@@ -9,6 +9,8 @@
 // ======================================================================================
 // WINDOW SETTINGS
 // ======================================================================================
+const std::string WINDOW_NAME           { "Tron Game" };
+
 const int WINDOW_WIDTH                  = 800; // Width of the screen.
 const int WINDOW_HEIGHT                 = 600; // Height of the screen.
 const int WINDOW_MARGIN_X               = 100; // Margin from horizontal screen edges.
@@ -59,6 +61,7 @@ const std::string DEFAULT_FONT      { "arial.ttf" };
 // TEXTURE STRINGS
 // ======================================================================================
 const std::string PLAYER_MARKER     { "player_marker.png" };
+const std::string GAME_BACKDROP     { "game_backdrop.png" };
 
 
 // ======================================================================================

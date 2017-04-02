@@ -1,24 +1,24 @@
 #pragma once
 #include <SFML/Network.hpp>
 
-enum PacketID
+enum class PacketID
 {
-    DISCONNECT,
-    PING,
-    PONG,
-    IDENTITY,
-    PLAYER_LIST,
-    PLAYER_JOINED,
-    PLAYER_LEFT,
-    PLAYER_STATE,
-    GAME_STATE,
-    LATENCY,
-    MESSAGE,
-    DIRECTION,
-    BOOST,
-    SYNC_BIKE,
-    SYNC_ALL_BIKES,
-    SYNC_SIMULATION
+        DISCONNECT,
+        PING,
+        PONG,
+        IDENTITY,
+        PLAYER_LIST,
+        PLAYER_JOINED,
+        PLAYER_LEFT,
+        PLAYER_STATE,
+        GAME_STATE,
+        LATENCY,
+        MESSAGE,
+        DIRECTION,
+        BOOST,
+        SYNC_BIKE,
+        SYNC_ALL_BIKES,
+        SYNC_SIMULATION
 };
 
 // This function must be called after creating a packet to set its type.

@@ -122,7 +122,7 @@ void NetworkManager::stopNetworkingThread()
 
 void NetworkManager::registerPacketHandlers()
 {
-    registerPacketHandler(PONG, handlePongPacket);
+    registerPacketHandler(PacketID::PONG, handlePongPacket);
 }
 
 void NetworkManager::handlePacket(sf::Packet& _packet)

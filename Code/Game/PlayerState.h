@@ -1,6 +1,6 @@
 #pragma once
 
-enum PlayerState
+enum class PlayerState
 {
     NOTREADY,
     READY,

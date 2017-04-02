@@ -10,7 +10,7 @@
 #include "ClientStateEnd.h"
 
 TronClient::TronClient()
-    : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Tron Game")
+    : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_NAME)
     , network_manager(*this, SERVER_IP, SERVER_TCP_PORT)
     , game_manager(&client_data)
     , input_handler(*this)

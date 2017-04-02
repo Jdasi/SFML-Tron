@@ -70,16 +70,16 @@ void TronNetworkManager::sendBikeBoost()
 
 void TronNetworkManager::registerGamePacketHandlers()
 {
-    registerPacketHandler(IDENTITY,         handleIdentityPacket);
-    registerPacketHandler(PLAYER_LIST,      handlePlayerListPacket);
-    registerPacketHandler(PLAYER_JOINED,    handlePlayerJoinedPacket);
-    registerPacketHandler(MESSAGE,          handleMessagePacket);
-    registerPacketHandler(PLAYER_STATE,     handlePlayerStateChangePacket);
-    registerPacketHandler(GAME_STATE,       handleGameStateChangePacket);
-    registerPacketHandler(SYNC_BIKE,        handleBikeSyncPacket);
-    registerPacketHandler(SYNC_ALL_BIKES,   handleFullBikeSyncPacket);
-    registerPacketHandler(SYNC_SIMULATION,  handleFullSyncPacket);
-    registerPacketHandler(BOOST,            handleBikeBoostPacket);
+    registerPacketHandler(PacketID::IDENTITY,         handleIdentityPacket);
+    registerPacketHandler(PacketID::PLAYER_LIST,      handlePlayerListPacket);
+    registerPacketHandler(PacketID::PLAYER_JOINED,    handlePlayerJoinedPacket);
+    registerPacketHandler(PacketID::MESSAGE,          handleMessagePacket);
+    registerPacketHandler(PacketID::PLAYER_STATE,     handlePlayerStateChangePacket);
+    registerPacketHandler(PacketID::GAME_STATE,       handleGameStateChangePacket);
+    registerPacketHandler(PacketID::SYNC_BIKE,        handleBikeSyncPacket);
+    registerPacketHandler(PacketID::SYNC_ALL_BIKES,   handleFullBikeSyncPacket);
+    registerPacketHandler(PacketID::SYNC_SIMULATION,  handleFullSyncPacket);
+    registerPacketHandler(PacketID::BOOST,            handleBikeBoostPacket);
 }
 
 void TronNetworkManager::handleIdentityPacket(sf::Packet& _packet)

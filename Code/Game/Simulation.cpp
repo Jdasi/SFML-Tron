@@ -15,7 +15,7 @@ CellValue Simulation::idToCellValue(const unsigned int _id)
         return CellValue::NONE;
     }
 
-    return static_cast<CellValue>(CellValue::CYAN + _id);
+    return static_cast<CellValue>(static_cast<int>(CellValue::CYAN) + _id);
 }
 
 void Simulation::tick(const double _dt)

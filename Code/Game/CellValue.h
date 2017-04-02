@@ -1,6 +1,6 @@
 #pragma once
 
-enum CellValue
+enum class CellValue
 {
     NONE,
     CYAN,

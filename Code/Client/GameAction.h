@@ -1,6 +1,6 @@
 #pragma once
 
-enum GameAction
+enum class GameAction
 {
     ACCEPT,
     DECLINE,
@@ -13,7 +13,7 @@ enum GameAction
     SPECIAL
 };
 
-enum ActionState
+enum class ActionState
 {
     PRESSED,
     RELEASED

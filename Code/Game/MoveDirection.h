@@ -1,6 +1,6 @@
 #pragma once
 
-enum MoveDirection
+enum class MoveDirection
 {
     UP,
     DOWN,
