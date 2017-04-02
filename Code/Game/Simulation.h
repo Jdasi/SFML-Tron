@@ -17,8 +17,6 @@ public:
     Simulation();
     ~Simulation() = default;
 
-    static CellValue idToCellValue(const unsigned int _id);
-
     void tick(const double _dt);
     void reset();
 

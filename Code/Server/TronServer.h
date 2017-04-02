@@ -40,6 +40,7 @@ private:
     void sendClientIdentity(const ClientPtr& _client) const;
     void sendClientList(const ClientPtr& _client);
     void sendClientJoined(const ClientPtr& _client);
+    void sendClientLeft(const ClientPtr& _client);
     void sendUpdatedClientState(const ClientPtr& _client);
     void receivePacket();
 

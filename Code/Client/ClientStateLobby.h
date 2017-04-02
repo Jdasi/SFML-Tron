@@ -1,5 +1,7 @@
 #pragma once
+#include <Game/Scheduler.h>
 #include "ClientState.h"
+#include "LobbyUI.h"
 
 namespace sf
 {
@@ -22,6 +24,12 @@ public:
     void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
+    void scheduleRefresh();
+
     sf::Text* latency_text;
+    Scheduler scheduler;
+
+    LobbyUI lobby_ui;
+    bool refresh_needed;
 
 };

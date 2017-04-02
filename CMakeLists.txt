@@ -77,6 +77,10 @@ add_executable(TronClient
     Code/Client/INetworkClient.h
     Code/Client/InputHandler.cpp
     Code/Client/InputHandler.h
+    Code/Client/LobbySlot.cpp
+    Code/Client/LobbySlot.h
+    Code/Client/LobbyUI.cpp
+    Code/Client/LobbyUI.h
     Code/Client/main_client.cpp
     Code/Client/NetworkManager.cpp
     Code/Client/NetworkManager.h

@@ -33,12 +33,13 @@ private:
     // Network events called by TronNetworkManager.
     void onConnected() override;
     void onDisconnected() override;
-    void onUpdatePingTime(double _ping) override;
-    void onIdentity(int _id) override;
+    void onUpdatePingTime(const double _ping) override;
+    void onIdentity(const unsigned int _player_id) override;
     void onPlayerList(const std::vector<Player>& _players) override;
-    void onPlayerJoined(int _id) override;
-    void onPlayerStateChange(int _player_id, const PlayerState _state) override;
-    void onGameStateChange(int _state) override;
+    void onPlayerJoined(const unsigned int _player_id) override;
+    void onPlayerLeft(const unsigned int _player_id) override;
+    void onPlayerStateChange(const unsigned int _player_id, const PlayerState _state) override;
+    void onGameStateChange(const int _state) override;
     void onBikeSync(const BikeState& _bike_state) override;
     void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
     void onFullSync(const SimulationState& _simulation_state) override;

@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 
-#include <Game/PlayerState.h>
 #include <Game/Constants.h>
 #include "ClientStateLobby.h"
 #include "ClientStateHandler.h"
@@ -10,6 +9,8 @@
 
 ClientStateLobby::ClientStateLobby(ClientData* _client_data)
     : ClientState(_client_data)
+    , lobby_ui(_client_data->asset_manager, client_data->game_manager)
+    , refresh_needed(true)
 {
     auto font = client_data->asset_manager->loadFont(DEFAULT_FONT);
 
@@ -30,19 +31,27 @@ ClientStateLobby::ClientStateLobby(ClientData* _client_data)
 
 void ClientStateLobby::onStateEnter()
 {
+    lobby_ui.refresh();
 }
 
 void ClientStateLobby::onStateLeave()
 {
+    refresh_needed = true;
 }
 
 void ClientStateLobby::tick()
 {
+    scheduler.update();
+
+    scheduleRefresh();
+
     latency_text->setString(std::to_string(client_data->latency) + "ms");
 }
 
 void ClientStateLobby::draw(sf::RenderWindow& _window)
 {
+    lobby_ui.draw(_window);
+
     for (auto& drawable : drawables)
     {
         _window.draw(*drawable);
@@ -65,5 +74,19 @@ void ClientStateLobby::onCommand(const GameAction _action, const ActionState _ac
         {
             client_data->network_manager->sendPlayerStateChange();
         }
+    }
+}
+
+void ClientStateLobby::scheduleRefresh()
+{
+    if (refresh_needed)
+    {
+        refresh_needed = false;
+
+        scheduler.invoke([this]()
+        {
+            lobby_ui.refresh();
+            refresh_needed = true;
+        }, 0.5);
     }
 }

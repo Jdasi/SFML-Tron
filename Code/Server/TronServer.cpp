@@ -178,7 +178,8 @@ void TronServer::endStateBehaviour()
 
 void TronServer::allClientsReady()
 {
-    std::vector<int> bike_ids(connected_clients);
+    std::vector<int> bike_ids;
+    bike_ids.reserve(MAX_PLAYERS);
 
     for (auto& client : clients)
     {
@@ -270,6 +271,16 @@ void TronServer::sendClientJoined(const ClientPtr& _client)
     packet << _client->getID();
 
     sendPacketToAll(packet);
+}
+
+void TronServer::sendClientLeft(const ClientPtr& _client)
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::PLAYER_LEFT);
+
+    packet << _client->getID();
+
+    sendPacketToAllButSender(packet, _client);
 }
 
 void TronServer::sendUpdatedClientState(const ClientPtr& _client)
@@ -409,18 +420,11 @@ void TronServer::disconnectClient(ClientPtr& _client)
     socket_selector.remove(*_client->getSocket());
     _client->getSocket()->disconnect();
 
-    std::string disconnection_message("[Client ");
-    disconnection_message.append(std::to_string(_client->getID()) + " disconnected]");
-    std::cout << disconnection_message << std::endl;
+    sendClientLeft(_client);
 
     _client->resetSocket();
     _client.reset();
 
-    sf::Packet packet;
-    setPacketID(packet, PacketID::MESSAGE);
-    packet << disconnection_message;
-
-    sendPacketToAll(packet);
     --connected_clients;
 }
 

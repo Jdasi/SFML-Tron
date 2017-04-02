@@ -55,6 +55,12 @@
     <ClCompile Include="..\..\Code\Client\PlayerMarker.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Client\LobbyUI.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Client\LobbySlot.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Client\InputHandler.h">
@@ -106,6 +112,12 @@
       <Filter>Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\PlayerMarker.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\LobbyUI.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\LobbySlot.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

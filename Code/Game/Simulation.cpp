@@ -2,20 +2,11 @@
 #include "Bike.h"
 #include "Constants.h"
 #include "CellValue.h"
+#include "JHelper.h"
 
 Simulation::Simulation()
 {
     resetBikes();
-}
-
-CellValue Simulation::idToCellValue(const unsigned int _id)
-{
-    if (_id >= MAX_PLAYERS)
-    {
-        return CellValue::NONE;
-    }
-
-    return static_cast<CellValue>(static_cast<int>(CellValue::CYAN) + _id);
 }
 
 void Simulation::tick(const double _dt)
@@ -49,7 +40,7 @@ void Simulation::addBike(const unsigned int _id)
     Bike& bike = bikes[_id];
 
     configureBikeSide(bike);
-    grid.setCellValue(bike.getPosition(), idToCellValue(_id));
+    grid.setCellValue(bike.getPosition(), JHelper::idToCellValue(_id));
 
     for (auto& listener : listeners)
     {
@@ -100,11 +91,11 @@ void Simulation::overwriteBike(const BikeState& _bike_state)
     bike.overwriteState(_bike_state);
 
     // Write new line.
-    grid.overwriteCellRange(bike.getLine(), idToCellValue(bike.getID()));
+    grid.overwriteCellRange(bike.getLine(), JHelper::idToCellValue(bike.getID()));
 
     for (auto& listener : listeners)
     {
-        listener->overwriteCellRange(bike.getLine(), idToCellValue(bike.getID()));
+        listener->overwriteCellRange(bike.getLine(), JHelper::idToCellValue(bike.getID()));
         listener->updatePlayerMarker(_bike_state);
     }
 }
@@ -234,11 +225,11 @@ void Simulation::configureBikeSide(Bike& _bike) const
 
 void Simulation::moveBike(Bike& _bike)
 {
-    grid.setCellValue(_bike.getPosition(), idToCellValue(_bike.getID()));
+    grid.setCellValue(_bike.getPosition(), JHelper::idToCellValue(_bike.getID()));
     
     for (auto& listener : listeners)
     {
-        listener->overwriteCell(_bike.getPosition(), idToCellValue(_bike.getID()));
+        listener->overwriteCell(_bike.getPosition(), JHelper::idToCellValue(_bike.getID()));
     }
 
     MoveDirection dir = _bike.getDirection();
@@ -260,7 +251,7 @@ void Simulation::moveBike(Bike& _bike)
     {
         // Path is clear.
         _bike.setPosition(adjustment);
-        grid.setCellValue(adjustment, idToCellValue(_bike.getID()));
+        grid.setCellValue(adjustment, JHelper::idToCellValue(_bike.getID()));
 
         for (auto& listener : listeners)
         {

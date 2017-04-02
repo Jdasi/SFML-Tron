@@ -122,7 +122,7 @@ void TronClient::onDisconnected()
 }
 
 // Called by TronNetworkManager when the server replies to ping requests.
-void TronClient::onUpdatePingTime(double _ping)
+void TronClient::onUpdatePingTime(const double _ping)
 {
     postEvent([this, _ping]()
     {
@@ -131,14 +131,14 @@ void TronClient::onUpdatePingTime(double _ping)
     });
 }
 
-void TronClient::onIdentity(int _id)
+void TronClient::onIdentity(const unsigned int _player_id)
 {
-    postEvent([this, _id]()
+    postEvent([this, _player_id]()
     {
-        client_data.client_id = _id;
-        game_manager.addPlayer(_id);
+        client_data.client_id = _player_id;
+        game_manager.addPlayer(_player_id);
 
-        std::cout << "Identity assigned: " << _id << std::endl;
+        std::cout << "Identity assigned: " << _player_id << std::endl;
     });
 }
 
@@ -153,15 +153,23 @@ void TronClient::onPlayerList(const std::vector<Player>& _players)
     });
 }
 
-void TronClient::onPlayerJoined(int _id)
+void TronClient::onPlayerJoined(const unsigned int _player_id)
 {
-    postEvent([this, _id]()
+    postEvent([this, _player_id]()
     {
-        game_manager.addPlayer(_id);
+        game_manager.addPlayer(_player_id);
     });
 }
 
-void TronClient::onPlayerStateChange(int _player_id, PlayerState _state)
+void TronClient::onPlayerLeft(const unsigned int _player_id)
+{
+    postEvent([this, _player_id]()
+    {
+        game_manager.removePlayer(_player_id);
+    });
+}
+
+void TronClient::onPlayerStateChange(const unsigned int _player_id, const PlayerState _state)
 {
     postEvent([this, _player_id, _state]()
     {
@@ -169,7 +177,7 @@ void TronClient::onPlayerStateChange(int _player_id, PlayerState _state)
     });
 }
 
-void TronClient::onGameStateChange(int _state)
+void TronClient::onGameStateChange(const int _state)
 {
     postEvent([this, _state]()
     {

@@ -39,7 +39,6 @@ private:
 
     void setTileColor(const unsigned int _index, const sf::Color& _color);
     void setTileColor(const Vector2i& _pos, const sf::Color& _color);
-    sf::Color evaluateSFColor(const CellValue _value) const;
 
     AssetManager* asset_manager;
 

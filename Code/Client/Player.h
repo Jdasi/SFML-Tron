@@ -4,17 +4,17 @@
 class Player
 {
 public:
-    Player(int _id, PlayerState _state = PlayerState::NOTREADY);
+    Player(const unsigned int _id, PlayerState _state = PlayerState::NOTREADY);
     ~Player() = default;
 
-    int getID() const;
-    void setID(int _id);
+    unsigned getID() const;
+    void setID(const unsigned int _id);
 
     PlayerState getState() const;
     void setState(PlayerState _state);
 
 private:
-    int id;
+    unsigned int id;
     PlayerState state;
 
 };

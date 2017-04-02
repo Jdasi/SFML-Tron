@@ -29,7 +29,7 @@ protected:
     // Required network events.
     virtual void onConnected() = 0;
     virtual void onDisconnected() = 0;
-    virtual void onUpdatePingTime(double _ping) = 0;
+    virtual void onUpdatePingTime(const double _ping) = 0;
 
     void sendPacket(sf::Packet& _packet);
 

@@ -1,7 +1,6 @@
 #include <Game/Constants.h>
 #include <Game/Vector2i.h>
 #include <Game/BikeState.h>
-#include <Game/Simulation.h>
 #include "PrettyGrid.h"
 #include "AssetManager.h"
 #include "Game/JHelper.h"
@@ -66,14 +65,14 @@ void PrettyGrid::clearAllCells()
 
 void PrettyGrid::overwriteCell(const Vector2i& _pos, const CellValue _value)
 {
-    setTileColor(_pos, evaluateSFColor(_value));
+    setTileColor(_pos, JHelper::evaluateSFColor(_value));
 }
 
 void PrettyGrid::overwriteCellRange(const std::vector<Vector2i>& _positions, const CellValue _value)
 {
     for (auto& pos : _positions)
     {
-        setTileColor(pos, evaluateSFColor(_value));
+        setTileColor(pos, JHelper::evaluateSFColor(_value));
     }
 }
 
@@ -154,7 +153,7 @@ void PrettyGrid::initPlayerMarkers()
 
     for (int i = 0; i < MAX_PLAYERS; ++i)
     {
-        sprite.setColor(evaluateSFColor(Simulation::idToCellValue(i)));
+        sprite.setColor(JHelper::evaluateSFColor(JHelper::idToCellValue(i)));
         player_markers[i].setSprite(sprite);
     }
 }
@@ -168,18 +167,3 @@ void PrettyGrid::setTileColor(const Vector2i& _pos, const sf::Color& _color)
 {
     setTileColor(JHelper::calculateIndex(_pos.x, _pos.y, GRID_SIZE_X), _color);
 }
-
-sf::Color PrettyGrid::evaluateSFColor(const CellValue _value) const
-{
-    switch (_value)
-    {
-        case CellValue::CYAN: return sf::Color::Cyan;
-        case CellValue::GREEN: return sf::Color::Green;
-        case CellValue::MAGENTA: return sf::Color::Magenta;
-        case CellValue::YELLOW: return sf::Color::Yellow;
-
-        default: return sf::Color::Transparent;
-    }
-}
-
-
