@@ -9,7 +9,7 @@
 
 ClientStateLobby::ClientStateLobby(ClientData* _client_data)
     : ClientState(_client_data)
-    , lobby_ui(_client_data->asset_manager, client_data->game_manager)
+    , lobby_ui(_client_data)
     , refresh_needed(true)
 {
     auto font = client_data->asset_manager->loadFont(DEFAULT_FONT);

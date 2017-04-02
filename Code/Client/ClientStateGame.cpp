@@ -47,14 +47,6 @@ void ClientStateGame::draw(sf::RenderWindow& _window)
 
 void ClientStateGame::onCommand(const GameAction _action, const ActionState _action_state)
 {
-    if (_action == GameAction::QUIT)
-    {
-        if (_action_state == ActionState::PRESSED)
-        {
-            getHandler()->queueState(STATE_LOBBY);
-        }
-    }
-
     if (_action == GameAction::MOVE_UP)
     {
         if (_action_state == ActionState::PRESSED)

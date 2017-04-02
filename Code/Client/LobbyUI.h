@@ -5,6 +5,7 @@
 #include <Game/Constants.h>
 #include "LobbySlot.h"
 
+struct ClientData;
 enum class PlayerState;
 class AssetManager;
 class GameManager;
@@ -12,7 +13,7 @@ class GameManager;
 class LobbyUI final
 {
 public:
-    explicit LobbyUI(AssetManager* _asset_manager, GameManager* _game_manager);
+    explicit LobbyUI(ClientData* _client_data);
     ~LobbyUI() = default;
 
     void refresh();
@@ -22,8 +23,7 @@ private:
     void initSlots();
     std::string playerStateToString(const PlayerState& _state) const;
 
-    AssetManager* asset_manager;
-    GameManager* game_manager;
+    ClientData* client_data;
 
     std::array<std::unique_ptr<LobbySlot>, MAX_PLAYERS> slots;
 
