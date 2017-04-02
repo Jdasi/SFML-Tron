@@ -1,4 +1,4 @@
-#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "JHelper.h"
 #include "Vector2i.h"

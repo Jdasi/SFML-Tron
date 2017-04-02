@@ -148,13 +148,14 @@ void PrettyGrid::initPlayerMarkers()
 
     sf::Sprite sprite(*tex);
     sprite.setPosition({ -100, -100 });
-    sprite.setOrigin({ 32, 32 });
-    sprite.setScale({ 0.75f, 0.75f });
 
     for (int i = 0; i < MAX_PLAYERS; ++i)
     {
         sprite.setColor(JHelper::evaluateSFColor(JHelper::idToCellValue(i)));
-        player_markers[i].setSprite(sprite);
+        auto& marker = player_markers[i];
+
+        marker.setSprite(sprite);
+        marker.setEnlarged(false);
     }
 }
 

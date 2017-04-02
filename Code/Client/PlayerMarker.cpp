@@ -1,4 +1,5 @@
 #include <Game/Constants.h>
+#include <Game/JHelper.h>
 #include "PlayerMarker.h"
 
 PlayerMarker::PlayerMarker()
@@ -50,11 +51,6 @@ void PlayerMarker::setVisible(const bool _value)
 
 void PlayerMarker::setEnlarged(const bool _value)
 {
-    if (enlarged == _value)
-    {
-        return;
-    }
-
     enlarged = _value;
 
     if (enlarged)
@@ -66,4 +62,5 @@ void PlayerMarker::setEnlarged(const bool _value)
         sprite.setScale({ 0.75f, 0.75f });
     }
 
+    JHelper::centerSFOrigin(sprite);
 }

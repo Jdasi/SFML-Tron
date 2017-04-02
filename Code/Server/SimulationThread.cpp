@@ -77,9 +77,18 @@ void SimulationThread::eventBoost(const unsigned int _bike_id)
     });
 }
 
-bool SimulationThread::isSimulationRunning() const
+void SimulationThread::eventPlayerLeft(const unsigned int _bike_id)
 {
-    return simulation_running;
+    postEvent([this, _bike_id]()
+    {
+        auto& bike = simulation.getBike(_bike_id);
+
+        if (bike.isAlive())
+        {
+            bike.setAlive(false);
+            onSyncBike(bike.getState());
+        }
+    });
 }
 
 void SimulationThread::stopSimulationThread()
@@ -136,7 +145,7 @@ void SimulationThread::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& 
     server.onSyncAllBikes(_bikes);
 }
 
-void SimulationThread::onBikeBoost(const unsigned _bike_id)
+void SimulationThread::onBikeBoost(const unsigned int _bike_id)
 {
     server.onBikeBoost(_bike_id);
 }
@@ -151,7 +160,7 @@ void SimulationThread::onSimulationEnded()
     server.onSimulationEnded();
 }
 
-void SimulationThread::scheduleAllBikeSync(double _time)
+void SimulationThread::scheduleAllBikeSync(const double _time)
 {
     if (bike_sync_needed)
     {
@@ -167,7 +176,7 @@ void SimulationThread::scheduleAllBikeSync(double _time)
     }
 }
 
-void SimulationThread::scheduleSimulationSync(double _time)
+void SimulationThread::scheduleSimulationSync(const double _time)
 {
     if (full_sync_needed)
     {

@@ -12,14 +12,6 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
     , pretty_grid(_client_data->asset_manager)
 {
     client_data->game_manager->attachSimulationListener(&pretty_grid);
-
-    auto title_text = std::make_unique<sf::Text>("StateGame",
-        *client_data->asset_manager->loadFont(DEFAULT_FONT));
-
-    title_text->setCharacterSize(30);
-    title_text->setStyle(sf::Text::Bold);
-    title_text->setFillColor(sf::Color::Red);
-    drawables.push_back(std::move(title_text));
 }
 
 void ClientStateGame::onStateEnter()
@@ -47,6 +39,15 @@ void ClientStateGame::draw(sf::RenderWindow& _window)
 
 void ClientStateGame::onCommand(const GameAction _action, const ActionState _action_state)
 {
+    if (_action == GameAction::QUIT)
+    {
+        if (_action_state == ActionState::PRESSED)
+        {
+            client_data->network_manager->sendPlayerStateChange();
+            getHandler()->queueState(STATE_LOBBY);
+        }
+    }
+
     if (_action == GameAction::MOVE_UP)
     {
         if (_action_state == ActionState::PRESSED)

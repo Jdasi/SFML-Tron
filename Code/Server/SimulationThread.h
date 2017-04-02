@@ -19,8 +19,7 @@ public:
     void eventResetSimulation();
     void eventDirectionChanged(const unsigned int _bike_id, const MoveDirection _dir);
     void eventBoost(const unsigned int _bike_id);
-
-    bool isSimulationRunning() const;
+    void eventPlayerLeft(const unsigned int _bike_id);
 
 private:
     void stopSimulationThread();
@@ -34,8 +33,8 @@ private:
     void onSimulationStarted();
     void onSimulationEnded();
 
-    void scheduleAllBikeSync(double _time);
-    void scheduleSimulationSync(double _time);
+    void scheduleAllBikeSync(const double _time);
+    void scheduleSimulationSync(const double _time);
 
     volatile bool thread_running;
     volatile bool simulation_running;

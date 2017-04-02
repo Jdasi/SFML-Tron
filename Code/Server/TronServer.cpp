@@ -19,7 +19,6 @@ TronServer::TronServer()
     registerPacketHandlers();
 
     clients.reserve(MAX_PLAYERS);
-
     for (int i = 0; i < MAX_PLAYERS; ++i)
     {
         clients.push_back(nullptr);
@@ -369,12 +368,22 @@ void TronServer::handlePlayerStatePacket(const sf::Packet& _packet, ClientPtr& _
     {
         case STATE_LOBBY:
         {
+            // Player readied / unreadied.
             _sender->setState(_sender->getState() == PlayerState::NOTREADY ?
                 PlayerState::READY : PlayerState::NOTREADY);
         } break;
 
+        case STATE_GAME:
+        {
+            // Player exited early, or went back to lobby.
+            _sender->setState(PlayerState::NOTREADY);
+
+            simulation_thread.eventPlayerLeft(_sender->getID());
+        }
+
         case STATE_END:
         {
+            // Player went back to lobby.
             _sender->setState(PlayerState::NOTREADY);
 
             sf::Packet packet;
@@ -421,6 +430,11 @@ void TronServer::disconnectClient(ClientPtr& _client)
     _client->getSocket()->disconnect();
 
     sendClientLeft(_client);
+
+    if (_client->getState() == PlayerState::PLAYING)
+    {
+        simulation_thread.eventPlayerLeft(_client->getID());
+    }
 
     _client->resetSocket();
     _client.reset();
@@ -506,7 +520,7 @@ void TronServer::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_
     });
 }
 
-void TronServer::onBikeBoost(const unsigned _bike_id)
+void TronServer::onBikeBoost(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
@@ -539,6 +553,7 @@ void TronServer::onSimulationStarted()
             }
 
             client->setState(PlayerState::PLAYING);
+            sendUpdatedClientState(client);
         }
 
         std::cout << "Simulation started" << std::endl;

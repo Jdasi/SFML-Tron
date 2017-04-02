@@ -2,7 +2,9 @@
 
 namespace sf
 {
+    class Text;
     class Color;
+    class Shape;
 }
 
 #include "CellValue.h"
@@ -16,4 +18,11 @@ namespace JHelper
     CellValue idToCellValue(const unsigned int _id);
     sf::Color evaluateSFColor(const CellValue _value);
 
+    template <typename T>
+    void centerSFOrigin(T& _sfml_object)
+    {
+        sf::FloatRect bounds = _sfml_object.getLocalBounds();
+        _sfml_object.setOrigin(bounds.left + bounds.width / 2.0f,
+            bounds.top + bounds.height / 2.0f);
+    }
 }

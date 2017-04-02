@@ -18,8 +18,6 @@ public:
     void draw(sf::RenderWindow& _window) const;
 
 private:
-    void centerText(sf::Text& _text) const;
-
     sf::Font* font;
 
     sf::RectangleShape rectangle;

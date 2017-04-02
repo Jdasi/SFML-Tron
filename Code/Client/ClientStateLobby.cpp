@@ -14,17 +14,11 @@ ClientStateLobby::ClientStateLobby(ClientData* _client_data)
 {
     auto font = client_data->asset_manager->loadFont(DEFAULT_FONT);
 
-    auto title_text = std::make_unique<sf::Text>("StateLobby", *font);
-    title_text->setCharacterSize(30);
-    title_text->setStyle(sf::Text::Bold);
-    title_text->setFillColor(sf::Color::Red);
-    drawables.push_back(std::move(title_text));
-
     auto l_text = std::make_unique<sf::Text>("", *font);
     l_text->setCharacterSize(30);
     l_text->setStyle(sf::Text::Bold);
     l_text->setFillColor(sf::Color::Red);
-    l_text->setPosition({ 0, 50 });
+    l_text->setPosition({ 0, 0 });
     latency_text = l_text.get();
     drawables.push_back(std::move(l_text));
 }

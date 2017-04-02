@@ -1,3 +1,4 @@
+#include <Game/JHelper.h>
 #include "LobbySlot.h"
 
 LobbySlot::LobbySlot(sf::Font* _font)
@@ -11,18 +12,21 @@ LobbySlot::LobbySlot(sf::Font* _font)
 
     player_id_text.setFont(*font);
     player_state_text.setFont(*font);
+
+    player_state_text.setCharacterSize(20);
+    player_state_text.setFillColor(sf::Color(150, 150, 150, 255));
 }
 
 void LobbySlot::setPlayerIDText(const std::string& _str)
 {
     player_id_text.setString(_str);
-    centerText(player_id_text);
+    JHelper::centerSFOrigin(player_id_text);
 }
 
 void LobbySlot::setPlayerStateText(const std::string& _str)
 {
     player_state_text.setString(_str);
-    centerText(player_state_text);
+    JHelper::centerSFOrigin(player_state_text);
 }
 
 void LobbySlot::setOccupied(const bool _value)
@@ -45,7 +49,7 @@ void LobbySlot::setOccupiedColor(const sf::Color& _color)
 void LobbySlot::setPosition(const sf::Vector2f& _pos)
 {
     rectangle.setPosition(_pos);
-    player_id_text.setPosition(_pos + sf::Vector2f{ 0, -20 });
+    player_id_text.setPosition(_pos + sf::Vector2f{ 0, -10 });
     player_state_text.setPosition(_pos + sf::Vector2f{ 0, 20 });
 }
 
@@ -53,10 +57,7 @@ void LobbySlot::setRectangleSize(const sf::Vector2f& _size)
 {
     rectangle.setSize(_size);
 
-    // Center rectangle.
-    sf::FloatRect bounds = rectangle.getLocalBounds();
-    rectangle.setOrigin(bounds.left + bounds.width / 2.0f, 
-        bounds.top + bounds.height / 2.0f);
+    JHelper::centerSFOrigin(rectangle);
 }
 
 void LobbySlot::draw(sf::RenderWindow& _window) const
@@ -64,11 +65,4 @@ void LobbySlot::draw(sf::RenderWindow& _window) const
     _window.draw(rectangle);
     _window.draw(player_id_text);
     _window.draw(player_state_text);
-}
-
-void LobbySlot::centerText(sf::Text& _text) const
-{
-    sf::FloatRect bounds = _text.getLocalBounds();
-    _text.setOrigin(bounds.left + bounds.width / 2.0f, 
-        bounds.top + bounds.height / 2.0f);
 }
