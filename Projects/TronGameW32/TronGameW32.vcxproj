@@ -81,6 +81,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Code\Game\Grid.cpp" />
     <ClCompile Include="..\..\Code\Game\Bike.cpp" />
+    <ClCompile Include="..\..\Code\Game\JHelper.cpp" />
     <ClCompile Include="..\..\Code\Game\RandomEngine.cpp" />
     <ClCompile Include="..\..\Code\Game\Scheduler.cpp" />
     <ClCompile Include="..\..\Code\Game\SimpleTimer.cpp" />
@@ -93,6 +94,7 @@
     <ClInclude Include="..\..\Code\Game\Constants.h" />
     <ClInclude Include="..\..\Code\Game\Grid.h" />
     <ClInclude Include="..\..\Code\Game\INetworkSimulation.h" />
+    <ClInclude Include="..\..\Code\Game\JHelper.h" />
     <ClInclude Include="..\..\Code\Game\MoveDirection.h" />
     <ClInclude Include="..\..\Code\Game\Noncopyable.h" />
     <ClInclude Include="..\..\Code\Game\PlayerState.h" />

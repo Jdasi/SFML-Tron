@@ -41,9 +41,6 @@ private:
     void setTileColor(const Vector2i& _pos, const sf::Color& _color);
     sf::Color evaluateSFColor(const CellValue _value) const;
 
-    int calculateIndex(const int _x, const int _y) const;
-    int calculateIndex(const Vector2i& _pos) const;
-
     AssetManager* asset_manager;
 
     sf::Sprite backdrop;

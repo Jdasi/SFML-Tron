@@ -4,6 +4,7 @@
 #include <Game/Simulation.h>
 #include "PrettyGrid.h"
 #include "AssetManager.h"
+#include "Game/JHelper.h"
 
 PrettyGrid::PrettyGrid(AssetManager* _asset_manager)
     : asset_manager(_asset_manager)
@@ -97,7 +98,8 @@ void PrettyGrid::updatePlayerMarker(const BikeState& _bike_state)
 
     marker.setVisible(true);
     marker.setEnlarged(_bike_state.boosting);
-    marker.setPosition(tiles[calculateIndex(_bike_state.pos)]->getPosition());
+    marker.setPosition(
+        tiles[JHelper::calculateIndex(_bike_state.pos, GRID_SIZE_X)]->getPosition());
 }
 
 void PrettyGrid::removeAllPlayerMarkers()
@@ -110,7 +112,9 @@ void PrettyGrid::removeAllPlayerMarkers()
 
 void PrettyGrid::updateBikePosition(const Vector2i& _pos, const unsigned int _bike_id)
 {
-    player_markers[_bike_id].setPosition(tiles[calculateIndex(_pos)]->getPosition());
+    player_markers[_bike_id].setPosition(
+        tiles[JHelper::calculateIndex(_pos, GRID_SIZE_X)]->getPosition());
+
     setTileColor(_pos, sf::Color::White);
 }
 
@@ -134,7 +138,7 @@ void PrettyGrid::initGrid()
             tile->setPosition({ WINDOW_LEFT_BOUNDARY + (x_cycles * rect.x), 
                                      WINDOW_TOP_BOUNDARY + (y_cycles * rect.y) });
 
-            tiles[calculateIndex(x_cycles, y_cycles)] = std::move(tile);
+            tiles[JHelper::calculateIndex(x_cycles, y_cycles, GRID_SIZE_X)] = std::move(tile);
         }
     }
 }
@@ -162,7 +166,7 @@ void PrettyGrid::setTileColor(const unsigned int _index, const sf::Color& _color
 
 void PrettyGrid::setTileColor(const Vector2i& _pos, const sf::Color& _color)
 {
-    setTileColor(calculateIndex(_pos.x, _pos.y), _color);
+    setTileColor(JHelper::calculateIndex(_pos.x, _pos.y, GRID_SIZE_X), _color);
 }
 
 sf::Color PrettyGrid::evaluateSFColor(const CellValue _value) const
@@ -178,12 +182,4 @@ sf::Color PrettyGrid::evaluateSFColor(const CellValue _value) const
     }
 }
 
-int PrettyGrid::calculateIndex(const int _x, const int _y) const
-{
-    return (_y * GRID_SIZE_X) + _x;
-}
 
-int PrettyGrid::calculateIndex(const Vector2i& _pos) const
-{
-    return calculateIndex(_pos.x, _pos.y);
-}

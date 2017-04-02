@@ -1,6 +1,7 @@
 #include "Grid.h"
 #include "Constants.h"
 #include "Vector2i.h"
+#include "JHelper.h"
 
 Grid::Grid()
 {
@@ -30,12 +31,12 @@ void Grid::clearCellRange(const std::vector<Vector2i>& _positions)
 
 CellValue Grid::getCellValue(const Vector2i& _pos) const
 {
-    return cells[calculateIndex(_pos)];
+    return cells[JHelper::calculateIndex(_pos, GRID_SIZE_X)];
 }
 
 void Grid::setCellValue(const Vector2i& _pos, const CellValue _value)
 {
-    cells[calculateIndex(_pos)] = _value;
+    cells[JHelper::calculateIndex(_pos, GRID_SIZE_X)] = _value;
 }
 
 const std::array<CellValue, GRID_AREA>& Grid::getCells() const
@@ -54,9 +55,4 @@ void Grid::overwriteCellRange(const std::vector<Vector2i>& _positions, const Cel
     {
         setCellValue(pos, _value);
     }
-}
-
-int Grid::calculateIndex(const Vector2i& _pos) const
-{
-    return (_pos.y * GRID_SIZE_X) + _pos.x;
 }

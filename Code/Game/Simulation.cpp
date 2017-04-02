@@ -318,16 +318,26 @@ bool Simulation::directionChangeValid(const Bike& _bike, const MoveDirection _ne
     MoveDirection bike_dir = _bike.getDirection();
 
     if (_bike.isAlive() &&
-        (bike_dir != _new_dir) &&
-        ((bike_dir == MoveDirection::UP) && (_new_dir != MoveDirection::DOWN)) ||
-        ((bike_dir == MoveDirection::DOWN) && (_new_dir != MoveDirection::UP)) ||
-        ((bike_dir == MoveDirection::LEFT) && (_new_dir != MoveDirection::RIGHT)) ||
-        ((bike_dir == MoveDirection::RIGHT) && (_new_dir != MoveDirection::LEFT)))
+        bike_dir != _new_dir &&
+        !oppositeDirection(bike_dir, _new_dir))
     {
         return true;
     }
 
     return false;
+}
+
+bool Simulation::oppositeDirection(const MoveDirection _lhs, const MoveDirection _rhs) const
+{
+    switch (_lhs)
+    {
+        case MoveDirection::UP: return _rhs == MoveDirection::DOWN;
+        case MoveDirection::DOWN: return _rhs == MoveDirection::UP;
+        case MoveDirection::LEFT: return _rhs == MoveDirection::RIGHT;
+        case MoveDirection::RIGHT: return _rhs == MoveDirection::LEFT;
+
+        default: { return false; }
+    }
 }
 
 // Goes through the array of bikes and overwrites them with new states with correct ids.

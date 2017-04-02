@@ -26,8 +26,6 @@ public:
     void overwriteCellRange(const std::vector<Vector2i>& _positions, const CellValue _value);
 
 private:
-    int calculateIndex(const Vector2i& _pos) const;
-
     std::array<CellValue, GRID_AREA> cells;
 
 };

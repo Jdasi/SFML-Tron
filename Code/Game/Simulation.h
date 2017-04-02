@@ -43,6 +43,7 @@ private:
     bool adjustmentWithinBounds(const Vector2i& _adjustment) const;
     bool adjustmentCollisionCheck(const Vector2i& _adjustment) const;
     bool directionChangeValid(const Bike& _bike, const MoveDirection _new_dir) const;
+    bool oppositeDirection(const MoveDirection _lhs, const MoveDirection _rhs) const;
 
     void resetBikes();
     void overwrite(const SimulationState& _simulation_state) override;

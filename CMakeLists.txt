@@ -24,6 +24,8 @@ add_library(TronGame STATIC
     Code/Game/Grid.cpp
     Code/Game/Grid.h
     Code/Game/INetworkSimulation.h
+    Code/Game/Jhelper.cpp
+    Code/Game/Jhelper.h
     Code/Game/ListenerSubject.h
     Code/Game/MoveDirection.h
     Code/Game/Noncopyable.h
