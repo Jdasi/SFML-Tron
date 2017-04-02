@@ -46,7 +46,7 @@ private:
 
     AssetManager* asset_manager;
 
-    sf::RectangleShape border;
+    sf::Sprite backdrop;
     std::array<std::unique_ptr<sf::RectangleShape>, GRID_AREA> tiles;
     std::array<PlayerMarker, MAX_PLAYERS> player_markers;
 

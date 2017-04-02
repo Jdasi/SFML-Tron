@@ -8,6 +8,8 @@
 PrettyGrid::PrettyGrid(AssetManager* _asset_manager)
     : asset_manager(_asset_manager)
 {
+    backdrop.setTexture(*_asset_manager->loadTexture("ClientStateGame.png"));
+
     initGrid();
     initPlayerMarkers();
 }
@@ -22,7 +24,7 @@ void PrettyGrid::tick(double _dt)
 
 void PrettyGrid::draw(sf::RenderWindow& _window)
 {
-    _window.draw(border);
+    _window.draw(backdrop);
 
     for (auto& tile : tiles)
     {
@@ -117,12 +119,6 @@ void PrettyGrid::initGrid()
     float pane_width = WINDOW_RIGHT_BOUNDARY - WINDOW_LEFT_BOUNDARY;
     float pane_height = WINDOW_BOTTOM_BOUNDARY - WINDOW_TOP_BOUNDARY;
     sf::Vector2f pane({ pane_width, pane_height });
-
-    border.setPosition({ WINDOW_LEFT_BOUNDARY, WINDOW_TOP_BOUNDARY });
-    border.setSize(pane);
-    border.setFillColor(sf::Color::Transparent);
-    border.setOutlineThickness(5.0f);
-    border.setOutlineColor(sf::Color::White);
 
     float rect_width =  pane_width / GRID_SIZE_X;
     float rect_height =  pane_height / GRID_SIZE_Y;
