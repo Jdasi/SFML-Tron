@@ -11,7 +11,7 @@ class ISimulationServer;
 class SimulationThread final : public ThreadDispatcher
 {
 public:
-    SimulationThread(ISimulationServer& _server);
+    explicit SimulationThread(ISimulationServer& _server);
     ~SimulationThread();
 
     void eventStartSimulation(const std::vector<int>& _bike_ids);

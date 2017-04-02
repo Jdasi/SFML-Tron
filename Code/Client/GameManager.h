@@ -18,7 +18,7 @@ public:
     void startSimulation();
     void stopSimulation();
 
-    void GameManager::attachSimulationListener(SimulationListener* _listener);
+    void attachSimulationListener(SimulationListener* _listener);
     INetworkSimulation* getNetworkSimulation();
 
     void addPlayer(const unsigned int _id, const PlayerState _state = PlayerState::NOTREADY);

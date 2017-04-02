@@ -13,8 +13,8 @@ TronServer::TronServer()
     : connected_clients(0)
     , exit(false)
     , server_name()
-    , simulation_thread(*this)
     , server_state(STATE_LOBBY)
+    , simulation_thread(*this)
 {
     registerPacketHandlers();
 

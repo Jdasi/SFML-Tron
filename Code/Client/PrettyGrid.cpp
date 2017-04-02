@@ -118,7 +118,6 @@ void PrettyGrid::initGrid()
 {
     float pane_width = WINDOW_RIGHT_BOUNDARY - WINDOW_LEFT_BOUNDARY;
     float pane_height = WINDOW_BOTTOM_BOUNDARY - WINDOW_TOP_BOUNDARY;
-    sf::Vector2f pane({ pane_width, pane_height });
 
     float rect_width =  pane_width / GRID_SIZE_X;
     float rect_height =  pane_height / GRID_SIZE_Y;

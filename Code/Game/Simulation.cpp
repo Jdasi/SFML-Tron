@@ -10,7 +10,7 @@ Simulation::Simulation()
 
 CellValue Simulation::idToCellValue(const unsigned int _id)
 {
-    if (_id > MAX_PLAYERS || _id < 0)
+    if (_id >= MAX_PLAYERS)
     {
         return CellValue::NONE;
     }
@@ -319,10 +319,10 @@ bool Simulation::directionChangeValid(const Bike& _bike, const MoveDirection _ne
 
     if (_bike.isAlive() &&
         (bike_dir != _new_dir) &&
-        (bike_dir == MoveDirection::UP && _new_dir != MoveDirection::DOWN) ||
-        (bike_dir == MoveDirection::DOWN && _new_dir != MoveDirection::UP) ||
-        (bike_dir == MoveDirection::LEFT && _new_dir != MoveDirection::RIGHT) ||
-        (bike_dir == MoveDirection::RIGHT && _new_dir != MoveDirection::LEFT))
+        ((bike_dir == MoveDirection::UP) && (_new_dir != MoveDirection::DOWN)) ||
+        ((bike_dir == MoveDirection::DOWN) && (_new_dir != MoveDirection::UP)) ||
+        ((bike_dir == MoveDirection::LEFT) && (_new_dir != MoveDirection::RIGHT)) ||
+        ((bike_dir == MoveDirection::RIGHT) && (_new_dir != MoveDirection::LEFT)))
     {
         return true;
     }
