@@ -16,9 +16,10 @@ public:
     INetworkSimulation() = default;
     virtual ~INetworkSimulation() = default;
 
-    virtual void changeBikeDirection(unsigned int _bike_id, const MoveDirection _dir) = 0;
+    virtual void changeBikeDirection(const unsigned int _bike_id, const MoveDirection _dir) = 0;
     virtual void overwrite(const SimulationState& _simulation_state) = 0;
     virtual void overwriteBike(const BikeState& _bike_state) = 0;
     virtual void overwriteBikes(const std::array<BikeState, MAX_PLAYERS>& _bikes_states) = 0;
+    virtual void boostBike(const unsigned int _bike_id) = 0;
 
 };

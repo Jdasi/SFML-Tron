@@ -33,6 +33,7 @@ private:
     void handleBikeSyncPacket(sf::Packet& _packet);
     void handleFullBikeSyncPacket(sf::Packet& _packet);
     void handleFullSyncPacket(sf::Packet& _packet);
+    void handleBikeBoostPacket(sf::Packet& _packet);
 
     // Pass-through functions to talk to the client.
     void onConnected() override;
@@ -46,6 +47,7 @@ private:
     void onBikeSync(const BikeState& _bike_state);
     void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states);
     void onFullSync(const SimulationState& _simulation_state);
+    void onBikeBoost(const unsigned int _bike_id);
 
     // TronClient network interface.
     INetworkClient& client;

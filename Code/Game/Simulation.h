@@ -10,13 +10,6 @@
 #include "SimulationState.h"
 #include "Noncopyable.h"
 
-namespace sf
-{
-    class Packet;
-}
-
-enum MoveDirection;
-
 class Simulation final : public Noncopyable, public INetworkSimulation, 
                          public ListenerSubject<SimulationListener>
 {
@@ -24,11 +17,13 @@ public:
     Simulation();
     ~Simulation() = default;
 
-    void tick(double _dt);
+    static CellValue idToCellValue(const unsigned int _id);
+
+    void tick(const double _dt);
     void reset();
 
-    void addBike(unsigned int _id);
-    Bike& getBike(unsigned int _bike_id);
+    void addBike(const unsigned int _id);
+    Bike& getBike(const unsigned int _bike_id);
     bool allBikesDead() const;
 
     const Grid& getGrid() const;
@@ -37,8 +32,7 @@ public:
     std::array<BikeState, MAX_PLAYERS> getBikes();
 
     void overwriteState(const SimulationState& _state);
-
-    void changeBikeDirection(unsigned int _bike_id, const MoveDirection _dir) override;
+    void changeBikeDirection(const unsigned int _bike_id, const MoveDirection _dir) override;
 
 private:
     void configureBikeSide(Bike& _bike) const;
@@ -54,6 +48,7 @@ private:
     void overwrite(const SimulationState& _simulation_state) override;
     void overwriteBike(const BikeState& _bike_state) override;
     void overwriteBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
+    void boostBike(const unsigned int _bike_id) override;
 
     Grid grid;
     std::array<Bike, MAX_PLAYERS> bikes;

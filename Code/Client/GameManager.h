@@ -1,12 +1,13 @@
 #pragma once
-#include <map>
+#include <array>
+#include <memory>
 
 #include <Game/Simulation.h>
 #include "Player.h"
 
 struct ClientData;
 
-class GameManager
+class GameManager final : public Noncopyable
 {
 public:
     explicit GameManager(ClientData* _client_data);
@@ -17,19 +18,19 @@ public:
     void startSimulation();
     void stopSimulation();
 
-    Simulation* getSimulation();
+    void GameManager::attachSimulationListener(SimulationListener* _listener);
     INetworkSimulation* getNetworkSimulation();
 
-    void addPlayer(int _id, PlayerState _state = PlayerState::NOTREADY);
-    void removePlayer(int _id);
+    void addPlayer(const unsigned int _id, const PlayerState _state = PlayerState::NOTREADY);
+    void removePlayer(const unsigned int _id);
 
-    Player* getPlayer(int _id);
+    Player* getPlayer(const unsigned int _id);
 
 private:
     ClientData* client_data;
     Simulation simulation;
     bool simulation_running;
 
-    std::map<int, Player> players;
+    std::array<std::unique_ptr<Player>, MAX_PLAYERS> players;
 
 };

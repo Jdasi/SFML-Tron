@@ -11,7 +11,7 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
     : ClientState(_client_data)
     , pretty_grid(_client_data->asset_manager)
 {
-    client_data->game_manager->getSimulation()->attachListener(&pretty_grid);
+    client_data->game_manager->attachSimulationListener(&pretty_grid);
 
     auto title_text = std::make_unique<sf::Text>("StateGame",
         *client_data->asset_manager->loadFont(DEFAULT_FONT));

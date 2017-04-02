@@ -31,11 +31,6 @@ void Bike::setID(const unsigned int _id)
     state.id = _id;
 }
 
-CellValue Bike::idToCellValue() const
-{
-    return static_cast<CellValue>(CellValue::CYAN + state.id);
-}
-
 BikeState Bike::getState() const
 {
     return state;

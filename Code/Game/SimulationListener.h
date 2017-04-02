@@ -4,11 +4,12 @@
 
 #include "Constants.h"
 #include "CellValue.h"
+#include "Noncopyable.h"
 
 struct BikeState;
 struct Vector2i;
 
-class SimulationListener
+class SimulationListener : public Noncopyable
 {
 public:
     SimulationListener() = default;

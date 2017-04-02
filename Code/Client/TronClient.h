@@ -13,7 +13,7 @@
 #include "GameManager.h"
 #include "AssetManager.h"
 
-class TronClient : public INetworkClient, public ThreadDispatcher
+class TronClient final : public INetworkClient, public ThreadDispatcher
 {
 public:
     TronClient();
@@ -42,6 +42,7 @@ private:
     void onBikeSync(const BikeState& _bike_state) override;
     void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
     void onFullSync(const SimulationState& _simulation_state) override;
+    void onBikeBoost(const unsigned int _bike_id) override;
 
     void tick();
     void draw();

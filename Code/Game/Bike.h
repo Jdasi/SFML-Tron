@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
+
 #include "BikeState.h"
+#include "Noncopyable.h"
 
 namespace sf
 {
@@ -9,9 +11,8 @@ namespace sf
 
 #include "MoveDirection.h"
 #include "Vector2i.h"
-#include "CellValue.h"
 
-class Bike
+class Bike final : public Noncopyable
 {
 public:
     Bike();
@@ -21,8 +22,6 @@ public:
 
     unsigned int getID() const;
     void setID(const unsigned int _id);
-
-    CellValue idToCellValue() const;
 
     BikeState getState() const;
     void overwriteState(const BikeState& _state);

@@ -1,8 +1,7 @@
-#include <iostream>
-
 #include <Game/Constants.h>
 #include <Game/Vector2i.h>
 #include <Game/BikeState.h>
+#include <Game/Simulation.h>
 #include "PrettyGrid.h"
 #include "AssetManager.h"
 
@@ -156,7 +155,7 @@ void PrettyGrid::initPlayerMarkers()
 
     for (int i = 0; i < MAX_PLAYERS; ++i)
     {
-        sprite.setColor(evaluateSFColor(static_cast<CellValue>(CellValue::CYAN + i)));
+        sprite.setColor(evaluateSFColor(Simulation::idToCellValue(i)));
         player_markers[i].setSprite(sprite);
     }
 }

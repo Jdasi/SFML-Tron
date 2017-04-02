@@ -11,10 +11,10 @@
 struct Vector2i;
 class AssetManager;
 
-class PrettyGrid : public SimulationListener
+class PrettyGrid final : public SimulationListener
 {
 public:
-    PrettyGrid(AssetManager* _asset_manager);
+    explicit PrettyGrid(AssetManager* _asset_manager);
     ~PrettyGrid() = default;
 
     void tick(double _dt);

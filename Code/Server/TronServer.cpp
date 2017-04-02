@@ -502,6 +502,19 @@ void TronServer::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_
     });
 }
 
+void TronServer::onBikeBoost(const unsigned _bike_id)
+{
+    postEvent([this, _bike_id]()
+    {
+        sf::Packet packet;
+        setPacketID(packet, PacketID::BOOST);
+
+        packet << static_cast<sf::Uint8>(_bike_id);
+
+        sendPacketToAll(packet);
+    });
+}
+
 void TronServer::onSimulationStarted()
 {
     postEvent([this]()

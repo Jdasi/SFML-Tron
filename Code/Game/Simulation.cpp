@@ -1,14 +1,24 @@
 #include "Simulation.h"
-#include "Grid.h"
 #include "Bike.h"
 #include "Constants.h"
+#include "CellValue.h"
 
 Simulation::Simulation()
 {
     resetBikes();
 }
 
-void Simulation::tick(double _dt)
+CellValue Simulation::idToCellValue(const unsigned int _id)
+{
+    if (_id > MAX_PLAYERS || _id < 0)
+    {
+        return CellValue::NONE;
+    }
+
+    return static_cast<CellValue>(CellValue::CYAN + _id);
+}
+
+void Simulation::tick(const double _dt)
 {
     for (auto& bike : bikes)
     {
@@ -29,7 +39,7 @@ void Simulation::tick(double _dt)
     }
 }
 
-void Simulation::addBike(unsigned int _id)
+void Simulation::addBike(const unsigned int _id)
 {
     if (_id >= MAX_PLAYERS)
     {
@@ -39,7 +49,7 @@ void Simulation::addBike(unsigned int _id)
     Bike& bike = bikes[_id];
 
     configureBikeSide(bike);
-    grid.setCellValue(bike.getPosition(), bike.idToCellValue());
+    grid.setCellValue(bike.getPosition(), idToCellValue(_id));
 
     for (auto& listener : listeners)
     {
@@ -47,6 +57,11 @@ void Simulation::addBike(unsigned int _id)
     }
 
     bike.setAlive(true);
+}
+
+Bike& Simulation::getBike(const unsigned int _bike_id)
+{
+    return bikes.at(_bike_id);
 }
 
 void Simulation::overwrite(const SimulationState& _simulation_state)
@@ -85,11 +100,11 @@ void Simulation::overwriteBike(const BikeState& _bike_state)
     bike.overwriteState(_bike_state);
 
     // Write new line.
-    grid.overwriteCellRange(bike.getLine(), bike.idToCellValue());
+    grid.overwriteCellRange(bike.getLine(), idToCellValue(bike.getID()));
 
     for (auto& listener : listeners)
     {
-        listener->overwriteCellRange(bike.getLine(), bike.idToCellValue());
+        listener->overwriteCellRange(bike.getLine(), idToCellValue(bike.getID()));
         listener->updatePlayerMarker(_bike_state);
     }
 }
@@ -140,11 +155,6 @@ void Simulation::overwriteState(const SimulationState& _state)
     {
         bikes[i].overwriteState(bikes[i].getState());
     }
-}
-
-Bike& Simulation::getBike(unsigned int _bike_id)
-{
-    return bikes[_bike_id];
 }
 
 bool Simulation::allBikesDead() const
@@ -224,11 +234,11 @@ void Simulation::configureBikeSide(Bike& _bike) const
 
 void Simulation::moveBike(Bike& _bike)
 {
-    grid.setCellValue(_bike.getPosition(), _bike.idToCellValue());
+    grid.setCellValue(_bike.getPosition(), idToCellValue(_bike.getID()));
     
     for (auto& listener : listeners)
     {
-        listener->overwriteCell(_bike.getPosition(), _bike.idToCellValue());
+        listener->overwriteCell(_bike.getPosition(), idToCellValue(_bike.getID()));
     }
 
     MoveDirection dir = _bike.getDirection();
@@ -250,7 +260,7 @@ void Simulation::moveBike(Bike& _bike)
     {
         // Path is clear.
         _bike.setPosition(adjustment);
-        grid.setCellValue(adjustment, _bike.idToCellValue());
+        grid.setCellValue(adjustment, idToCellValue(_bike.getID()));
 
         for (auto& listener : listeners)
         {
@@ -320,18 +330,28 @@ bool Simulation::directionChangeValid(const Bike& _bike, const MoveDirection _ne
     return false;
 }
 
-// Goes through the array of bikes and overwrites them with new copies with correct ids.
+// Goes through the array of bikes and overwrites them with new states with correct ids.
 void Simulation::resetBikes()
 {
     int id = 0;
     for (auto& bike : bikes)
     {
-        bike = Bike();
+        bike.overwriteState(BikeState());
         bike.setID(id++);
     }
 
     for (auto& listener : listeners)
     {
         listener->removeAllPlayerMarkers();
+    }
+}
+
+void Simulation::boostBike(const unsigned int _bike_id)
+{
+    bikes.at(_bike_id).boost();
+
+    for (auto& listener : listeners)
+    {
+        listener->updatePlayerMarker(bikes.at(_bike_id).getState());
     }
 }

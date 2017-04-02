@@ -221,6 +221,14 @@ void TronClient::onFullSync(const SimulationState& _simulation_state)
     });
 }
 
+void TronClient::onBikeBoost(const unsigned int _bike_id)
+{
+    postEvent([this, _bike_id]()
+    {
+        game_manager.getNetworkSimulation()->boostBike(_bike_id);
+    });
+}
+
 void TronClient::tick()
 {
     game_manager.tick();

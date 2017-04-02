@@ -57,10 +57,10 @@ private:
     void sendPacketToAll(sf::Packet& _packet);
     void sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& _sender);
 
-
     void onSyncSimulation(const SimulationState& _simulation_state) override;
     void onSyncBike(const BikeState& _bike_state) override;
     void onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
+    void onBikeBoost(const unsigned int _bike_id) override;
     void onSimulationStarted() override;
     void onSimulationEnded() override;
 

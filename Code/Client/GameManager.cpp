@@ -1,4 +1,4 @@
-#include <Game/Constants.h>
+#include <Game/Simulation.h>
 #include "GameManager.h"
 #include "ClientData.h"
 #include "Player.h"
@@ -34,9 +34,9 @@ void GameManager::stopSimulation()
     simulation.reset();
 }
 
-Simulation* GameManager::getSimulation()
+void GameManager::attachSimulationListener(SimulationListener* _listener)
 {
-    return &simulation;
+    simulation.attachListener(_listener);
 }
 
 INetworkSimulation* GameManager::getNetworkSimulation()
@@ -44,22 +44,17 @@ INetworkSimulation* GameManager::getNetworkSimulation()
     return &simulation;
 }
 
-void GameManager::addPlayer(int _id, PlayerState _state)
+void GameManager::addPlayer(const unsigned int _id, const PlayerState _state)
 {
-    if (players.size() >= MAX_PLAYERS)
-    {
-        return;
-    }
-
-    players.emplace(_id, Player(_id, _state));
+    players[_id] = std::make_unique<Player>(_id, _state);
 }
 
-void GameManager::removePlayer(int _id)
+void GameManager::removePlayer(const unsigned int _id)
 {
-    players.erase(_id);
+    players[_id].reset();
 }
 
-Player* GameManager::getPlayer(int _id)
+Player* GameManager::getPlayer(const unsigned int _id)
 {
-    return &players.at(_id);
+    return players.at(_id).get();
 }
