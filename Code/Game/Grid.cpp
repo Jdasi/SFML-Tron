@@ -2,6 +2,11 @@
 #include "Constants.h"
 #include "Vector2i.h"
 
+Grid::Grid()
+{
+    reset();
+}
+
 void Grid::reset()
 {
     for (auto& cell : cells)

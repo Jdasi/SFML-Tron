@@ -10,7 +10,7 @@ struct Vector2i;
 class Grid
 {
 public:
-    Grid() = default;
+    Grid();
     ~Grid() = default;
 
     void reset();

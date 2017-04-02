@@ -10,6 +10,8 @@ SimulationThread::SimulationThread(ISimulationServer& _server)
     , full_sync_needed(true)
     , server(_server)
 {
+    resetSimulation();
+
     simulation_thread = std::thread([this]()
     {
         simulationThreadLoop();
