@@ -36,25 +36,27 @@ private:
     void allClientsReady();
 
     void acceptClient();
-    int generateUniqueID() const;
-    void sendClientIdentity(const ClientPtr& _client) const;
-    void sendClientList(const ClientPtr& _client);
-    void sendClientJoined(const ClientPtr& _client);
-    void sendClientLeft(const ClientPtr& _client);
-    void sendUpdatedClientState(const ClientPtr& _client);
     void receivePacket();
+    int generateUniqueID() const;
+
+    void sendClientIdentity(ClientPtr& _client);
+    void sendClientList(ClientPtr& _client);
+    void sendClientJoined(const ClientPtr& _client);
+    void sendClientLeft(ClientPtr& _client);
+    void sendUpdatedClientState(const ClientPtr& _client);
 
     void handlePacket(sf::Packet& _packet, ClientPtr& _sender);
     void handleDisconnectPacket(sf::Packet& _packet, ClientPtr& _sender);
     void handlePingPacket(sf::Packet& _packet, ClientPtr& _sender);
-    void handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender);
+    void handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender) const;
     void handleMessagePacket(sf::Packet& _packet, ClientPtr& _sender);
     void handlePlayerStatePacket(const sf::Packet& _packet, ClientPtr& _sender);
     void handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender);
     void handleBoostPacket(sf::Packet& _packet, ClientPtr& _sender);
 
     void disconnectClient(ClientPtr& _client);
-    void sendPacketToClient(sf::Packet& _packet, const ClientPtr& _client) const;
+
+    void sendPacketToClient(sf::Packet& _packet, ClientPtr& _client);
     void sendPacketToAll(sf::Packet& _packet);
     void sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& _sender);
 

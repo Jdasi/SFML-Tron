@@ -154,7 +154,7 @@ void TronServer::lobbyStateBehaviour()
 
 void TronServer::gameStateBehaviour()
 {
-
+    // Crickets ...
 }
 
 void TronServer::endStateBehaviour()
@@ -218,80 +218,6 @@ void TronServer::acceptClient()
     }
 }
 
-int TronServer::generateUniqueID() const
-{
-    int unique_id = 0;
-    for (auto& client : clients)
-    {
-        if (!client)
-        {
-            return unique_id;
-        }
-
-        ++unique_id;
-    }
-
-    return MAX_PLAYERS;
-}
-
-void TronServer::sendClientIdentity(const ClientPtr& _client) const
-{
-    sf::Packet packet;
-    setPacketID(packet, PacketID::IDENTITY);
-
-    packet << _client->getID();
-
-    _client->getSocket()->send(packet);
-}
-
-void TronServer::sendClientList(const ClientPtr& _client)
-{
-    sf::Packet packet;
-    setPacketID(packet, PacketID::PLAYER_LIST);
-
-    for (auto& client : clients)
-    {
-        if (!client)
-        {
-            continue;
-        }
-
-        packet << client->getID() << static_cast<sf::Uint8>(client->getState());
-    }
-
-    _client->getSocket()->send(packet);
-}
-
-void TronServer::sendClientJoined(const ClientPtr& _client)
-{
-    sf::Packet packet;
-    setPacketID(packet, PacketID::PLAYER_JOINED);
-
-    packet << _client->getID();
-
-    sendPacketToAll(packet);
-}
-
-void TronServer::sendClientLeft(const ClientPtr& _client)
-{
-    sf::Packet packet;
-    setPacketID(packet, PacketID::PLAYER_LEFT);
-
-    packet << _client->getID();
-
-    sendPacketToAllButSender(packet, _client);
-}
-
-void TronServer::sendUpdatedClientState(const ClientPtr& _client)
-{
-    sf::Packet packet;
-    setPacketID(packet, PacketID::PLAYER_STATE);
-
-    packet << _client->getID() << static_cast<sf::Uint8>(_client->getState());
-
-    sendPacketToAll(packet);
-}
-
 void TronServer::receivePacket()
 {
     for (auto& sender : clients)
@@ -312,6 +238,80 @@ void TronServer::receivePacket()
             handlePacket(packet, sender);
         }
     }
+}
+
+int TronServer::generateUniqueID() const
+{
+    int unique_id = 0;
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            return unique_id;
+        }
+
+        ++unique_id;
+    }
+
+    return MAX_PLAYERS;
+}
+
+void TronServer::sendClientIdentity(ClientPtr& _client)
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::IDENTITY);
+
+    packet << _client->getID();
+
+    sendPacketToClient(packet, _client);
+}
+
+void TronServer::sendClientList(ClientPtr& _client)
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::PLAYER_LIST);
+
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            continue;
+        }
+
+        packet << client->getID() << static_cast<sf::Uint8>(client->getState());
+    }
+
+    sendPacketToClient(packet, _client);
+}
+
+void TronServer::sendClientJoined(const ClientPtr& _client)
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::PLAYER_JOINED);
+
+    packet << _client->getID();
+
+    sendPacketToAll(packet);
+}
+
+void TronServer::sendClientLeft(ClientPtr& _client)
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::PLAYER_LEFT);
+
+    packet << _client->getID();
+
+    sendPacketToAllButSender(packet, _client);
+}
+
+void TronServer::sendUpdatedClientState(const ClientPtr& _client)
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::PLAYER_STATE);
+
+    packet << _client->getID() << static_cast<sf::Uint8>(_client->getState());
+
+    sendPacketToAll(packet);
 }
 
 void TronServer::handlePacket(sf::Packet& _packet, ClientPtr& _sender)
@@ -339,10 +339,10 @@ void TronServer::handlePingPacket(sf::Packet& _packet, ClientPtr& _sender)
     std::cout << "Sending Pong Packet" << std::endl;
 
     packet << time_stamp;
-    _sender->getSocket()->send(packet);
+    sendPacketToClient(packet, _sender);
 }
 
-void TronServer::handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender)
+void TronServer::handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender) const
 {
     double latency;
     _packet >> latency;
@@ -442,9 +442,12 @@ void TronServer::disconnectClient(ClientPtr& _client)
     --connected_clients;
 }
 
-void TronServer::sendPacketToClient(sf::Packet& _packet, const ClientPtr& _client) const
+void TronServer::sendPacketToClient(sf::Packet& _packet, ClientPtr& _client)
 {
-    _client->getSocket()->send(_packet);
+    if (_client->getSocket()->send(_packet) == sf::Socket::Disconnected)
+    {
+        disconnectClient(_client);
+    }
 }
 
 void TronServer::sendPacketToAll(sf::Packet& _packet)
@@ -456,7 +459,7 @@ void TronServer::sendPacketToAll(sf::Packet& _packet)
             continue;
         }
 
-        client->getSocket()->send(_packet);
+        sendPacketToClient(_packet, client);
     }
 }
 
@@ -474,7 +477,7 @@ void TronServer::sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& 
             continue;
         }
 
-        client->getSocket()->send(_packet);
+        sendPacketToClient(_packet, client);
     }
 }
 
