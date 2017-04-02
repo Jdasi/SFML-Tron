@@ -109,7 +109,6 @@
     <ClInclude Include="..\..\Code\Game\Simulation.h" />
     <ClInclude Include="..\..\Code\Game\State.h" />
     <ClInclude Include="..\..\Code\Game\StateHandler.h" />
-    <ClInclude Include="..\..\Code\Game\Vector2f.h" />
     <ClInclude Include="..\..\Code\Game\Vector2i.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

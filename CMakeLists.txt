@@ -42,7 +42,6 @@ add_library(TronGame STATIC
     Code/Game/State.h
     Code/Game/StateHandler.h
     Code/Game/ThreadDispatcher.h
-    Code/Game/Vector2f.h
     Code/Game/Vector2i.h
 )
 
