@@ -16,12 +16,14 @@ TronClient::TronClient()
     , input_handler(*this)
     , state_handler()
     , client_data(&asset_manager, &network_manager, &game_manager, &input_handler)
+    , in_focus(true)
 {
 }
 
 void TronClient::run()
 {
-    initKeyBindings();
+    initKeyboardBindings();
+    initControllerBindings();
     initClientStates();
 
     network_manager.connect();
@@ -60,22 +62,29 @@ void TronClient::onCommand(GameAction _action, ActionState _action_state) const
     state_handler.onCommand(_action, _action_state);
 }
 
-void TronClient::initKeyBindings()
+void TronClient::initKeyboardBindings()
 {
-    input_handler.registerKey(sf::Keyboard::Key::Escape, GameAction::QUIT);
-    input_handler.registerKey(sf::Keyboard::Key::Return, GameAction::ACCEPT);
+    input_handler.registerKeyboardKey(sf::Keyboard::Key::Escape, GameAction::QUIT);
+    input_handler.registerKeyboardKey(sf::Keyboard::Key::Return, GameAction::ACCEPT);
 
-    input_handler.registerKey(sf::Keyboard::Key::W, GameAction::MOVE_UP);
-    input_handler.registerKey(sf::Keyboard::Key::S, GameAction::MOVE_DOWN);
-    input_handler.registerKey(sf::Keyboard::Key::A, GameAction::MOVE_LEFT);
-    input_handler.registerKey(sf::Keyboard::Key::D, GameAction::MOVE_RIGHT);
+    input_handler.registerKeyboardKey(sf::Keyboard::Key::W, GameAction::MOVE_UP);
+    input_handler.registerKeyboardKey(sf::Keyboard::Key::S, GameAction::MOVE_DOWN);
+    input_handler.registerKeyboardKey(sf::Keyboard::Key::A, GameAction::MOVE_LEFT);
+    input_handler.registerKeyboardKey(sf::Keyboard::Key::D, GameAction::MOVE_RIGHT);
 
-    input_handler.registerKey(sf::Keyboard::Key::Up, GameAction::MOVE_UP);
-    input_handler.registerKey(sf::Keyboard::Key::Down, GameAction::MOVE_DOWN);
-    input_handler.registerKey(sf::Keyboard::Key::Left, GameAction::MOVE_LEFT);
-    input_handler.registerKey(sf::Keyboard::Key::Right, GameAction::MOVE_RIGHT);
+    input_handler.registerKeyboardKey(sf::Keyboard::Key::Up, GameAction::MOVE_UP);
+    input_handler.registerKeyboardKey(sf::Keyboard::Key::Down, GameAction::MOVE_DOWN);
+    input_handler.registerKeyboardKey(sf::Keyboard::Key::Left, GameAction::MOVE_LEFT);
+    input_handler.registerKeyboardKey(sf::Keyboard::Key::Right, GameAction::MOVE_RIGHT);
 
-    input_handler.registerKey(sf::Keyboard::Key::Space, GameAction::SPECIAL);
+    input_handler.registerKeyboardKey(sf::Keyboard::Key::Space, GameAction::BOOST);
+}
+
+void TronClient::initControllerBindings()
+{
+    input_handler.registerControllerButton(InputHandler::XboxButton::A, GameAction::ACCEPT);
+    input_handler.registerControllerButton(InputHandler::XboxButton::X, GameAction::BOOST);
+    input_handler.registerControllerButton(InputHandler::XboxButton::B, GameAction::QUIT);
 }
 
 void TronClient::initClientStates()
@@ -87,19 +96,29 @@ void TronClient::initClientStates()
     state_handler.queueState(STATE_LOBBY);
 }
 
-// Processes the passed SFML event.
+// Processes passed SFML events.
 void TronClient::handleEvent(const sf::Event& _event)
 {
-    // Input Handler gets first dibs at handling events.
-    if (input_handler.handleInput(_event))
-    {
-        return;
-    }
-
     if (_event.type == sf::Event::Closed)
     {
         client_data.exit = true;
         window.close();
+
+        return;
+    }
+
+    if (_event.type == sf::Event::LostFocus)
+    {
+        in_focus = false;
+    }
+    else if (_event.type == sf::Event::GainedFocus)
+    {
+        in_focus = true;
+    }
+
+    if (in_focus)
+    {
+        input_handler.handleEvent(_event);
     }
 }
 

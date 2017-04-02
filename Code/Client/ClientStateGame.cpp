@@ -88,7 +88,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
         }
     }
 
-    if (_action == GameAction::SPECIAL)
+    if (_action == GameAction::BOOST)
     {
         if (_action_state == ActionState::PRESSED)
         {

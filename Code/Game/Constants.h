@@ -46,6 +46,12 @@ const float MARKER_ROTATE_SPEED         = 30.0f; // Speed of the player marker r
 const float MARKER_ROTATE_MODIFIER      = 2.0f; // rotation modifier of enlarged marker.
 
 // ======================================================================================
+// CONTROLLER SETTINGS
+// ======================================================================================
+const float AXIS_DEADZONE               = 80.0f; // Min input axis required by controller.
+
+
+// ======================================================================================
 // COMMON PATH STRINGS
 // ======================================================================================
 

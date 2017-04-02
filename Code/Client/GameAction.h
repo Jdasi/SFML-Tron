@@ -10,7 +10,7 @@ enum class GameAction
     MOVE_RIGHT,
     MOVE_UP,
     MOVE_DOWN,
-    SPECIAL
+    BOOST
 };
 
 enum class ActionState

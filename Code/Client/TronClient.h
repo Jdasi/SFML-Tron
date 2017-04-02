@@ -25,7 +25,8 @@ public:
     void onCommand(GameAction _action, ActionState _action_state) const;
 
 private:
-    void initKeyBindings();
+    void initKeyboardBindings();
+    void initControllerBindings();
     void initClientStates();
 
     void handleEvent(const sf::Event& _event);
@@ -59,5 +60,7 @@ private:
     ClientStateHandler state_handler;
     SimpleTimer timer;
     ClientData client_data;
+
+    bool in_focus;
 
 };
