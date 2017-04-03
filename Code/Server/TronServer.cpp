@@ -364,7 +364,7 @@ void TronServer::handlePacket(sf::Packet& _packet, ClientPtr& _sender)
 
 
 
-void TronServer::handleDisconnectPacket(sf::Packet& _packet, ClientPtr& _sender)
+void TronServer::handleDisconnectPacket(const sf::Packet& _packet, ClientPtr& _sender)
 {
     disconnectClient(_sender);
 }
@@ -372,19 +372,15 @@ void TronServer::handleDisconnectPacket(sf::Packet& _packet, ClientPtr& _sender)
 
 
 // Send a PONG packet back to _sender to inform their latency.
-void TronServer::handlePingPacket(sf::Packet& _packet, ClientPtr& _sender)
+void TronServer::handlePingPacket(const sf::Packet& _packet, ClientPtr& _sender)
 {
-    double time_stamp = 0;
-    _packet >> time_stamp;
-
-    std::cout << "Ping Packet Received: " << time_stamp << std::endl;
+    std::cout << "Ping Packet Received" << std::endl;
 
     sf::Packet packet;
     setPacketID(packet, PacketID::PONG);
 
     std::cout << "Sending Pong Packet" << std::endl;
 
-    packet << time_stamp;
     sendPacketToClient(packet, _sender);
 }
 
@@ -397,7 +393,7 @@ void TronServer::handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender) co
 
     _sender->setLatency(latency);
     std::cout << "Client " << static_cast<int>(_sender->getID()) << ": " 
-              << latency << "ms" << std::endl;
+              << latency << "us" << std::endl;
 }
 
 
@@ -470,7 +466,7 @@ void TronServer::handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender)
 
 
 
-void TronServer::handleBoostPacket(sf::Packet& _packet, ClientPtr& _sender)
+void TronServer::handleBoostPacket(const sf::Packet& _packet, ClientPtr& _sender)
 {
     if (server_state != STATE_GAME)
     {

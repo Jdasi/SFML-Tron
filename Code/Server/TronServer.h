@@ -46,13 +46,13 @@ private:
     void sendUpdatedClientState(const ClientPtr& _client);
 
     void handlePacket(sf::Packet& _packet, ClientPtr& _sender);
-    void handleDisconnectPacket(sf::Packet& _packet, ClientPtr& _sender);
-    void handlePingPacket(sf::Packet& _packet, ClientPtr& _sender);
+    void handleDisconnectPacket(const sf::Packet& _packet, ClientPtr& _sender);
+    void handlePingPacket(const sf::Packet& _packet, ClientPtr& _sender);
     void handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender) const;
     void handleMessagePacket(sf::Packet& _packet, ClientPtr& _sender);
     void handlePlayerStatePacket(const sf::Packet& _packet, ClientPtr& _sender);
     void handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender);
-    void handleBoostPacket(sf::Packet& _packet, ClientPtr& _sender);
+    void handleBoostPacket(const sf::Packet& _packet, ClientPtr& _sender);
 
     void disconnectClient(ClientPtr& _client);
 

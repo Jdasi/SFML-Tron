@@ -24,9 +24,6 @@ NetworkManager::NetworkManager(INetworkClient& _client, const sf::IpAddress _ip_
     , socket()
     , has_connected(false)
     , running(true)
-    , latency(0)
-    , play_time(0)
-    , timer()
     , scheduler()
 {
     registerPacketHandlers();
@@ -226,16 +223,13 @@ void NetworkManager::handlePacket(sf::Packet& _packet)
 
 void NetworkManager::handlePongPacket(sf::Packet& _packet)
 {
-    std::cout << "Received pong." << std::endl;
+    using namespace std::chrono;
 
-    double prev_play_time = 0;
-    _packet >> prev_play_time;
-
-    latency = (play_time - prev_play_time) * 1000;
+    double latency = static_cast<double>(duration_cast<microseconds>(
+        steady_clock::now() - pre_ping).count()) / 2;
 
     onUpdatePingTime(latency);
-
-    sendClientLatency();
+    sendClientLatency(latency);
 
     scheduler.invoke([this](){ sendPing(); }, 1.0);
 }
@@ -377,12 +371,12 @@ void NetworkManager::sendPacket(sf::Packet& _packet)
 
 
 
-void NetworkManager::sendClientLatency()
+void NetworkManager::sendClientLatency(const double _latency)
 {
     sf::Packet packet;
     setPacketID(packet, PacketID::LATENCY);
 
-    packet << latency;
+    packet << _latency;
     
     sendPacket(packet);
 }
@@ -391,21 +385,12 @@ void NetworkManager::sendClientLatency()
 
 void NetworkManager::sendPing()
 {
-    calculatePlayTime();
+    pre_ping = std::chrono::steady_clock::now();
 
     sf::Packet packet;
     setPacketID(packet, PacketID::PING);
 
-    packet << play_time;
     sendPacket(packet);
-}
-
-
-
-void NetworkManager::calculatePlayTime()
-{
-    play_time += timer.getTimeDifference();
-    timer.reset();
 }
 
 

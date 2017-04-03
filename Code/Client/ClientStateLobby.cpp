@@ -39,7 +39,10 @@ void ClientStateLobby::tick()
 
     scheduleRefresh();
 
-    latency_text->setString(std::to_string(client_data->latency) + "ms");
+    auto str = std::to_string(client_data->latency);
+    str.erase(str.find_first_of('.'), std::string::npos);
+
+    latency_text->setString(str + "us");
 }
 
 void ClientStateLobby::draw(sf::RenderWindow& _window)

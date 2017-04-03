@@ -2,6 +2,7 @@
 #include <map>
 #include <functional>
 #include <thread>
+#include <chrono>
 
 #include <SFML/Network.hpp>
 
@@ -54,9 +55,8 @@ private:
     void handleBikeBoostPacket(sf::Packet& _packet) const;
 
     void sendPacket(sf::Packet& _packet);
-    void sendClientLatency();
+    void sendClientLatency(const double _latency);
     void sendPing();
-    void calculatePlayTime();
 
     // Pass-through functions to talk to the client.
     void onConnected() const;
@@ -85,10 +85,8 @@ private:
 
     volatile bool has_connected;
     volatile bool running;
-    double latency;
-    double play_time;
 
-    SimpleTimer timer;
+    std::chrono::steady_clock::time_point pre_ping;
     Scheduler scheduler;
 
 };
