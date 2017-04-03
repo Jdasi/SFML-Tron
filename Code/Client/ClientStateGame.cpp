@@ -1,9 +1,8 @@
-#include <Game/Simulation.h>
 #include <Game/GameStateIDs.h>
 #include "ClientStateGame.h"
 #include "ClientData.h"
 #include "ClientStateHandler.h"
-#include "TronNetworkManager.h"
+#include "NetworkManager.h"
 #include "GameManager.h"
 #include "AssetManager.h"
 

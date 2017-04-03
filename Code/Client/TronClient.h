@@ -6,7 +6,7 @@
 #include <Game/Simulation.h>
 #include <Game/ThreadDispatcher.h>
 #include "INetworkClient.h"
-#include "TronNetworkManager.h"
+#include "NetworkManager.h"
 #include "InputHandler.h"
 #include "ClientData.h"
 #include "ClientStateHandler.h"
@@ -54,7 +54,7 @@ private:
 
     // Core systems.
     AssetManager asset_manager;
-    TronNetworkManager network_manager;
+    NetworkManager network_manager;
     GameManager game_manager;
     InputHandler input_handler;
     ClientStateHandler state_handler;

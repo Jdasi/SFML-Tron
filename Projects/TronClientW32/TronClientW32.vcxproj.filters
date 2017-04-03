@@ -24,9 +24,6 @@
     <ClCompile Include="..\..\Code\Client\TronClient.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Client\TronNetworkManager.cpp">
-      <Filter>Managerial</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Code\Client\ClientStateGame.cpp">
       <Filter>States</Filter>
     </ClCompile>
@@ -82,9 +79,6 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\NetworkManager.h">
-      <Filter>Managerial</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Client\TronNetworkManager.h">
       <Filter>Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\ClientState.h">

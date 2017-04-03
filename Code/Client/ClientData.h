@@ -1,13 +1,13 @@
 #pragma once
 
 class AssetManager;
-class TronNetworkManager;
+class NetworkManager;
 class GameManager;
 class InputHandler;
 
 struct ClientData
 {
-    ClientData(AssetManager* _asset_manager,  TronNetworkManager* _network_manager, 
+    ClientData(AssetManager* _asset_manager, NetworkManager* _network_manager,
         GameManager* _game_manager, InputHandler* _input_handler)
         : client_id(0)
         , asset_manager(_asset_manager)
@@ -23,7 +23,7 @@ struct ClientData
 
     int client_id;
     AssetManager* asset_manager;
-    TronNetworkManager* network_manager;
+    NetworkManager* network_manager;
     GameManager* game_manager;
     InputHandler* input_handler;
 

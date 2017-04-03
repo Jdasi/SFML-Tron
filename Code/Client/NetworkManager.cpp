@@ -1,6 +1,12 @@
+#include <functional>
 #include <iostream>
 
 #include "NetworkManager.h"
+
+#include <Game/PlayerState.h>
+#include <Game/Simulation.h>
+#include "INetworkClient.h"
+#include "Player.h"
 
 using namespace std::placeholders;
 
@@ -9,8 +15,10 @@ using namespace std::placeholders;
 
 
 
-NetworkManager::NetworkManager(const sf::IpAddress _ip_address, const unsigned int _tcp_port)
-    : packet_handlers()
+NetworkManager::NetworkManager(INetworkClient& _client, const sf::IpAddress _ip_address, 
+    const unsigned int _tcp_port)
+    : client(_client)
+    , packet_handlers()
     , ip_address(_ip_address)
     , tcp_port(_tcp_port)
     , socket()
@@ -29,6 +37,13 @@ NetworkManager::NetworkManager(const sf::IpAddress _ip_address, const unsigned i
         networkingThread();
         std::cout << "Networking thread stopping." << std::endl;
     });
+}
+
+
+
+NetworkManager::~NetworkManager()
+{
+    stopNetworkingThread();
 }
 
 
@@ -67,6 +82,62 @@ void NetworkManager::disconnect()
         setPacketID(packet, PacketID::DISCONNECT);
 
         socket.send(packet);
+    });
+}
+
+
+
+void NetworkManager::sendChatMessage(const std::string& _message)
+{
+    postEvent([this, _message]()
+    {
+        sf::Packet packet;
+        setPacketID(packet, PacketID::MESSAGE);
+
+        packet << _message;
+
+        sendPacket(packet);
+    });
+}
+
+
+
+void NetworkManager::sendPlayerStateChange()
+{
+    postEvent([this]()
+    {
+        sf::Packet packet;
+        setPacketID(packet, PacketID::PLAYER_STATE);
+
+        sendPacket(packet);
+    });
+}
+
+
+
+void NetworkManager::sendBikeDirectionChange(const MoveDirection _dir)
+{
+    postEvent([this, _dir]()
+    {
+        sf::Packet packet;
+        setPacketID(packet, PacketID::DIRECTION);
+
+        packet << static_cast<sf::Uint8>(_dir);
+
+        sendPacket(packet);
+    });
+}
+
+
+
+void NetworkManager::sendBikeBoost()
+{
+    postEvent([this]()
+    {
+        sf::Packet packet;
+        setPacketID(packet, PacketID::BOOST);
+
+        sendPacket(packet);
     });
 }
 
@@ -118,9 +189,29 @@ void NetworkManager::networkingThread()
 
 
 
+void NetworkManager::stopNetworkingThread()
+{
+    running = false;
+    network_thread.join();
+    std::cout << "Networking thread stopped." << std::endl;
+}
+
+
+
 void NetworkManager::registerPacketHandlers()
 {
-    registerPacketHandler(PacketID::PONG, handlePongPacket);
+    registerPacketHandler(PacketID::PONG,               handlePongPacket);
+    registerPacketHandler(PacketID::IDENTITY,           handleIdentityPacket);
+    registerPacketHandler(PacketID::PLAYER_LIST,        handlePlayerListPacket);
+    registerPacketHandler(PacketID::PLAYER_JOINED,      handlePlayerJoinedPacket);
+    registerPacketHandler(PacketID::PLAYER_LEFT,        handlePlayerLeftPacket);
+    registerPacketHandler(PacketID::MESSAGE,            handleMessagePacket);
+    registerPacketHandler(PacketID::PLAYER_STATE,       handlePlayerStateChangePacket);
+    registerPacketHandler(PacketID::GAME_STATE,         handleGameStateChangePacket);
+    registerPacketHandler(PacketID::SYNC_BIKE,          handleBikeSyncPacket);
+    registerPacketHandler(PacketID::SYNC_ALL_BIKES,     handleFullBikeSyncPacket);
+    registerPacketHandler(PacketID::SYNC_SIMULATION,    handleFullSyncPacket);
+    registerPacketHandler(PacketID::BOOST,              handleBikeBoostPacket);
 }
 
 
@@ -151,18 +242,137 @@ void NetworkManager::handlePongPacket(sf::Packet& _packet)
 
 
 
-void NetworkManager::sendPacket(sf::Packet& _packet)
+void NetworkManager::handleIdentityPacket(sf::Packet& _packet) const
 {
-    while (socket.send(_packet) == sf::Socket::Partial){}
+    sf::Uint8 temp_id;
+    _packet >> temp_id;
+
+    onIdentity(static_cast<int>(temp_id));
 }
 
 
 
-void NetworkManager::stopNetworkingThread()
+void NetworkManager::handlePlayerListPacket(sf::Packet& _packet) const
 {
-    running = false;
-    network_thread.join();
-    std::cout << "Networking thread stopped." << std::endl;
+    std::vector<Player> players;
+
+    while (!_packet.endOfPacket())
+    {
+        sf::Uint8 id;
+        sf::Uint8 state;
+
+        _packet >> id >> state;
+
+        Player player(id);
+        player.setState(static_cast<PlayerState>(state));
+
+        players.push_back(player);
+    }
+
+    onPlayerList(players);
+}
+
+
+
+void NetworkManager::handlePlayerJoinedPacket(sf::Packet& _packet) const
+{
+    sf::Uint8 temp_id;
+    _packet >> temp_id;
+
+    onPlayerJoined(static_cast<int>(temp_id));
+}
+
+
+
+void NetworkManager::handlePlayerLeftPacket(sf::Packet& _packet) const
+{
+    sf::Uint8 temp_id;
+    _packet >> temp_id;
+
+    onPlayerLeft(static_cast<int>(temp_id));
+}
+
+
+
+void NetworkManager::handleMessagePacket(sf::Packet& _packet) const
+{
+    std::string str;
+    _packet >> str;
+
+    std::cout << str << std::endl;
+}
+
+
+
+void NetworkManager::handlePlayerStateChangePacket(sf::Packet& _packet) const
+{
+    sf::Uint8 temp_id;
+    sf::Uint8 temp_state;
+
+    _packet >> temp_id >> temp_state;
+
+    onPlayerStateChange(temp_id, static_cast<PlayerState>(temp_state));
+}
+
+
+
+void NetworkManager::handleGameStateChangePacket(sf::Packet& _packet) const
+{
+    sf::Uint8 state;
+    _packet >> state;
+
+    onGameStateChange(state);
+}
+
+
+
+void NetworkManager::handleBikeSyncPacket(sf::Packet& _packet) const
+{
+    BikeState bike_state;
+    _packet >> bike_state;
+
+    onBikeSync(bike_state);
+}
+
+
+
+void NetworkManager::handleFullBikeSyncPacket(sf::Packet& _packet) const
+{
+    std::array<BikeState, MAX_PLAYERS> bike_states;
+
+    for (int i = 0; i < MAX_PLAYERS; ++i)
+    {
+        _packet >> bike_states[i];
+    }
+
+    onFullBikeSync(bike_states);
+}
+
+
+
+void NetworkManager::handleFullSyncPacket(sf::Packet& _packet) const
+{
+    SimulationState simulation_state;
+    _packet >> simulation_state;
+
+    onFullSync(simulation_state);
+}
+
+
+
+void NetworkManager::handleBikeBoostPacket(sf::Packet& _packet) const
+{
+    sf::Uint8 bike_id;
+    _packet >> bike_id;
+
+    onBikeBoost(bike_id);
+}
+
+
+
+void NetworkManager::sendPacket(sf::Packet& _packet)
+{
+    while (socket.send(_packet) == sf::Socket::Partial){}
 }
 
 
@@ -196,4 +406,95 @@ void NetworkManager::calculatePlayTime()
 {
     play_time += timer.getTimeDifference();
     timer.reset();
+}
+
+
+
+void NetworkManager::onConnected() const
+{
+    client.onConnected();
+}
+
+
+
+void NetworkManager::onDisconnected() const
+{
+    client.onDisconnected();
+}
+
+
+
+void NetworkManager::onUpdatePingTime(const double _ping) const
+{
+    client.onUpdatePingTime(_ping);
+}
+
+
+
+void NetworkManager::onPlayerList(const std::vector<Player>& _players) const
+{
+    client.onPlayerList(_players);
+}
+
+
+
+void NetworkManager::onIdentity(const unsigned int _player_id) const
+{
+    client.onIdentity(_player_id);
+}
+
+
+
+void NetworkManager::onPlayerJoined(const unsigned int _player_id) const
+{
+    client.onPlayerJoined(_player_id);
+}
+
+
+
+void NetworkManager::onPlayerLeft(const unsigned int _player_id) const
+{
+    client.onPlayerLeft(_player_id);
+}
+
+
+
+void NetworkManager::onPlayerStateChange(const unsigned int _player_id, const PlayerState _state) const
+{
+    client.onPlayerStateChange(_player_id, _state);
+}
+
+
+
+void NetworkManager::onGameStateChange(const int _state) const
+{
+    client.onGameStateChange(_state);
+}
+
+
+
+void NetworkManager::onBikeSync(const BikeState& _bike) const
+{
+    client.onBikeSync(_bike);
+}
+
+
+
+void NetworkManager::onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) const
+{
+    client.onFullBikeSync(_bike_states);
+}
+
+
+
+void NetworkManager::onFullSync(const SimulationState& _simulation_state) const
+{
+    client.onFullSync(_simulation_state);
+}
+
+
+
+void NetworkManager::onBikeBoost(const unsigned int _bike_id) const
+{
+    client.onBikeBoost(_bike_id);
 }

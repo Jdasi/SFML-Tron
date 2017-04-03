@@ -4,7 +4,7 @@
 #include "ClientStateEnd.h"
 #include "ClientStateHandler.h"
 #include "ClientData.h"
-#include "TronNetworkManager.h"
+#include "NetworkManager.h"
 #include "AssetManager.h"
 
 ClientStateEnd::ClientStateEnd(ClientData* _client_data)

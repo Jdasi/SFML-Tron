@@ -94,8 +94,6 @@ add_executable(TronClient
     Code/Client/PrettyGrid.h
     Code/Client/TronClient.cpp
     Code/Client/TronClient.h
-    Code/Client/TronNetworkManager.cpp
-    Code/Client/TronNetworkManager.h
 )
 
 target_include_directories(TronClient

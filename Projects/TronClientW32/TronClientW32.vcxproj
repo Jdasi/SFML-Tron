@@ -102,7 +102,6 @@
     <ClCompile Include="..\..\Code\Client\TronClient.cpp" />
     <ClCompile Include="..\..\Code\Client\InputHandler.cpp" />
     <ClCompile Include="..\..\Code\Client\main_client.cpp" />
-    <ClCompile Include="..\..\Code\Client\TronNetworkManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Client\AssetManager.h" />
@@ -123,7 +122,6 @@
     <ClInclude Include="..\..\Code\Client\TronClient.h" />
     <ClInclude Include="..\..\Code\Client\GameAction.h" />
     <ClInclude Include="..\..\Code\Client\InputHandler.h" />
-    <ClInclude Include="..\..\Code\Client\TronNetworkManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

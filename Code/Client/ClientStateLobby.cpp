@@ -4,7 +4,7 @@
 #include "ClientStateLobby.h"
 #include "ClientStateHandler.h"
 #include "ClientData.h"
-#include "TronNetworkManager.h"
+#include "NetworkManager.h"
 #include "AssetManager.h"
 
 ClientStateLobby::ClientStateLobby(ClientData* _client_data)
