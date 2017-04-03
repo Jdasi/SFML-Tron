@@ -46,6 +46,11 @@ void Simulation::addBike(const unsigned int _id)
     configureBikeSide(bike);
     grid.setCellValue(bike.getPosition(), JHelper::idToCellValue(_id));
 
+    for (int i = 0; i < INITIAL_MOVES; ++i)
+    {
+        moveBike(bike);
+    }
+
     for (auto& listener : listeners)
     {
         listener->updateBikePosition(bike.getPosition(), bike.getID());
@@ -249,11 +254,11 @@ void Simulation::changeBikeDirection(unsigned int _bike_id, const MoveDirection 
 
 void Simulation::configureBikeSide(Bike& _bike) const
 {
-    int x_pos_left = 0;
-    int x_pos_right = GRID_SIZE_X - 1;
+    int x_pos_left = static_cast<int>(GRID_SIZE_Y * 0.15f);
+    int x_pos_right = static_cast<int>(GRID_SIZE_Y * 0.85f);
 
-    int y_pos_top = static_cast<int>(GRID_SIZE_Y * 0.25f);
-    int y_pos_bottom = static_cast<int>(GRID_SIZE_Y * 0.75f);
+    int y_pos_top = static_cast<int>(GRID_SIZE_Y * 0.15f);
+    int y_pos_bottom = static_cast<int>(GRID_SIZE_Y * 0.85f);
 
     switch (_bike.getID())
     {
