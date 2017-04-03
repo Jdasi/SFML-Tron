@@ -62,14 +62,14 @@ const float AXIS_DEADZONE               = 80.0f; // Min input axis required by c
 // ======================================================================================
 // TEXTURE STRINGS
 // ======================================================================================
-const std::string DEFAULT_FONT      { "arial.ttf" };
+const std::string DEFAULT_FONT          { "arial.ttf" };
 
 
 // ======================================================================================
 // TEXTURE STRINGS
 // ======================================================================================
-const std::string PLAYER_MARKER     { "player_marker.png" };
-const std::string GAME_BACKDROP     { "game_backdrop.png" };
+const std::string BACKDROP              { "backdrop.png" };
+const std::string PLAYER_MARKER         { "player_marker.png" };
 
 
 // ======================================================================================

@@ -15,6 +15,10 @@ ClientStateLobby::ClientStateLobby(ClientData* _client_data)
 {
     auto font = client_data->asset_manager->loadFont(DEFAULT_FONT);
 
+    auto backdrop = std::make_unique<sf::Sprite>(
+        *client_data->asset_manager->loadTexture(BACKDROP));
+    drawables.push_back(std::move(backdrop));
+
     auto l_text = std::make_unique<sf::Text>("", *font);
     l_text->setCharacterSize(30);
     l_text->setStyle(sf::Text::Bold);
@@ -49,12 +53,12 @@ void ClientStateLobby::tick()
 
 void ClientStateLobby::draw(sf::RenderWindow& _window)
 {
-    lobby_ui.draw(_window);
-
     for (auto& drawable : drawables)
     {
         _window.draw(*drawable);
     }
+
+    lobby_ui.draw(_window);
 }
 
 void ClientStateLobby::onCommand(const GameAction _action, const ActionState _action_state)

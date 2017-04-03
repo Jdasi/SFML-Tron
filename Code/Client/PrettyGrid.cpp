@@ -8,7 +8,7 @@
 PrettyGrid::PrettyGrid(AssetManager* _asset_manager)
     : asset_manager(_asset_manager)
 {
-    backdrop.setTexture(*_asset_manager->loadTexture(GAME_BACKDROP));
+    backdrop.setTexture(*_asset_manager->loadTexture(BACKDROP));
 
     initGrid();
     initPlayerMarkers();
@@ -157,7 +157,7 @@ void PrettyGrid::initGrid()
 
     border.setPosition({ WINDOW_LEFT_BOUNDARY, WINDOW_TOP_BOUNDARY });
     border.setSize(pane);
-    border.setFillColor(sf::Color::Transparent);
+    border.setFillColor(sf::Color::Black);
     border.setOutlineThickness(5.0f);
 
     float rect_width =  pane_width / GRID_SIZE_X;
