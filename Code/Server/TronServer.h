@@ -33,29 +33,30 @@ private:
     void lobbyStateBehaviour();
     void gameStateBehaviour();
     void endStateBehaviour();
-    void allClientsReady();
+    bool clientExistsWithState(const PlayerState _state);
 
     void acceptClient();
     void receivePacket();
     int generateUniqueClientID() const;
+    std::vector<int> getIDsInUse() const;
 
     void sendClientIdentity(ClientPtr& _client);
     void sendClientList(ClientPtr& _client);
     void sendClientJoined(const ClientPtr& _client);
     void sendClientLeft(ClientPtr& _client);
     void sendUpdatedClientState(const ClientPtr& _client);
+    void sendUpdatedServerState();
 
     void handlePacket(sf::Packet& _packet, ClientPtr& _sender);
     void handleDisconnectPacket(const sf::Packet& _packet, ClientPtr& _sender);
     void handlePingPacket(const sf::Packet& _packet, ClientPtr& _sender);
     void handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender) const;
     void handleMessagePacket(sf::Packet& _packet, ClientPtr& _sender);
-    void handlePlayerStatePacket(const sf::Packet& _packet, ClientPtr& _sender);
+    void handlePlayerStatePacket(sf::Packet& _packet, ClientPtr& _sender);
     void handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender);
     void handleBoostPacket(const sf::Packet& _packet, ClientPtr& _sender);
 
     void disconnectClient(ClientPtr& _client);
-
     void sendPacketToClient(sf::Packet& _packet, ClientPtr& _client);
     void sendPacketToAll(sf::Packet& _packet);
     void sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& _sender);
@@ -64,13 +65,15 @@ private:
     void onSyncBike(const BikeState& _bike_state) override;
     void onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
     void onBikeBoost(const unsigned int _bike_id) override;
-    void onSimulationStarted() override;
+    void onSimulationReset() override;
+    void onSimulationStopping() override;
     void onSimulationEnded() override;
 
     sf::TcpListener tcp_listener;
     sf::SocketSelector socket_selector;
     std::vector<ClientPtr> clients;
     int connected_clients;
+
     std::map<PacketID, std::function<void(sf::Packet&, ClientPtr&)>> packet_handlers;
 
     bool exit;

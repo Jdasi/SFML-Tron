@@ -6,6 +6,7 @@
 #include "ClientData.h"
 #include "NetworkManager.h"
 #include "AssetManager.h"
+#include "GameManager.h"
 
 ClientStateLobby::ClientStateLobby(ClientData* _client_data)
     : ClientState(_client_data)
@@ -25,6 +26,7 @@ ClientStateLobby::ClientStateLobby(ClientData* _client_data)
 
 void ClientStateLobby::onStateEnter()
 {
+    client_data->game_manager->resetSimulation();
     lobby_ui.refresh();
 }
 

@@ -41,6 +41,7 @@ private:
     void onPlayerLeft(const unsigned int _player_id) override;
     void onPlayerStateChange(const unsigned int _player_id, const PlayerState _state) override;
     void onGameStateChange(const int _state) override;
+    void onFlowControl(const FlowControl _control) override;
     void onBikeSync(const BikeState& _bike_state) override;
     void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
     void onFullSync(const SimulationState& _simulation_state) override;

@@ -3,6 +3,7 @@
 #include <array>
 
 #include <Game/PlayerState.h>
+#include <Game/FlowControl.h>
 
 class Player;
 struct SimulationState;
@@ -30,6 +31,7 @@ public:
     virtual void onPlayerLeft(const unsigned int _player_id) = 0;
     virtual void onPlayerStateChange(const unsigned int _player_id, const PlayerState _state) = 0;
     virtual void onGameStateChange(const int _state) = 0;
+    virtual void onFlowControl(const FlowControl _control) = 0;
     virtual void onBikeSync(const BikeState& _bike_state) = 0;
     virtual void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) = 0;
     virtual void onFullSync(const SimulationState& _simulation_state) = 0;

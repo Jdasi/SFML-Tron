@@ -232,30 +232,30 @@ void TronClient::onGameStateChange(const int _state)
 {
     postEvent([this, _state]()
     {
-        switch (_state)
+        state_handler.queueState(_state);
+    });
+}
+
+void TronClient::onFlowControl(const FlowControl _control)
+{
+    postEvent([this, _control]()
+    {
+        switch (_control)
         {
-            case STATE_LOBBY:
-            {
-
-            } break;
-
-            case STATE_GAME:
+            case FlowControl::START:
             {
                 game_manager.startSimulation();
             } break;
 
-            case STATE_END:
+            case FlowControl::STOP:
             {
                 game_manager.stopSimulation();
             } break;
 
             default: {}
         }
-
-        state_handler.queueState(_state);
     });
 }
-
 
 
 void TronClient::onBikeSync(const BikeState& _bike_state)

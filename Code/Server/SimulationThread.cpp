@@ -27,30 +27,43 @@ SimulationThread::~SimulationThread()
 
 
 
-void SimulationThread::eventStartSimulation(const std::vector<int>& _bike_ids)
+void SimulationThread::eventPrepareSimulation(const std::vector<int>& _bike_ids)
 {
     postEvent([this, _bike_ids]()
     {
-        simulation_running = true;
-        
         for (auto& id : _bike_ids)
         {
             simulation.addBike(id);
         }
 
         onSyncSimulation(simulation.getState());
-        onSimulationStarted();
     });
 }
 
+void SimulationThread::eventStartSimulation()
+{
+    postEvent([this]()
+    {
+        scheduler.invoke([this]()
+        {
+            simulation_running = true;
+        }, COUNTDOWN_TIME);
+    });
+}
 
 
 void SimulationThread::eventStopSimulation()
 {
     postEvent([this]()
     {
-        resetSimulation();
-        onSimulationEnded();
+        simulation_running = false;
+        onSimulationStopping();
+
+        scheduler.invoke([this]()
+        {
+            resetSimulation();
+            onSimulationEnded();
+        }, COUNTDOWN_TIME);
     });
 }
 
@@ -60,7 +73,12 @@ void SimulationThread::eventResetSimulation()
 {
     postEvent([this]()
     {
+        simulation_running = false;
+
         resetSimulation();
+        onSimulationReset();
+
+        onSyncSimulation(simulation.getState());
     });
 }
 
@@ -126,12 +144,21 @@ void SimulationThread::simulationThreadLoop()
 
         if (simulation_running)
         {
-            simulation.tick(dt);
-
-            if (simulation.allBikesDead())
+            // There is a victor.
+            if (simulation.oneBikeLeft())
             {
                 eventStopSimulation();
+                continue;
             }
+
+            // No one left in the game.
+            if (simulation.allBikesDead())
+            {
+                eventResetSimulation();
+                continue;
+            }
+
+            simulation.tick(dt);
 
             scheduleAllBikeSync(0.5);
             scheduleSimulationSync(5.0);
@@ -148,48 +175,6 @@ void SimulationThread::resetSimulation()
 
     bike_sync_needed = true;
     full_sync_needed = true;
-}
-
-
-
-void SimulationThread::onSyncSimulation(const SimulationState& _simulation) const
-{
-    server.onSyncSimulation(_simulation);
-}
-
-
-
-void SimulationThread::onSyncBike(const BikeState& _bike) const
-{
-    server.onSyncBike(_bike);
-}
-
-
-
-void SimulationThread::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bikes) const
-{
-    server.onSyncAllBikes(_bikes);
-}
-
-
-
-void SimulationThread::onBikeBoost(const unsigned int _bike_id) const
-{
-    server.onBikeBoost(_bike_id);
-}
-
-
-
-void SimulationThread::onSimulationStarted() const
-{
-    server.onSimulationStarted();
-}
-
-
-
-void SimulationThread::onSimulationEnded() const
-{
-    server.onSimulationEnded();
 }
 
 
@@ -236,4 +221,53 @@ void SimulationThread::scheduleSimulationSync(const double _time)
             std::cout << "Sync simulation event" << std::endl;
         }, _time);
     }
+}
+
+
+
+void SimulationThread::onSyncSimulation(const SimulationState& _simulation) const
+{
+    server.onSyncSimulation(_simulation);
+}
+
+
+
+void SimulationThread::onSyncBike(const BikeState& _bike) const
+{
+    server.onSyncBike(_bike);
+}
+
+
+
+void SimulationThread::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bikes) const
+{
+    server.onSyncAllBikes(_bikes);
+}
+
+
+
+void SimulationThread::onBikeBoost(const unsigned int _bike_id) const
+{
+    server.onBikeBoost(_bike_id);
+}
+
+
+
+void SimulationThread::onSimulationReset() const
+{
+    server.onSimulationReset();
+}
+
+
+
+void SimulationThread::onSimulationStopping() const
+{
+    server.onSimulationStopping();
+}
+
+
+
+void SimulationThread::onSimulationEnded() const
+{
+    server.onSimulationEnded();
 }

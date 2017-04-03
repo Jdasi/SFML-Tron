@@ -6,6 +6,8 @@
 GameManager::GameManager(ClientData* _client_data)
     : client_data(_client_data)
     , simulation_running(false)
+    , countdown_started(false)
+    , countdown_timer(0)
 {
 }
 
@@ -13,6 +15,19 @@ GameManager::GameManager(ClientData* _client_data)
 
 void GameManager::tick()
 {
+    if (countdown_started)
+    {
+        if (countdown_timer > 0)
+        {
+            countdown_timer -= client_data->delta_time;
+        }
+        else
+        {
+            simulation_running = true;
+            countdown_started = false;
+        }
+    }
+
     if (simulation_running)
     {
         simulation.tick(client_data->delta_time);
@@ -23,12 +38,8 @@ void GameManager::tick()
 
 void GameManager::startSimulation()
 {
-    if (simulation_running)
-    {
-        return;
-    }
-
-    simulation_running = true;
+    countdown_timer = COUNTDOWN_TIME;
+    countdown_started = true;
 }
 
 
@@ -36,8 +47,26 @@ void GameManager::startSimulation()
 void GameManager::stopSimulation()
 {
     simulation_running = false;
+    countdown_started = false;
+}
 
+void GameManager::resetSimulation()
+{
+    stopSimulation();
     simulation.reset();
+}
+
+
+int GameManager::getCountdownDigit() const
+{
+    return static_cast<int>(countdown_timer);
+}
+
+
+
+bool GameManager::simulationRunning() const
+{
+    return simulation_running;
 }
 
 

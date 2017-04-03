@@ -9,11 +9,11 @@
 #include <Game/Constants.h>
 #include <Game/PacketID.h>
 #include <Game/Scheduler.h>
-#include <Game/SimpleTimer.h>
 #include <Game/ThreadDispatcher.h>
 #include <Game/MoveDirection.h>
 #include <Game/PlayerState.h>
 
+enum class FlowControl;
 class INetworkClient;
 class Player;
 struct SimulationState;
@@ -30,7 +30,7 @@ public:
     void disconnect();
 
     void sendChatMessage(const std::string& _message);
-    void sendPlayerStateChange();
+    void sendPlayerStateChange(const PlayerState _state = PlayerState::READY);
     void sendBikeDirectionChange(const MoveDirection _dir);
     void sendBikeBoost();
 
@@ -49,6 +49,7 @@ private:
     void handleMessagePacket(sf::Packet& _packet) const;
     void handlePlayerStateChangePacket(sf::Packet& _packet) const;
     void handleGameStateChangePacket(sf::Packet& _packet) const;
+    void handleFlowControlPacket(sf::Packet& _packet) const;
     void handleBikeSyncPacket(sf::Packet& _packet) const;
     void handleFullBikeSyncPacket(sf::Packet& _packet) const;
     void handleFullSyncPacket(sf::Packet& _packet) const;
@@ -68,6 +69,7 @@ private:
     void onPlayerLeft(const unsigned int _player_id) const;
     void onPlayerStateChange(const unsigned int _player_id, const PlayerState _state) const;
     void onGameStateChange(const int _state) const;
+    void onFlowControl(const FlowControl _control) const;
     void onBikeSync(const BikeState& _bike_state) const;
     void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) const;
     void onFullSync(const SimulationState& _simulation_state) const;

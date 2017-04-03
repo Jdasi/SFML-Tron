@@ -25,14 +25,15 @@ constexpr float WINDOW_BOTTOM_BOUNDARY  = WINDOW_HEIGHT - WINDOW_MARGIN_Y;
 // NETWORK SETTINGS
 // ======================================================================================
 //const std::string SERVER_IP             { "dgm.no-ip.org" };
-const std::string SERVER_IP             { "127.0.0.1" };
-//const std::string SERVER_IP             { "86.31.186.180" };
+//const std::string SERVER_IP             { "127.0.0.1" };
+const std::string SERVER_IP             { "86.31.186.180" };
 const unsigned int SERVER_TCP_PORT      = 1337;
 
 // ======================================================================================
 // GAMEPLAY SETTINGS
 // ======================================================================================
 const int MAX_PLAYERS                   = 4; // Max players supported.
+const double COUNTDOWN_TIME             = 3.5; // Time before game/sim starts & ends.
 
 const int GRID_SIZE_X                   = 125; // Width (in tiles) of the playing grid.
 const int GRID_SIZE_Y                   = 125; // Height (in tiles) of the playing grid.

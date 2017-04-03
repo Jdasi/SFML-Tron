@@ -110,5 +110,8 @@
     <ClInclude Include="..\..\Code\Game\ScheduledTask.h">
       <Filter>Managerial</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\Game\FlowControl.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

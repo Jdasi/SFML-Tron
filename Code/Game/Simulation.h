@@ -22,7 +22,10 @@ public:
 
     void addBike(const unsigned int _id);
     Bike& getBike(const unsigned int _bike_id);
+
     bool allBikesDead() const;
+    bool oneBikeLeft() const;
+    unsigned int lastBikeStanding() const;
 
     const Grid& getGrid() const;
 

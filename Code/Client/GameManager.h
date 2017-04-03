@@ -17,6 +17,10 @@ public:
 
     void startSimulation();
     void stopSimulation();
+    void resetSimulation();
+
+    int getCountdownDigit() const;
+    bool simulationRunning() const;
 
     void attachSimulationListener(SimulationListener* _listener);
     INetworkSimulation* getNetworkSimulation();
@@ -30,6 +34,8 @@ private:
     ClientData* client_data;
     Simulation simulation;
     bool simulation_running;
+    bool countdown_started;
+    double countdown_timer;
 
     std::array<std::unique_ptr<Player>, MAX_PLAYERS> players;
 

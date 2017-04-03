@@ -185,6 +185,38 @@ bool Simulation::allBikesDead() const
 
 
 
+bool Simulation::oneBikeLeft() const
+{
+    int num_alive = 0;
+    
+    for (auto& bike : bikes)
+    {
+        if (bike.isAlive())
+        {
+            ++num_alive;
+        }
+    }
+
+    return num_alive == 1;
+}
+
+
+
+unsigned int Simulation::lastBikeStanding() const
+{
+    for (auto& bike : bikes)
+    {
+        if (bike.isAlive())
+        {
+            return bike.getID();
+        }
+    }
+
+    return 0;
+}
+
+
+
 std::array<BikeState, MAX_PLAYERS> Simulation::getBikes()
 {
     std::array<BikeState, MAX_PLAYERS> bike_states;

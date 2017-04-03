@@ -5,6 +5,7 @@
 
 #include <Game/PlayerState.h>
 #include <Game/Simulation.h>
+#include <Game/FlowControl.h>
 #include "INetworkClient.h"
 #include "Player.h"
 
@@ -99,12 +100,14 @@ void NetworkManager::sendChatMessage(const std::string& _message)
 
 
 
-void NetworkManager::sendPlayerStateChange()
+void NetworkManager::sendPlayerStateChange(const PlayerState _state)
 {
-    postEvent([this]()
+    postEvent([this, _state]()
     {
         sf::Packet packet;
         setPacketID(packet, PacketID::PLAYER_STATE);
+
+        packet << static_cast<sf::Uint8>(_state);
 
         sendPacket(packet);
     });
@@ -205,6 +208,7 @@ void NetworkManager::registerPacketHandlers()
     registerPacketHandler(PacketID::MESSAGE,            handleMessagePacket);
     registerPacketHandler(PacketID::PLAYER_STATE,       handlePlayerStateChangePacket);
     registerPacketHandler(PacketID::GAME_STATE,         handleGameStateChangePacket);
+    registerPacketHandler(PacketID::GAME_FLOW,          handleFlowControlPacket);
     registerPacketHandler(PacketID::SYNC_BIKE,          handleBikeSyncPacket);
     registerPacketHandler(PacketID::SYNC_ALL_BIKES,     handleFullBikeSyncPacket);
     registerPacketHandler(PacketID::SYNC_SIMULATION,    handleFullSyncPacket);
@@ -316,6 +320,16 @@ void NetworkManager::handleGameStateChangePacket(sf::Packet& _packet) const
     _packet >> state;
 
     onGameStateChange(state);
+}
+
+
+
+void NetworkManager::handleFlowControlPacket(sf::Packet& _packet) const
+{
+    sf::Uint8 flow;
+    _packet >> flow;
+
+    onFlowControl(static_cast<FlowControl>(flow));
 }
 
 
@@ -454,6 +468,13 @@ void NetworkManager::onPlayerStateChange(const unsigned int _player_id, const Pl
 void NetworkManager::onGameStateChange(const int _state) const
 {
     client.onGameStateChange(_state);
+}
+
+
+
+void NetworkManager::onFlowControl(const FlowControl _control) const
+{
+    client.onFlowControl(_control);
 }
 
 

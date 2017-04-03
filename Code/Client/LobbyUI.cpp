@@ -75,8 +75,9 @@ std::string LobbyUI::playerStateToString(const PlayerState& _state) const
     {
         case PlayerState::NOTREADY:         return "Not Ready";
         case PlayerState::READY:            return "Ready";
+        case PlayerState::STARTING_GAME:    return "Starting Game";
         case PlayerState::PLAYING:          return "Playing";
-        case PlayerState::VIEWING_RESULTS:   return "Viewing Results";
+        case PlayerState::VIEWING_RESULTS:  return "Viewing Results";
 
         default: return "Empty";
     }

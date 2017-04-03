@@ -14,7 +14,8 @@ public:
     explicit SimulationThread(ISimulationServer& _server);
     ~SimulationThread();
 
-    void eventStartSimulation(const std::vector<int>& _bike_ids);
+    void eventPrepareSimulation(const std::vector<int>& _bike_ids);
+    void eventStartSimulation();
     void eventStopSimulation();
     void eventResetSimulation();
     void eventDirectionChanged(const unsigned int _bike_id, const MoveDirection _dir);
@@ -26,15 +27,16 @@ private:
     void simulationThreadLoop();
     void resetSimulation();
 
+    void scheduleAllBikeSync(const double _time);
+    void scheduleSimulationSync(const double _time);
+
     void onSyncSimulation(const SimulationState& _simulation_state) const;
     void onSyncBike(const BikeState& _bike_state) const;
     void onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) const;
     void onBikeBoost(const unsigned int _bike_id) const;
-    void onSimulationStarted() const;
+    void onSimulationReset() const;
+    void onSimulationStopping() const;
     void onSimulationEnded() const;
-
-    void scheduleAllBikeSync(const double _time);
-    void scheduleSimulationSync(const double _time);
 
     volatile bool thread_running;
     volatile bool simulation_running;
@@ -46,6 +48,7 @@ private:
 
     bool bike_sync_needed;
     bool full_sync_needed;
+    bool counting_down;
 
     // TronServer simulation interface.
     ISimulationServer& server;

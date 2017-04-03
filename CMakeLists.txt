@@ -20,6 +20,7 @@ add_library(TronGame STATIC
     Code/Game/BikeState.h
     Code/Game/CellValue.h
     Code/Game/Constants.h
+    Code/Game/FlowControl.h
     Code/Game/GameStateIDs.h
     Code/Game/Grid.cpp
     Code/Game/Grid.h

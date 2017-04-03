@@ -25,6 +25,9 @@ public:
     void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
+    void handleBikeControls(const GameAction _action, const ActionState _action_state) const;
+
     PrettyGrid pretty_grid;
+    std::unique_ptr<sf::Text> countdown_text;
 
 };
