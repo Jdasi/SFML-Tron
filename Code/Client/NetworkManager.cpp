@@ -208,7 +208,7 @@ void NetworkManager::registerPacketHandlers()
     registerPacketHandler(PacketID::MESSAGE,            handleMessagePacket);
     registerPacketHandler(PacketID::PLAYER_STATE,       handlePlayerStateChangePacket);
     registerPacketHandler(PacketID::GAME_STATE,         handleGameStateChangePacket);
-    registerPacketHandler(PacketID::GAME_FLOW,          handleFlowControlPacket);
+    registerPacketHandler(PacketID::FLOW_CONTROL,       handleFlowControlPacket);
     registerPacketHandler(PacketID::SYNC_BIKE,          handleBikeSyncPacket);
     registerPacketHandler(PacketID::SYNC_ALL_BIKES,     handleFullBikeSyncPacket);
     registerPacketHandler(PacketID::SYNC_SIMULATION,    handleFullSyncPacket);

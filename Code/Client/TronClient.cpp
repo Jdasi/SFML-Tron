@@ -242,6 +242,11 @@ void TronClient::onFlowControl(const FlowControl _control)
     {
         switch (_control)
         {
+            case FlowControl::COUNTDOWN:
+            {
+                game_manager.startCountdown();
+            } break;
+
             case FlowControl::START:
             {
                 game_manager.startSimulation();

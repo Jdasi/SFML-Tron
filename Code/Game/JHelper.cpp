@@ -42,3 +42,8 @@ sf::Color JHelper::evaluateSFColor(const CellValue _value)
         default: return sf::Color::Transparent;
     }
 }
+
+sf::Color JHelper::evaluateSFColorFromCellValueID(const unsigned _id)
+{
+    return evaluateSFColor(idToCellValue(_id));
+}

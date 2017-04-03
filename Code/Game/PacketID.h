@@ -12,7 +12,7 @@ enum class PacketID
         PLAYER_LEFT,
         PLAYER_STATE,
         GAME_STATE,
-        GAME_FLOW,
+        FLOW_CONTROL,
         LATENCY,
         MESSAGE,
         DIRECTION,

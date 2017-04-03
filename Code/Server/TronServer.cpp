@@ -2,7 +2,6 @@
 
 #include <Game/Constants.h>
 #include <Game/GameStateIDs.h>
-#include <Game/FlowControl.h>
 #include "TronServer.h"
 
 #define registerPacketHandler(id, func) \
@@ -385,6 +384,19 @@ void TronServer::sendUpdatedServerState()
 }
 
 
+
+void TronServer::sendUpdatedFlowControl(const FlowControl _control)
+{
+    sf::Packet packet;
+    setPacketID(packet, PacketID::FLOW_CONTROL);
+
+    packet << static_cast<sf::Uint8>(_control);
+
+    sendPacketToAll(packet);
+}
+
+
+
 void TronServer::handlePacket(sf::Packet& _packet, ClientPtr& _sender)
 {
     PacketID pid = getPacketID(_packet);
@@ -476,12 +488,7 @@ void TronServer::handlePlayerStatePacket(sf::Packet& _packet, ClientPtr& _sender
                         return;
                     }
 
-                    sf::Packet packet;
-                    setPacketID(packet, PacketID::GAME_FLOW);
-
-                    packet << static_cast<sf::Uint8>(FlowControl::START);
-
-                    sendPacketToAll(packet);
+                    sendUpdatedFlowControl(FlowControl::COUNTDOWN);
 
                     simulation_thread.eventStartSimulation();
                 } break;
@@ -667,11 +674,16 @@ void TronServer::onBikeBoost(const unsigned int _bike_id)
 
 
 
-void TronServer::onSimulationReset()
+void TronServer::onSimulationStarted()
 {
     postEvent([this]()
     {
-        server_state = STATE_LOBBY;
+        sf::Packet packet;
+        setPacketID(packet, PacketID::FLOW_CONTROL);
+
+        packet << static_cast<sf::Uint8>(FlowControl::START);
+
+        sendPacketToAll(packet);
     });
 }
 
@@ -682,7 +694,7 @@ void TronServer::onSimulationStopping()
     postEvent([this]()
     {
         sf::Packet packet;
-        setPacketID(packet, PacketID::GAME_FLOW);
+        setPacketID(packet, PacketID::FLOW_CONTROL);
 
         packet << static_cast<sf::Uint8>(FlowControl::STOP);
 
@@ -720,5 +732,15 @@ void TronServer::onSimulationEnded()
         }
 
         std::cout << "Simulation ended" << std::endl;
+    });
+}
+
+
+
+void TronServer::onSimulationReset()
+{
+    postEvent([this]()
+    {
+        server_state = STATE_LOBBY;
     });
 }

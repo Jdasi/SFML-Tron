@@ -47,6 +47,7 @@ void SimulationThread::eventStartSimulation()
         scheduler.invoke([this]()
         {
             simulation_running = true;
+            onSimulationStarted();
         }, COUNTDOWN_TIME);
     });
 }
@@ -58,6 +59,7 @@ void SimulationThread::eventStopSimulation()
     {
         simulation_running = false;
         onSimulationStopping();
+        onSyncSimulation(simulation.getState());
 
         scheduler.invoke([this]()
         {
@@ -253,9 +255,9 @@ void SimulationThread::onBikeBoost(const unsigned int _bike_id) const
 
 
 
-void SimulationThread::onSimulationReset() const
+void SimulationThread::onSimulationStarted() const
 {
-    server.onSimulationReset();
+    server.onSimulationStarted();
 }
 
 
@@ -270,4 +272,11 @@ void SimulationThread::onSimulationStopping() const
 void SimulationThread::onSimulationEnded() const
 {
     server.onSimulationEnded();
+}
+
+
+
+void SimulationThread::onSimulationReset() const
+{
+    server.onSimulationReset();
 }

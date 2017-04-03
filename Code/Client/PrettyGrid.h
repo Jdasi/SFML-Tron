@@ -20,6 +20,8 @@ public:
     void tick(const double _dt);
     void draw(sf::RenderWindow& _window);
 
+    void updateBorderColor(const sf::Color& _color);
+
     void clearCell(const Vector2i& _pos) override;
     void clearCellRange(const std::vector<Vector2i>& _positions) override;
     void clearAllCells() override;
@@ -43,6 +45,7 @@ private:
     AssetManager* asset_manager;
 
     sf::Sprite backdrop;
+    sf::RectangleShape border;
     std::array<std::unique_ptr<sf::RectangleShape>, GRID_AREA> tiles;
     std::array<PlayerMarker, MAX_PLAYERS> player_markers;
 

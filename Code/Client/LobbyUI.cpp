@@ -61,7 +61,7 @@ void LobbyUI::initSlots()
         slot->setPosition({ WINDOW_WIDTH / 2.0f, 150.0f + (100.0f * i) });
 
         slot->setPlayerIDText("Player " + std::to_string(i + 1));
-        slot->setOccupiedColor(JHelper::evaluateSFColor(JHelper::idToCellValue(i)));
+        slot->setOccupiedColor(JHelper::evaluateSFColorFromCellValueID(i));
 
         slot->setOccupied(false);
     }
@@ -75,8 +75,10 @@ std::string LobbyUI::playerStateToString(const PlayerState& _state) const
     {
         case PlayerState::NOTREADY:         return "Not Ready";
         case PlayerState::READY:            return "Ready";
-        case PlayerState::STARTING_GAME:    return "Starting Game";
+
+        case PlayerState::STARTING_GAME:
         case PlayerState::PLAYING:          return "Playing";
+
         case PlayerState::VIEWING_RESULTS:  return "Viewing Results";
 
         default: return "Empty";

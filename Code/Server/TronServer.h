@@ -7,6 +7,7 @@
 
 #include <Game/PacketID.h>
 #include <Game/Scheduler.h>
+#include <Game/FlowControl.h>
 #include "Client.h"
 #include "ISimulationServer.h"
 #include "SimulationThread.h"
@@ -46,6 +47,7 @@ private:
     void sendClientLeft(ClientPtr& _client);
     void sendUpdatedClientState(const ClientPtr& _client);
     void sendUpdatedServerState();
+    void sendUpdatedFlowControl(const FlowControl _control);
 
     void handlePacket(sf::Packet& _packet, ClientPtr& _sender);
     void handleDisconnectPacket(const sf::Packet& _packet, ClientPtr& _sender);
@@ -65,9 +67,10 @@ private:
     void onSyncBike(const BikeState& _bike_state) override;
     void onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
     void onBikeBoost(const unsigned int _bike_id) override;
-    void onSimulationReset() override;
+    void onSimulationStarted() override;
     void onSimulationStopping() override;
     void onSimulationEnded() override;
+    void onSimulationReset() override;
 
     sf::TcpListener tcp_listener;
     sf::SocketSelector socket_selector;

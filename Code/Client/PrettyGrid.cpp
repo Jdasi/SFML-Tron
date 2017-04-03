@@ -1,9 +1,9 @@
 #include <Game/Constants.h>
 #include <Game/Vector2i.h>
 #include <Game/BikeState.h>
+#include <Game/JHelper.h>
 #include "PrettyGrid.h"
 #include "AssetManager.h"
-#include "Game/JHelper.h"
 
 PrettyGrid::PrettyGrid(AssetManager* _asset_manager)
     : asset_manager(_asset_manager)
@@ -29,6 +29,7 @@ void PrettyGrid::tick(const double _dt)
 void PrettyGrid::draw(sf::RenderWindow& _window)
 {
     _window.draw(backdrop);
+    _window.draw(border);
 
     for (auto& tile : tiles)
     {
@@ -44,6 +45,13 @@ void PrettyGrid::draw(sf::RenderWindow& _window)
     {
         marker.draw(_window);
     }
+}
+
+
+
+void PrettyGrid::updateBorderColor(const sf::Color& _color)
+{
+    border.setOutlineColor(_color);
 }
 
 
@@ -145,6 +153,12 @@ void PrettyGrid::initGrid()
 {
     float pane_width = WINDOW_RIGHT_BOUNDARY - WINDOW_LEFT_BOUNDARY;
     float pane_height = WINDOW_BOTTOM_BOUNDARY - WINDOW_TOP_BOUNDARY;
+    sf::Vector2f pane({ pane_width, pane_height });
+
+    border.setPosition({ WINDOW_LEFT_BOUNDARY, WINDOW_TOP_BOUNDARY });
+    border.setSize(pane);
+    border.setFillColor(sf::Color::Transparent);
+    border.setOutlineThickness(5.0f);
 
     float rect_width =  pane_width / GRID_SIZE_X;
     float rect_height =  pane_height / GRID_SIZE_Y;
@@ -177,7 +191,7 @@ void PrettyGrid::initPlayerMarkers()
 
     for (int i = 0; i < MAX_PLAYERS; ++i)
     {
-        sprite.setColor(JHelper::evaluateSFColor(JHelper::idToCellValue(i)));
+        sprite.setColor(JHelper::evaluateSFColorFromCellValueID(i));
         auto& marker = player_markers[i];
 
         marker.setSprite(sprite);

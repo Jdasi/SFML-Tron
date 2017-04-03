@@ -17,6 +17,7 @@ namespace JHelper
 
     CellValue idToCellValue(const unsigned int _id);
     sf::Color evaluateSFColor(const CellValue _value);
+    sf::Color evaluateSFColorFromCellValueID(const unsigned int _id);
 
     template <typename T>
     void centerSFOrigin(T& _sfml_object)

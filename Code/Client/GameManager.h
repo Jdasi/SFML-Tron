@@ -15,6 +15,7 @@ public:
 
     void tick();
 
+    void startCountdown();
     void startSimulation();
     void stopSimulation();
     void resetSimulation();

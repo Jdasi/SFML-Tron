@@ -34,9 +34,10 @@ private:
     void onSyncBike(const BikeState& _bike_state) const;
     void onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) const;
     void onBikeBoost(const unsigned int _bike_id) const;
-    void onSimulationReset() const;
+    void onSimulationStarted() const;
     void onSimulationStopping() const;
     void onSimulationEnded() const;
+    void onSimulationReset() const;
 
     volatile bool thread_running;
     volatile bool simulation_running;

@@ -2,6 +2,7 @@
 
 enum class FlowControl
 {
+    COUNTDOWN,
     START,
     STOP
 };
