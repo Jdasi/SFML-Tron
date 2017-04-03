@@ -8,6 +8,8 @@ void ClientStateHandler::onCommand(GameAction _action, ActionState _action_state
     }
 }
 
+
+
 void ClientStateHandler::draw(sf::RenderWindow& _window) const
 {
     if (current_state)
@@ -15,6 +17,8 @@ void ClientStateHandler::draw(sf::RenderWindow& _window) const
         current_state->draw(_window);
     }
 }
+
+
 
 ClientState* ClientStateHandler::getCurrentState() const
 {

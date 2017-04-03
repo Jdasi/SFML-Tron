@@ -7,6 +7,8 @@ using namespace std::placeholders;
 #define registerPacketHandler(id, func) \
     packet_handlers.emplace(id, std::bind(&NetworkManager::func, this, _1))
 
+
+
 NetworkManager::NetworkManager(const sf::IpAddress _ip_address, const unsigned int _tcp_port)
     : packet_handlers()
     , ip_address(_ip_address)
@@ -29,10 +31,7 @@ NetworkManager::NetworkManager(const sf::IpAddress _ip_address, const unsigned i
     });
 }
 
-NetworkManager::~NetworkManager()
-{
-    stopNetworkingThread();
-}
+
 
 void NetworkManager::connect()
 {
@@ -58,6 +57,8 @@ void NetworkManager::connect()
     });
 }
 
+
+
 void NetworkManager::disconnect()
 {
     postEvent([this]()
@@ -68,6 +69,8 @@ void NetworkManager::disconnect()
         socket.send(packet);
     });
 }
+
+
 
 void NetworkManager::networkingThread()
 {
@@ -113,23 +116,22 @@ void NetworkManager::networkingThread()
     std::cout << "Networking thread ended" << std::endl;
 }
 
-void NetworkManager::stopNetworkingThread()
-{
-    running = false;
-    network_thread.join();
-    std::cout << "Networking thread stopped." << std::endl;
-}
+
 
 void NetworkManager::registerPacketHandlers()
 {
     registerPacketHandler(PacketID::PONG, handlePongPacket);
 }
 
+
+
 void NetworkManager::handlePacket(sf::Packet& _packet)
 {
     PacketID pid = getPacketID(_packet);
     packet_handlers.at(pid)(_packet);
 }
+
+
 
 void NetworkManager::handlePongPacket(sf::Packet& _packet)
 {
@@ -147,16 +149,23 @@ void NetworkManager::handlePongPacket(sf::Packet& _packet)
     scheduler.invoke([this](){ sendPing(); }, 1.0);
 }
 
+
+
 void NetworkManager::sendPacket(sf::Packet& _packet)
 {
     while (socket.send(_packet) == sf::Socket::Partial){}
 }
 
-void NetworkManager::calculatePlayTime()
+
+
+void NetworkManager::stopNetworkingThread()
 {
-    play_time += timer.getTimeDifference();
-    timer.reset();
+    running = false;
+    network_thread.join();
+    std::cout << "Networking thread stopped." << std::endl;
 }
+
+
 
 void NetworkManager::sendClientLatency()
 {
@@ -168,6 +177,8 @@ void NetworkManager::sendClientLatency()
     sendPacket(packet);
 }
 
+
+
 void NetworkManager::sendPing()
 {
     calculatePlayTime();
@@ -177,4 +188,12 @@ void NetworkManager::sendPing()
 
     packet << play_time;
     sendPacket(packet);
+}
+
+
+
+void NetworkManager::calculatePlayTime()
+{
+    play_time += timer.getTimeDifference();
+    timer.reset();
 }

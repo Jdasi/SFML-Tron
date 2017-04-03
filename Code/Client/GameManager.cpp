@@ -9,6 +9,8 @@ GameManager::GameManager(ClientData* _client_data)
 {
 }
 
+
+
 void GameManager::tick()
 {
     if (simulation_running)
@@ -16,6 +18,8 @@ void GameManager::tick()
         simulation.tick(client_data->delta_time);
     }
 }
+
+
 
 void GameManager::startSimulation()
 {
@@ -27,6 +31,8 @@ void GameManager::startSimulation()
     simulation_running = true;
 }
 
+
+
 void GameManager::stopSimulation()
 {
     simulation_running = false;
@@ -34,25 +40,35 @@ void GameManager::stopSimulation()
     simulation.reset();
 }
 
+
+
 void GameManager::attachSimulationListener(SimulationListener* _listener)
 {
     simulation.attachListener(_listener);
 }
+
+
 
 INetworkSimulation* GameManager::getNetworkSimulation()
 {
     return &simulation;
 }
 
+
+
 void GameManager::addPlayer(const unsigned int _id, const PlayerState _state)
 {
     players[_id] = std::make_unique<Player>(_id, _state);
 }
 
+
+
 void GameManager::removePlayer(const unsigned int _id)
 {
     players[_id].reset();
 }
+
+
 
 Player* GameManager::getPlayer(const unsigned int _id)
 {

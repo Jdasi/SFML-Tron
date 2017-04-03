@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <SFML/Graphics.hpp>
 
 #include <Game/Constants.h>
@@ -15,6 +13,8 @@ InputHandler::InputHandler(TronClient& _attached_client)
     , prev_joystick_y(0)
 {
 }
+
+
 
 bool InputHandler::handleEvent(const sf::Event& _event)
 {
@@ -62,6 +62,8 @@ bool InputHandler::handleEvent(const sf::Event& _event)
     return event_handled;
 }
 
+
+
 void InputHandler::registerKeyboardKey(const sf::Keyboard::Key _key,
     const GameAction _game_action)
 {
@@ -75,6 +77,8 @@ void InputHandler::registerKeyboardKey(const sf::Keyboard::Key _key,
     keyboard_bindings.emplace(_key, _game_action);
 }
 
+
+
 void InputHandler::registerControllerButton(const unsigned int _button,
     const GameAction _game_action)
 {
@@ -87,6 +91,8 @@ void InputHandler::registerControllerButton(const unsigned int _button,
 
     controller_bindings.emplace(_button, _game_action);
 }
+
+
 
 void InputHandler::handleJoystickMovement() const
 {
@@ -111,6 +117,8 @@ void InputHandler::handleJoystickMovement() const
     }
 }
 
+
+
 bool InputHandler::axisFirstPushed(const float _axis, const float _prev_axis,
     const float _deadzone) const
 {
@@ -132,6 +140,8 @@ bool InputHandler::axisFirstPushed(const float _axis, const float _prev_axis,
     return false;
 }
 
+
+
 void InputHandler::checkKeyboardBindings(const sf::Event& _event)
 {
     // Determine the state of the TBD GameAction.
@@ -151,6 +161,8 @@ void InputHandler::checkKeyboardBindings(const sf::Event& _event)
     // Inform Tron Client of the GameAction.
     tron_client.onCommand(entry->second, action_state);
 }
+
+
 
 void InputHandler::checkControllerBindings(const sf::Event& _event)
 {

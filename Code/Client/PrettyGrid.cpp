@@ -14,13 +14,17 @@ PrettyGrid::PrettyGrid(AssetManager* _asset_manager)
     initPlayerMarkers();
 }
 
-void PrettyGrid::tick(double _dt)
+
+
+void PrettyGrid::tick(const double _dt)
 {
     for (auto& marker : player_markers)
     {
         marker.tick(_dt);
     }
 }
+
+
 
 void PrettyGrid::draw(sf::RenderWindow& _window)
 {
@@ -42,10 +46,14 @@ void PrettyGrid::draw(sf::RenderWindow& _window)
     }
 }
 
+
+
 void PrettyGrid::clearCell(const Vector2i& _pos)
 {
     setTileColor(_pos, sf::Color::Transparent);
 }
+
+
 
 void PrettyGrid::clearCellRange(const std::vector<Vector2i>& _positions)
 {
@@ -55,6 +63,8 @@ void PrettyGrid::clearCellRange(const std::vector<Vector2i>& _positions)
     }
 }
 
+
+
 void PrettyGrid::clearAllCells()
 {
     for (auto& tile : tiles)
@@ -63,10 +73,14 @@ void PrettyGrid::clearAllCells()
     }
 }
 
+
+
 void PrettyGrid::overwriteCell(const Vector2i& _pos, const CellValue _value)
 {
     setTileColor(_pos, JHelper::evaluateSFColor(_value));
 }
+
+
 
 void PrettyGrid::overwriteCellRange(const std::vector<Vector2i>& _positions, const CellValue _value)
 {
@@ -76,6 +90,8 @@ void PrettyGrid::overwriteCellRange(const std::vector<Vector2i>& _positions, con
     }
 }
 
+
+
 void PrettyGrid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells)
 {
     for (int i = 0; i < GRID_AREA; ++i)
@@ -84,6 +100,8 @@ void PrettyGrid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cell
         overwriteCell({ i % GRID_SIZE_X, i / GRID_SIZE_X }, value);
     }
 }
+
+
 
 void PrettyGrid::updatePlayerMarker(const BikeState& _bike_state)
 {
@@ -101,6 +119,8 @@ void PrettyGrid::updatePlayerMarker(const BikeState& _bike_state)
         tiles[JHelper::calculateIndex(_bike_state.pos, GRID_SIZE_X)]->getPosition());
 }
 
+
+
 void PrettyGrid::removeAllPlayerMarkers()
 {
     for (auto& marker : player_markers)
@@ -109,6 +129,8 @@ void PrettyGrid::removeAllPlayerMarkers()
     }
 }
 
+
+
 void PrettyGrid::updateBikePosition(const Vector2i& _pos, const unsigned int _bike_id)
 {
     player_markers[_bike_id].setPosition(
@@ -116,6 +138,8 @@ void PrettyGrid::updateBikePosition(const Vector2i& _pos, const unsigned int _bi
 
     setTileColor(_pos, sf::Color::White);
 }
+
+
 
 void PrettyGrid::initGrid()
 {
@@ -142,6 +166,8 @@ void PrettyGrid::initGrid()
     }
 }
 
+
+
 void PrettyGrid::initPlayerMarkers()
 {
     auto* tex = asset_manager->loadTexture(PLAYER_MARKER);
@@ -159,10 +185,14 @@ void PrettyGrid::initPlayerMarkers()
     }
 }
 
+
+
 void PrettyGrid::setTileColor(const unsigned int _index, const sf::Color& _color)
 {
     tiles[_index]->setFillColor(_color);
 }
+
+
 
 void PrettyGrid::setTileColor(const Vector2i& _pos, const sf::Color& _color)
 {

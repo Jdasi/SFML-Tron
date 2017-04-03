@@ -18,10 +18,14 @@ SimulationThread::SimulationThread(ISimulationServer& _server)
     });
 }
 
+
+
 SimulationThread::~SimulationThread()
 {
     stopSimulationThread();
 }
+
+
 
 void SimulationThread::eventStartSimulation(const std::vector<int>& _bike_ids)
 {
@@ -39,6 +43,8 @@ void SimulationThread::eventStartSimulation(const std::vector<int>& _bike_ids)
     });
 }
 
+
+
 void SimulationThread::eventStopSimulation()
 {
     postEvent([this]()
@@ -48,6 +54,8 @@ void SimulationThread::eventStopSimulation()
     });
 }
 
+
+
 void SimulationThread::eventResetSimulation()
 {
     postEvent([this]()
@@ -55,6 +63,8 @@ void SimulationThread::eventResetSimulation()
         resetSimulation();
     });
 }
+
+
 
 void SimulationThread::eventDirectionChanged(const unsigned int _bike_id, const MoveDirection _dir)
 {
@@ -66,16 +76,20 @@ void SimulationThread::eventDirectionChanged(const unsigned int _bike_id, const 
     });
 }
 
+
+
 void SimulationThread::eventBoost(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
-        if (simulation.getBike(_bike_id).boost())
+        if (simulation.getBike(_bike_id).activateBoost())
         {
             onBikeBoost(_bike_id);
         }
     });
 }
+
+
 
 void SimulationThread::eventPlayerLeft(const unsigned int _bike_id)
 {
@@ -91,10 +105,14 @@ void SimulationThread::eventPlayerLeft(const unsigned int _bike_id)
     });
 }
 
+
+
 void SimulationThread::stopSimulationThread()
 {
     simulation_thread.join();
 }
+
+
 
 void SimulationThread::simulationThreadLoop()
 {
@@ -121,6 +139,8 @@ void SimulationThread::simulationThreadLoop()
     }
 }
 
+
+
 void SimulationThread::resetSimulation()
 {
     simulation_running = false;
@@ -130,35 +150,49 @@ void SimulationThread::resetSimulation()
     full_sync_needed = true;
 }
 
-void SimulationThread::onSyncSimulation(const SimulationState& _simulation)
+
+
+void SimulationThread::onSyncSimulation(const SimulationState& _simulation) const
 {
     server.onSyncSimulation(_simulation);
 }
 
-void SimulationThread::onSyncBike(const BikeState& _bike)
+
+
+void SimulationThread::onSyncBike(const BikeState& _bike) const
 {
     server.onSyncBike(_bike);
 }
 
-void SimulationThread::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bikes)
+
+
+void SimulationThread::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bikes) const
 {
     server.onSyncAllBikes(_bikes);
 }
 
-void SimulationThread::onBikeBoost(const unsigned int _bike_id)
+
+
+void SimulationThread::onBikeBoost(const unsigned int _bike_id) const
 {
     server.onBikeBoost(_bike_id);
 }
 
-void SimulationThread::onSimulationStarted()
+
+
+void SimulationThread::onSimulationStarted() const
 {
     server.onSimulationStarted();
 }
 
-void SimulationThread::onSimulationEnded()
+
+
+void SimulationThread::onSimulationEnded() const
 {
     server.onSimulationEnded();
 }
+
+
 
 void SimulationThread::scheduleAllBikeSync(const double _time)
 {
@@ -168,6 +202,11 @@ void SimulationThread::scheduleAllBikeSync(const double _time)
 
         scheduler.invoke([this]()
         {
+            if (!simulation_running)
+            {
+                return;
+            }
+
             onSyncAllBikes(simulation.getBikes());
             bike_sync_needed = true;
 
@@ -175,6 +214,8 @@ void SimulationThread::scheduleAllBikeSync(const double _time)
         }, _time);
     }
 }
+
+
 
 void SimulationThread::scheduleSimulationSync(const double _time)
 {
@@ -184,6 +225,11 @@ void SimulationThread::scheduleSimulationSync(const double _time)
 
         scheduler.invoke([this]()
         {
+            if (!simulation_running)
+            {
+                return;
+            }
+
             onSyncSimulation(simulation.getState());
             full_sync_needed = true;
 

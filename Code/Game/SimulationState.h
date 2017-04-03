@@ -12,6 +12,8 @@ struct SimulationState
     std::array<CellValue, GRID_AREA> cells {{ CellValue::NONE }};
     std::array<BikeState, MAX_PLAYERS> bikes;
 
+
+
     friend sf::Packet& operator<<(sf::Packet& _packet, SimulationState _simulation_state)
     {
         for (auto& cell_value : _simulation_state.cells)
@@ -26,6 +28,8 @@ struct SimulationState
 
         return _packet;
     }
+
+
 
     friend sf::Packet& operator >> (sf::Packet& _packet, SimulationState& _simulation_state)
     {

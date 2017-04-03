@@ -33,6 +33,7 @@ add_library(TronGame STATIC
     Code/Game/PlayerState.h
     Code/Game/RandomEngine.cpp
     Code/Game/RandomEngine.h
+    Code/Game/ScheduledTask.h
     Code/Game/Scheduler.cpp
     Code/Game/Scheduler.h
     Code/Game/SimpleTimer.cpp
@@ -43,6 +44,7 @@ add_library(TronGame STATIC
     Code/Game/SimulationState.h
     Code/Game/State.h
     Code/Game/StateHandler.h
+    Code/Game/ThreadDispatcher.cpp
     Code/Game/ThreadDispatcher.h
     Code/Game/Vector2i.h
 )

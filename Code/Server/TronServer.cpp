@@ -9,6 +9,8 @@
 
 using namespace std::placeholders;
 
+
+
 TronServer::TronServer()
     : connected_clients(0)
     , exit(false)
@@ -24,6 +26,8 @@ TronServer::TronServer()
         clients.push_back(nullptr);
     }
 }
+
+
 
 bool TronServer::run()
 {
@@ -42,6 +46,8 @@ bool TronServer::run()
     return true;
 }
 
+
+
 void TronServer::registerPacketHandlers()
 {
     registerPacketHandler(PacketID::DISCONNECT,   handleDisconnectPacket);
@@ -52,6 +58,8 @@ void TronServer::registerPacketHandlers()
     registerPacketHandler(PacketID::DIRECTION,    handleDirectionPacket);
     registerPacketHandler(PacketID::BOOST,        handleBoostPacket);
 }
+
+
 
 bool TronServer::bindServerPort()
 {
@@ -64,6 +72,8 @@ bool TronServer::bindServerPort()
 
     return true;
 }
+
+
 
 void TronServer::mainLoop()
 {
@@ -83,6 +93,8 @@ void TronServer::mainLoop()
     }
 }
 
+
+
 void TronServer::listen()
 {
     if (socket_selector.wait(sf::milliseconds(1)))
@@ -100,11 +112,15 @@ void TronServer::listen()
     }
 }
 
+
+
 void TronServer::handleServerReset()
 {
     simulation_thread.eventResetSimulation();
     server_state = STATE_LOBBY;
 }
+
+
 
 void TronServer::performStateBehaviour()
 {
@@ -129,6 +145,8 @@ void TronServer::performStateBehaviour()
     }
 }
 
+
+
 void TronServer::lobbyStateBehaviour()
 {
     if (connected_clients == 0)
@@ -152,10 +170,14 @@ void TronServer::lobbyStateBehaviour()
     allClientsReady();
 }
 
+
+
 void TronServer::gameStateBehaviour()
 {
     // Crickets ...
 }
+
+
 
 void TronServer::endStateBehaviour()
 {
@@ -174,6 +196,8 @@ void TronServer::endStateBehaviour()
 
     server_state = STATE_LOBBY;
 }
+
+
 
 void TronServer::allClientsReady()
 {
@@ -194,9 +218,11 @@ void TronServer::allClientsReady()
     server_state = STATE_GAME;
 }
 
+
+
 void TronServer::acceptClient()
 {
-    auto new_client = std::make_unique<Client>(generateUniqueID());
+    auto new_client = std::make_unique<Client>(generateUniqueClientID());
 
     if (tcp_listener.accept(*new_client->getSocket()) == sf::Socket::Done)
     {
@@ -217,6 +243,8 @@ void TronServer::acceptClient()
         ++connected_clients;
     }
 }
+
+
 
 void TronServer::receivePacket()
 {
@@ -240,7 +268,9 @@ void TronServer::receivePacket()
     }
 }
 
-int TronServer::generateUniqueID() const
+
+
+int TronServer::generateUniqueClientID() const
 {
     int unique_id = 0;
     for (auto& client : clients)
@@ -256,6 +286,8 @@ int TronServer::generateUniqueID() const
     return MAX_PLAYERS;
 }
 
+
+
 void TronServer::sendClientIdentity(ClientPtr& _client)
 {
     sf::Packet packet;
@@ -265,6 +297,8 @@ void TronServer::sendClientIdentity(ClientPtr& _client)
 
     sendPacketToClient(packet, _client);
 }
+
+
 
 void TronServer::sendClientList(ClientPtr& _client)
 {
@@ -284,6 +318,8 @@ void TronServer::sendClientList(ClientPtr& _client)
     sendPacketToClient(packet, _client);
 }
 
+
+
 void TronServer::sendClientJoined(const ClientPtr& _client)
 {
     sf::Packet packet;
@@ -293,6 +329,8 @@ void TronServer::sendClientJoined(const ClientPtr& _client)
 
     sendPacketToAll(packet);
 }
+
+
 
 void TronServer::sendClientLeft(ClientPtr& _client)
 {
@@ -304,6 +342,8 @@ void TronServer::sendClientLeft(ClientPtr& _client)
     sendPacketToAllButSender(packet, _client);
 }
 
+
+
 void TronServer::sendUpdatedClientState(const ClientPtr& _client)
 {
     sf::Packet packet;
@@ -314,16 +354,22 @@ void TronServer::sendUpdatedClientState(const ClientPtr& _client)
     sendPacketToAll(packet);
 }
 
+
+
 void TronServer::handlePacket(sf::Packet& _packet, ClientPtr& _sender)
 {
     PacketID pid = getPacketID(_packet);
     packet_handlers.at(pid)(_packet, _sender);
 }
 
+
+
 void TronServer::handleDisconnectPacket(sf::Packet& _packet, ClientPtr& _sender)
 {
     disconnectClient(_sender);
 }
+
+
 
 // Send a PONG packet back to _sender to inform their latency.
 void TronServer::handlePingPacket(sf::Packet& _packet, ClientPtr& _sender)
@@ -342,6 +388,8 @@ void TronServer::handlePingPacket(sf::Packet& _packet, ClientPtr& _sender)
     sendPacketToClient(packet, _sender);
 }
 
+
+
 void TronServer::handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender) const
 {
     double latency;
@@ -352,6 +400,8 @@ void TronServer::handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender) co
               << latency << "ms" << std::endl;
 }
 
+
+
 void TronServer::handleMessagePacket(sf::Packet& _packet, ClientPtr& _sender)
 {
     std::string msg;
@@ -361,6 +411,8 @@ void TronServer::handleMessagePacket(sf::Packet& _packet, ClientPtr& _sender)
 
     sendPacketToAllButSender(_packet, _sender);
 }
+
+
 
 void TronServer::handlePlayerStatePacket(const sf::Packet& _packet, ClientPtr& _sender)
 {
@@ -400,6 +452,8 @@ void TronServer::handlePlayerStatePacket(const sf::Packet& _packet, ClientPtr& _
     sendUpdatedClientState(_sender);
 }
 
+
+
 void TronServer::handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender)
 {
     if (server_state != STATE_GAME)
@@ -414,6 +468,8 @@ void TronServer::handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender)
         static_cast<MoveDirection>(dir));
 }
 
+
+
 void TronServer::handleBoostPacket(sf::Packet& _packet, ClientPtr& _sender)
 {
     if (server_state != STATE_GAME)
@@ -423,6 +479,8 @@ void TronServer::handleBoostPacket(sf::Packet& _packet, ClientPtr& _sender)
 
     simulation_thread.eventBoost(_sender->getID());
 }
+
+
 
 void TronServer::disconnectClient(ClientPtr& _client)
 {
@@ -442,6 +500,8 @@ void TronServer::disconnectClient(ClientPtr& _client)
     --connected_clients;
 }
 
+
+
 void TronServer::sendPacketToClient(sf::Packet& _packet, ClientPtr& _client)
 {
     if (_client->getSocket()->send(_packet) == sf::Socket::Disconnected)
@@ -449,6 +509,8 @@ void TronServer::sendPacketToClient(sf::Packet& _packet, ClientPtr& _client)
         disconnectClient(_client);
     }
 }
+
+
 
 void TronServer::sendPacketToAll(sf::Packet& _packet)
 {
@@ -462,6 +524,8 @@ void TronServer::sendPacketToAll(sf::Packet& _packet)
         sendPacketToClient(_packet, client);
     }
 }
+
+
 
 void TronServer::sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& _sender)
 {
@@ -481,6 +545,8 @@ void TronServer::sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& 
     }
 }
 
+
+
 void TronServer::onSyncSimulation(const SimulationState& _simulation)
 {
     postEvent([this, _simulation]()
@@ -494,6 +560,8 @@ void TronServer::onSyncSimulation(const SimulationState& _simulation)
     });
 }
 
+
+
 void TronServer::onSyncBike(const BikeState& _bike)
 {
     postEvent([this, _bike]()
@@ -506,6 +574,8 @@ void TronServer::onSyncBike(const BikeState& _bike)
         sendPacketToAll(packet);
     });
 }
+
+
 
 void TronServer::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states)
 {
@@ -523,6 +593,8 @@ void TronServer::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_
     });
 }
 
+
+
 void TronServer::onBikeBoost(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
@@ -535,6 +607,8 @@ void TronServer::onBikeBoost(const unsigned int _bike_id)
         sendPacketToAll(packet);
     });
 }
+
+
 
 void TronServer::onSimulationStarted()
 {
@@ -562,6 +636,8 @@ void TronServer::onSimulationStarted()
         std::cout << "Simulation started" << std::endl;
     });
 }
+
+
 
 void TronServer::onSimulationEnded()
 {

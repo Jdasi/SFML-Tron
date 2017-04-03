@@ -10,17 +10,11 @@
 #include <Game/SimpleTimer.h>
 #include <Game/ThreadDispatcher.h>
 
-class NetworkException : public std::runtime_error
-{
-public:
-    NetworkException() : std::runtime_error("Network exception") {}
-};
-
 class NetworkManager : public ThreadDispatcher
 {
 public:
     NetworkManager(const sf::IpAddress _ip_address, const unsigned int _tcp_port);
-    ~NetworkManager();
+    ~NetworkManager() = default;
 
     void connect();
     void disconnect();
@@ -32,23 +26,21 @@ protected:
     virtual void onUpdatePingTime(const double _ping) = 0;
 
     void sendPacket(sf::Packet& _packet);
+    void stopNetworkingThread();
 
     std::map<PacketID, std::function<void(sf::Packet&)>> packet_handlers;
 
 private:
     void networkingThread();
-    void stopNetworkingThread();
-
     void registerPacketHandlers();
 
     // Generic network packet handlers.
     void handlePacket(sf::Packet& _packet);
     void handlePongPacket(sf::Packet& _packet);
 
-    void calculatePlayTime();
-
     void sendClientLatency();
     void sendPing();
+    void calculatePlayTime();
 
     sf::IpAddress ip_address;
     unsigned int tcp_port;

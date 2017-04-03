@@ -86,24 +86,25 @@
     <ClCompile Include="..\..\Code\Game\Scheduler.cpp" />
     <ClCompile Include="..\..\Code\Game\SimpleTimer.cpp" />
     <ClCompile Include="..\..\Code\Game\Simulation.cpp" />
+    <ClCompile Include="..\..\Code\Game\ThreadDispatcher.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Code\Client\GameStateIDs.h" />
     <ClInclude Include="..\..\Code\Game\BikeState.h" />
     <ClInclude Include="..\..\Code\Game\CellValue.h" />
     <ClInclude Include="..\..\Code\Game\Constants.h" />
+    <ClInclude Include="..\..\Code\Game\GameStateIDs.h" />
     <ClInclude Include="..\..\Code\Game\Grid.h" />
     <ClInclude Include="..\..\Code\Game\INetworkSimulation.h" />
     <ClInclude Include="..\..\Code\Game\JHelper.h" />
     <ClInclude Include="..\..\Code\Game\MoveDirection.h" />
     <ClInclude Include="..\..\Code\Game\Noncopyable.h" />
     <ClInclude Include="..\..\Code\Game\PlayerState.h" />
+    <ClInclude Include="..\..\Code\Game\ScheduledTask.h" />
     <ClInclude Include="..\..\Code\Game\Scheduler.h" />
     <ClInclude Include="..\..\Code\Game\SimpleTimer.h" />
     <ClInclude Include="..\..\Code\Game\SimulationListener.h" />
     <ClInclude Include="..\..\Code\Game\SimulationState.h" />
     <ClInclude Include="..\..\Code\Game\ThreadDispatcher.h" />
-    <ClInclude Include="..\..\Code\Game\TronEvent.h" />
     <ClInclude Include="..\..\Code\Game\ListenerSubject.h" />
     <ClInclude Include="..\..\Code\Game\PacketID.h" />
     <ClInclude Include="..\..\Code\Game\Bike.h" />

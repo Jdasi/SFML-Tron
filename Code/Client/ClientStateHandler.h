@@ -25,8 +25,4 @@ public:
     void draw(sf::RenderWindow& _window) const;
     ClientState* getCurrentState() const;
 
-private:
-    void onStateLeave(ClientState* _state) override {}
-    void onStateEnter(ClientState* _state) override {}
-
 };

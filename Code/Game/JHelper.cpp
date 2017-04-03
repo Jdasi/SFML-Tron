@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Color.hpp>
 
 #include "JHelper.h"
 #include "Vector2i.h"
@@ -9,10 +9,14 @@ int JHelper::calculateIndex(const unsigned int _x, const unsigned int _y, const 
     return (_y * _size_x) + _x;
 }
 
+
+
 int JHelper::calculateIndex(const Vector2i& _pos, const unsigned int _size_x)
 {
     return calculateIndex(_pos.x, _pos.y, _size_x);
 }
+
+
 
 CellValue JHelper::idToCellValue(const unsigned int _id)
 {
@@ -23,6 +27,8 @@ CellValue JHelper::idToCellValue(const unsigned int _id)
 
     return static_cast<CellValue>(static_cast<int>(CellValue::CYAN) + _id);
 }
+
+
 
 sf::Color JHelper::evaluateSFColor(const CellValue _value)
 {

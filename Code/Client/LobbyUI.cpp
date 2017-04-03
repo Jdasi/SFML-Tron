@@ -12,6 +12,8 @@ LobbyUI::LobbyUI(ClientData* _client_data)
     initSlots();
 }
 
+
+
 void LobbyUI::refresh()
 {
     for (int i = 0; i < MAX_PLAYERS; ++i)
@@ -35,6 +37,8 @@ void LobbyUI::refresh()
     }
 }
 
+
+
 void LobbyUI::draw(sf::RenderWindow& _window)
 {
     for (auto& slot : slots)
@@ -42,6 +46,8 @@ void LobbyUI::draw(sf::RenderWindow& _window)
         slot->draw(_window);
     }
 }
+
+
 
 void LobbyUI::initSlots()
 {
@@ -60,6 +66,8 @@ void LobbyUI::initSlots()
         slot->setOccupied(false);
     }
 }
+
+
 
 std::string LobbyUI::playerStateToString(const PlayerState& _state) const
 {

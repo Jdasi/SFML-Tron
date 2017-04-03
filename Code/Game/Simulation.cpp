@@ -9,6 +9,8 @@ Simulation::Simulation()
     resetBikes();
 }
 
+
+
 void Simulation::tick(const double _dt)
 {
     for (auto& bike : bikes)
@@ -30,6 +32,8 @@ void Simulation::tick(const double _dt)
     }
 }
 
+
+
 void Simulation::addBike(const unsigned int _id)
 {
     if (_id >= MAX_PLAYERS)
@@ -50,10 +54,14 @@ void Simulation::addBike(const unsigned int _id)
     bike.setAlive(true);
 }
 
+
+
 Bike& Simulation::getBike(const unsigned int _bike_id)
 {
     return bikes.at(_bike_id);
 }
+
+
 
 void Simulation::overwrite(const SimulationState& _simulation_state)
 {
@@ -74,6 +82,8 @@ void Simulation::overwrite(const SimulationState& _simulation_state)
         listener->overwriteAllCells(grid.getCells());
     }
 }
+
+
 
 void Simulation::overwriteBike(const BikeState& _bike_state)
 {
@@ -100,6 +110,8 @@ void Simulation::overwriteBike(const BikeState& _bike_state)
     }
 }
 
+
+
 void Simulation::overwriteBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states)
 {
     for (int i = 0; i < MAX_PLAYERS; ++i)
@@ -107,6 +119,8 @@ void Simulation::overwriteBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_
         overwriteBike(_bike_states[i]);
     }
 }
+
+
 
 void Simulation::reset()
 {
@@ -119,10 +133,14 @@ void Simulation::reset()
     }
 }
 
+
+
 const Grid& Simulation::getGrid() const
 {
     return grid;
 }
+
+
 
 SimulationState Simulation::getState() const
 {
@@ -138,6 +156,8 @@ SimulationState Simulation::getState() const
     return state;
 }
 
+
+
 void Simulation::overwriteState(const SimulationState& _state)
 {
     grid.overwriteAllCells(_state.cells);
@@ -147,6 +167,8 @@ void Simulation::overwriteState(const SimulationState& _state)
         bikes[i].overwriteState(bikes[i].getState());
     }
 }
+
+
 
 bool Simulation::allBikesDead() const
 {
@@ -161,6 +183,8 @@ bool Simulation::allBikesDead() const
     return true;
 }
 
+
+
 std::array<BikeState, MAX_PLAYERS> Simulation::getBikes()
 {
     std::array<BikeState, MAX_PLAYERS> bike_states;
@@ -172,6 +196,8 @@ std::array<BikeState, MAX_PLAYERS> Simulation::getBikes()
 
     return bike_states;
 }
+
+
 
 void Simulation::changeBikeDirection(unsigned int _bike_id, const MoveDirection _dir)
 {
@@ -186,6 +212,8 @@ void Simulation::changeBikeDirection(unsigned int _bike_id, const MoveDirection 
         bike.setDirection(_dir);
     }
 }
+
+
 
 void Simulation::configureBikeSide(Bike& _bike) const
 {
@@ -222,6 +250,8 @@ void Simulation::configureBikeSide(Bike& _bike) const
         default: {}
     }
 }
+
+
 
 void Simulation::moveBike(Bike& _bike)
 {
@@ -260,6 +290,8 @@ void Simulation::moveBike(Bike& _bike)
     }
 }
 
+
+
 Vector2i Simulation::generatePositionAdjustment(const MoveDirection _dir, 
     const Vector2i& _current_pos) const
 {
@@ -278,6 +310,8 @@ Vector2i Simulation::generatePositionAdjustment(const MoveDirection _dir,
     return _current_pos + adjustment;
 }
 
+
+
 // Returns true if adjustment points to a grid space, otherwise returns false.
 bool Simulation::adjustmentWithinBounds(const Vector2i& _adjustment) const
 {
@@ -292,6 +326,8 @@ bool Simulation::adjustmentWithinBounds(const Vector2i& _adjustment) const
     return false;
 }
 
+
+
 // Returns true if there is a collision, otherwise returns false.
 bool Simulation::adjustmentCollisionCheck(const Vector2i& _adjustment) const
 {
@@ -302,6 +338,8 @@ bool Simulation::adjustmentCollisionCheck(const Vector2i& _adjustment) const
 
     return false;
 }
+
+
 
 // Returns true if direction change is valid, otherwise returns false.
 bool Simulation::directionChangeValid(const Bike& _bike, const MoveDirection _new_dir) const
@@ -318,6 +356,11 @@ bool Simulation::directionChangeValid(const Bike& _bike, const MoveDirection _ne
     return false;
 }
 
+
+
+/* Returns true if the rhs MoveDirection is opposite to the lhs MoveDirection,
+ * otherwise returns false.
+ */
 bool Simulation::oppositeDirection(const MoveDirection _lhs, const MoveDirection _rhs) const
 {
     switch (_lhs)
@@ -330,6 +373,8 @@ bool Simulation::oppositeDirection(const MoveDirection _lhs, const MoveDirection
         default: { return false; }
     }
 }
+
+
 
 // Goes through the array of bikes and overwrites them with new states with correct ids.
 void Simulation::resetBikes()
@@ -347,9 +392,11 @@ void Simulation::resetBikes()
     }
 }
 
+
+
 void Simulation::boostBike(const unsigned int _bike_id)
 {
-    bikes.at(_bike_id).boost();
+    bikes.at(_bike_id).activateBoost();
 
     for (auto& listener : listeners)
     {

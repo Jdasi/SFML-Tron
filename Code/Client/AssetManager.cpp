@@ -1,5 +1,7 @@
 #include "AssetManager.h"
 
+
+
 sf::Font* AssetManager::loadFont(const std::string& _file)
 {
     auto entry = fonts.find(_file);
@@ -15,6 +17,8 @@ sf::Font* AssetManager::loadFont(const std::string& _file)
     fonts[_file] = std::move(font);
     return p_font;
 }
+
+
 
 sf::Texture* AssetManager::loadTexture(const std::string& _file)
 {

@@ -20,6 +20,8 @@ struct BikeState
     double boost_timer          = 0;
     unsigned int boost_charges  = STARTING_BOOST_CHARGES;
 
+
+
     friend sf::Packet& operator<<(sf::Packet& _packet, BikeState _bike_state)
     {
         _packet << static_cast<sf::Uint8>(_bike_state.id)
@@ -40,6 +42,8 @@ struct BikeState
 
         return _packet;
     }
+
+
 
     friend sf::Packet& operator>>(sf::Packet& _packet, BikeState& _bike_state)
     {

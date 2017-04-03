@@ -33,6 +33,9 @@
     <ClCompile Include="..\..\Code\Game\JHelper.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Game\ThreadDispatcher.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Game\StateHandler.h">
@@ -57,9 +60,6 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\CellValue.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Game\TronEvent.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\ListenerSubject.h">
@@ -89,9 +89,6 @@
     <ClInclude Include="..\..\Code\Game\Constants.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Client\GameStateIDs.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\Game\ThreadDispatcher.h">
       <Filter>Utility</Filter>
     </ClInclude>
@@ -106,6 +103,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\JHelper.h">
       <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\GameStateIDs.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\ScheduledTask.h">
+      <Filter>Managerial</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

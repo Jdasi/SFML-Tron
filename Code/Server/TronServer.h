@@ -37,7 +37,7 @@ private:
 
     void acceptClient();
     void receivePacket();
-    int generateUniqueID() const;
+    int generateUniqueClientID() const;
 
     void sendClientIdentity(ClientPtr& _client);
     void sendClientList(ClientPtr& _client);

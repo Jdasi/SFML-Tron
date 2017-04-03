@@ -20,6 +20,8 @@ TronClient::TronClient()
 {
 }
 
+
+
 void TronClient::run()
 {
     initKeyboardBindings();
@@ -32,6 +34,8 @@ void TronClient::run()
 
     window.close();
 }
+
+
 
 void TronClient::mainLoop()
 {
@@ -56,11 +60,15 @@ void TronClient::mainLoop()
     }
 }
 
+
+
 // Forwards any input-based commands to the current state for processing.
-void TronClient::onCommand(GameAction _action, ActionState _action_state) const
+void TronClient::onCommand(const GameAction _action, const ActionState _action_state) const
 {
     state_handler.onCommand(_action, _action_state);
 }
+
+
 
 void TronClient::initKeyboardBindings()
 {
@@ -80,12 +88,16 @@ void TronClient::initKeyboardBindings()
     input_handler.registerKeyboardKey(sf::Keyboard::Key::Space, GameAction::BOOST);
 }
 
+
+
 void TronClient::initControllerBindings()
 {
     input_handler.registerControllerButton(InputHandler::XboxButton::A, GameAction::ACCEPT);
     input_handler.registerControllerButton(InputHandler::XboxButton::X, GameAction::BOOST);
     input_handler.registerControllerButton(InputHandler::XboxButton::B, GameAction::QUIT);
 }
+
+
 
 void TronClient::initClientStates()
 {
@@ -95,6 +107,8 @@ void TronClient::initClientStates()
 
     state_handler.queueState(STATE_LOBBY);
 }
+
+
 
 // Processes passed SFML events.
 void TronClient::handleEvent(const sf::Event& _event)
@@ -122,6 +136,8 @@ void TronClient::handleEvent(const sf::Event& _event)
     }
 }
 
+
+
 // Called by TronNetworkManager when a connection to the server has been made.
 void TronClient::onConnected()
 {
@@ -130,6 +146,8 @@ void TronClient::onConnected()
         std::cout << "Connected." << std::endl;
     });
 }
+
+
 
 // Called by TronNetworkManager when the client becomes disconnected from the server.
 void TronClient::onDisconnected()
@@ -140,6 +158,8 @@ void TronClient::onDisconnected()
     });
 }
 
+
+
 // Called by TronNetworkManager when the server replies to ping requests.
 void TronClient::onUpdatePingTime(const double _ping)
 {
@@ -149,6 +169,8 @@ void TronClient::onUpdatePingTime(const double _ping)
         std::cout << "Ping: " << _ping << std::endl;
     });
 }
+
+
 
 void TronClient::onIdentity(const unsigned int _player_id)
 {
@@ -161,6 +183,8 @@ void TronClient::onIdentity(const unsigned int _player_id)
     });
 }
 
+
+
 void TronClient::onPlayerList(const std::vector<Player>& _players)
 {
     postEvent([this, _players]()
@@ -172,6 +196,8 @@ void TronClient::onPlayerList(const std::vector<Player>& _players)
     });
 }
 
+
+
 void TronClient::onPlayerJoined(const unsigned int _player_id)
 {
     postEvent([this, _player_id]()
@@ -179,6 +205,8 @@ void TronClient::onPlayerJoined(const unsigned int _player_id)
         game_manager.addPlayer(_player_id);
     });
 }
+
+
 
 void TronClient::onPlayerLeft(const unsigned int _player_id)
 {
@@ -188,6 +216,8 @@ void TronClient::onPlayerLeft(const unsigned int _player_id)
     });
 }
 
+
+
 void TronClient::onPlayerStateChange(const unsigned int _player_id, const PlayerState _state)
 {
     postEvent([this, _player_id, _state]()
@@ -195,6 +225,8 @@ void TronClient::onPlayerStateChange(const unsigned int _player_id, const Player
         game_manager.getPlayer(_player_id)->setState(_state);
     });
 }
+
+
 
 void TronClient::onGameStateChange(const int _state)
 {
@@ -224,6 +256,8 @@ void TronClient::onGameStateChange(const int _state)
     });
 }
 
+
+
 void TronClient::onBikeSync(const BikeState& _bike_state)
 {
     postEvent([this, _bike_state]()
@@ -231,6 +265,8 @@ void TronClient::onBikeSync(const BikeState& _bike_state)
         game_manager.getNetworkSimulation()->overwriteBike(_bike_state);
     });
 }
+
+
 
 void TronClient::onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states)
 {
@@ -240,6 +276,8 @@ void TronClient::onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_
     });
 }
 
+
+
 void TronClient::onFullSync(const SimulationState& _simulation_state)
 {
     postEvent([this, _simulation_state]()
@@ -247,6 +285,8 @@ void TronClient::onFullSync(const SimulationState& _simulation_state)
         game_manager.getNetworkSimulation()->overwrite(_simulation_state);
     });
 }
+
+
 
 void TronClient::onBikeBoost(const unsigned int _bike_id)
 {
@@ -256,11 +296,15 @@ void TronClient::onBikeBoost(const unsigned int _bike_id)
     });
 }
 
+
+
 void TronClient::tick()
 {
     game_manager.tick();
     state_handler.tick();
 }
+
+
 
 void TronClient::draw()
 {

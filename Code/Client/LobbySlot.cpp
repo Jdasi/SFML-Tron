@@ -17,17 +17,23 @@ LobbySlot::LobbySlot(sf::Font* _font)
     player_state_text.setFillColor(sf::Color(150, 150, 150, 255));
 }
 
+
+
 void LobbySlot::setPlayerIDText(const std::string& _str)
 {
     player_id_text.setString(_str);
     JHelper::centerSFOrigin(player_id_text);
 }
 
+
+
 void LobbySlot::setPlayerStateText(const std::string& _str)
 {
     player_state_text.setString(_str);
     JHelper::centerSFOrigin(player_state_text);
 }
+
+
 
 void LobbySlot::setOccupied(const bool _value)
 {
@@ -41,10 +47,14 @@ void LobbySlot::setOccupied(const bool _value)
     }
 }
 
+
+
 void LobbySlot::setOccupiedColor(const sf::Color& _color)
 {
     occupied_color = _color;
 }
+
+
 
 void LobbySlot::setPosition(const sf::Vector2f& _pos)
 {
@@ -53,12 +63,16 @@ void LobbySlot::setPosition(const sf::Vector2f& _pos)
     player_state_text.setPosition(_pos + sf::Vector2f{ 0, 20 });
 }
 
+
+
 void LobbySlot::setRectangleSize(const sf::Vector2f& _size)
 {
     rectangle.setSize(_size);
 
     JHelper::centerSFOrigin(rectangle);
 }
+
+
 
 void LobbySlot::draw(sf::RenderWindow& _window) const
 {

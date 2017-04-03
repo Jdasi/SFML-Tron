@@ -7,7 +7,7 @@ public:
     PlayerMarker();
     ~PlayerMarker() = default;
 
-    void tick(double _dt);
+    void tick(const double _dt);
     void draw(sf::RenderWindow& _window) const;
 
     void setSprite(const sf::Sprite& _sprite);

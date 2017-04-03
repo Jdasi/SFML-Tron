@@ -26,12 +26,12 @@ private:
     void simulationThreadLoop();
     void resetSimulation();
 
-    void onSyncSimulation(const SimulationState& _simulation_state);
-    void onSyncBike(const BikeState& _bike_state);
-    void onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states);
-    void onBikeBoost(const unsigned int _bike_id);
-    void onSimulationStarted();
-    void onSimulationEnded();
+    void onSyncSimulation(const SimulationState& _simulation_state) const;
+    void onSyncBike(const BikeState& _bike_state) const;
+    void onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) const;
+    void onBikeBoost(const unsigned int _bike_id) const;
+    void onSimulationStarted() const;
+    void onSimulationEnded() const;
 
     void scheduleAllBikeSync(const double _time);
     void scheduleSimulationSync(const double _time);

@@ -12,42 +12,12 @@ public:
 protected:
     ThreadDispatcher() = default;
 
-    void postEvent(std::function<void()> _method)
-    {
-        std::lock_guard<std::mutex> guard(mutex);
-        queue.push(_method);
-    }
-
-    void executeDispatchedMethods()
-    {
-        auto queue_copy = getQueueCopy();
-
-        while (!queue_copy.empty())
-        {
-            auto method = queue_copy.front();
-            method();
-            queue_copy.pop();
-        }
-    }
+    void postEvent(const std::function<void()>& _method);
+    void executeDispatchedMethods();
 
 private:
-    void clearQueue()
-    {
-        while (!queue.empty())
-        {
-            queue.pop();
-        }
-    }
-
-    std::queue<std::function<void()>> getQueueCopy()
-    {
-        std::lock_guard<std::mutex> guard(mutex);
-
-        auto queue_copy = queue;
-        clearQueue();
-
-        return queue_copy;
-    }
+    void clearQueue();
+    std::queue<std::function<void()>> getQueueCopy();
 
     std::queue<std::function<void()>> queue;
     std::mutex mutex;

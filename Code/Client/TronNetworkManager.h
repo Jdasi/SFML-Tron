@@ -13,7 +13,7 @@ class TronNetworkManager final : public NetworkManager
 public:
     explicit TronNetworkManager(INetworkClient& _client, const sf::IpAddress _ip_address, 
         const unsigned int _tcp_port);
-    ~TronNetworkManager() = default;
+    ~TronNetworkManager();
 
     void sendChatMessage(const std::string& _message);
     void sendPlayerStateChange();

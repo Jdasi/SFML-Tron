@@ -1,5 +1,6 @@
 #pragma once
 
+// Inherit from Noncopyable if a class should not be copyable.
 class Noncopyable
 {
 public:

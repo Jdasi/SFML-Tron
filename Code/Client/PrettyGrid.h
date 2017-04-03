@@ -17,7 +17,7 @@ public:
     explicit PrettyGrid(AssetManager* _asset_manager);
     ~PrettyGrid() = default;
 
-    void tick(double _dt);
+    void tick(const double _dt);
     void draw(sf::RenderWindow& _window);
 
     void clearCell(const Vector2i& _pos) override;

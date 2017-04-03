@@ -18,7 +18,7 @@ public:
     Bike();
     ~Bike() = default;
 
-    void tick(double _dt);
+    void tick(const double _dt);
 
     unsigned int getID() const;
     void setID(const unsigned int _id);
@@ -47,7 +47,7 @@ public:
     void setAlive(const bool _value);
 
     bool isBoosting() const;
-    bool boost();
+    bool activateBoost();
 
 private:
     BikeState state;

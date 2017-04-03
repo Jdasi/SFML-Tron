@@ -1,23 +1,8 @@
 #pragma once
-#include "SimpleTimer.h"
-
-#include <functional>
 #include <list>
 
-class ScheduledTask
-{
-public:
-    ScheduledTask(std::function<void()> _method, const double _timeout)
-        : method(_method)
-        , timeout(_timeout)
-    {
-    }
-
-    ~ScheduledTask() = default;
-
-    std::function<void()> method;
-    double timeout;
-};
+#include "ScheduledTask.h"
+#include "SimpleTimer.h"
 
 class Scheduler
 {
@@ -26,8 +11,7 @@ public:
     ~Scheduler() = default;
 
     void update();
-
-    void invoke(std::function<void()> _method, double _time);
+    void invoke(const std::function<void()>& _method, const double _time);
 
 private:
     void executeScheduledTasks();
