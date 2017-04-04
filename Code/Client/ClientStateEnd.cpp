@@ -16,14 +16,8 @@ ClientStateEnd::ClientStateEnd(ClientData* _client_data)
         *client_data->asset_manager->loadTexture(BACKDROP));
     drawables.push_back(std::move(backdrop));
 
-    victor_text = std::make_unique<sf::Text>("",
-        *client_data->asset_manager->loadFont(DEFAULT_FONT));
-
-    victor_text->setCharacterSize(60);
-    victor_text->setStyle(sf::Text::Bold);
-    victor_text->setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 });
-    victor_text->setOutlineColor(sf::Color::Black);
-    victor_text->setOutlineThickness(2.0f);
+    initVictorText();
+    initBlackBar();
 }
 
 
@@ -46,10 +40,10 @@ void ClientStateEnd::onStateEnter()
         client_data->game_audio->playSound(LOSER_CUE);
     }
 
-    victor_text->setFillColor(JHelper::evaluateSFColorFromPlayerID(client_data->victor_id));
-    victor_text->setString(victory_string);
+    victor_text.setFillColor(JHelper::evaluateSFColorFromPlayerID(client_data->victor_id));
+    victor_text.setString(victory_string);
 
-    JHelper::centerSFOrigin(*victor_text);
+    JHelper::centerSFOrigin(victor_text);
 }
 
 
@@ -73,7 +67,8 @@ void ClientStateEnd::draw(sf::RenderWindow& _window)
         _window.draw(*drawable);
     }
 
-    _window.draw(*victor_text);
+    _window.draw(black_bar);
+    _window.draw(victor_text);
 }
 
 
@@ -95,4 +90,28 @@ void ClientStateEnd::onCommand(const GameAction _action, const ActionState _acti
             client_data->network_manager->sendPlayerStateChange();
         }
     }
+}
+
+
+
+void ClientStateEnd::initVictorText()
+{
+    victor_text.setFont(*client_data->asset_manager->loadFont(DEFAULT_FONT));
+
+    victor_text.setCharacterSize(60);
+    victor_text.setStyle(sf::Text::Bold);
+    victor_text.setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 });
+    victor_text.setOutlineColor(sf::Color::Black);
+    victor_text.setOutlineThickness(2.0f);
+}
+
+
+
+void ClientStateEnd::initBlackBar()
+{
+    black_bar.setFillColor(sf::Color::Black);
+    black_bar.setSize({ static_cast<float>(WINDOW_WIDTH), 100 });
+    black_bar.setPosition(victor_text.getPosition());
+
+    JHelper::centerSFOrigin(black_bar);
 }

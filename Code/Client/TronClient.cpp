@@ -94,15 +94,13 @@ void TronClient::preloadSoundBuffers()
 
 void TronClient::initTextObjects()
 {
-    auto font = asset_manager.loadFont(DEFAULT_FONT);
-
-    server_readout = std::make_unique<sf::Text>("", *font);
-    server_readout->setCharacterSize(20);
-    server_readout->setStyle(sf::Text::Bold);
-    server_readout->setFillColor(sf::Color::White);
-    server_readout->setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.05f });
-    server_readout->setOutlineColor(sf::Color::Black);
-    server_readout->setOutlineThickness(1.5f);
+    server_readout.setFont(*asset_manager.loadFont(DEFAULT_FONT));
+    server_readout.setCharacterSize(20);
+    server_readout.setStyle(sf::Text::Bold);
+    server_readout.setFillColor(sf::Color::White);
+    server_readout.setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.05f });
+    server_readout.setOutlineColor(sf::Color::Black);
+    server_readout.setOutlineThickness(1.5f);
 }
 
 
@@ -411,14 +409,14 @@ void TronClient::draw()
     window.clear();
 
     state_handler.draw(window);
-    window.draw(*server_readout);
+    window.draw(server_readout);
 
     window.display();
 }
 
 
 
-void TronClient::updateServerReadout() const
+void TronClient::updateServerReadout()
 {
     std::string server_str = ip_address;
     server_str.append(":" + std::to_string(tcp_port) + " \\ ping: ");
@@ -429,7 +427,7 @@ void TronClient::updateServerReadout() const
 
     server_str.append(latency_str);
 
-    server_readout->setString(server_str);
-    JHelper::centerSFOrigin(*server_readout);
+    server_readout.setString(server_str);
+    JHelper::centerSFOrigin(server_readout);
 }
 

@@ -22,6 +22,10 @@ public:
     void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
-    std::unique_ptr<sf::Text> victor_text;
+    void initVictorText();
+    void initBlackBar();
+
+    sf::Text victor_text;
+    sf::RectangleShape black_bar;
 
 };

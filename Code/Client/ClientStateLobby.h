@@ -18,11 +18,11 @@ public:
     void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
-    void initServerBulletin() const;
-    void updateServerBulletin() const;
+    void initServerBulletin();
+    void updateServerBulletin();
     void scheduleRefresh();
 
-    std::unique_ptr<sf::Text> server_bulletin;
+    sf::Text server_bulletin;
 
     Scheduler scheduler;
     LobbyUI lobby_ui;

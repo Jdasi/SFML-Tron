@@ -59,7 +59,7 @@ private:
     void tick();
     void draw();
 
-    void updateServerReadout() const;
+    void updateServerReadout();
 
     sf::RenderWindow window;
 
@@ -74,7 +74,7 @@ private:
     ClientData client_data;
 
     bool in_focus;
-    std::unique_ptr<sf::Text> server_readout;
+    sf::Text server_readout;
 
     // For the purposes of printing server info to the screen..
     std::string ip_address;

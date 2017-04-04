@@ -15,14 +15,13 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
 {
     client_data->game_manager->attachSimulationListener(&visualisation);
 
-    countdown_text = std::make_unique<sf::Text>("",
-        *client_data->asset_manager->loadFont(DEFAULT_FONT));
+    countdown_text.setFont(*client_data->asset_manager->loadFont(DEFAULT_FONT));
 
-    countdown_text->setCharacterSize(60);
-    countdown_text->setStyle(sf::Text::Bold);
-    countdown_text->setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 });
+    countdown_text.setCharacterSize(60);
+    countdown_text.setStyle(sf::Text::Bold);
+    countdown_text.setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 });
 
-    JHelper::centerSFOrigin(*countdown_text);
+    JHelper::centerSFOrigin(countdown_text);
 }
 
 
@@ -31,7 +30,7 @@ void ClientStateGame::onStateEnter()
 {
     client_data->network_manager->sendPlayerStateChange(PlayerState::PLAYING);
 
-    countdown_text->setFillColor(sf::Color::White);
+    countdown_text.setFillColor(sf::Color::White);
     last_tick_value = static_cast<int>(COUNTDOWN_BEGIN);
 
     visualisation.updateClientColor();
@@ -44,7 +43,7 @@ void ClientStateGame::onStateLeave()
     client_data->game_audio->stopMusic();
     client_data->game_manager->resetSimulation();
 
-    countdown_text->setString("");
+    countdown_text.setString("");
 }
 
 
@@ -62,7 +61,7 @@ void ClientStateGame::draw(sf::RenderWindow& _window)
 {
     visualisation.draw(_window);
 
-    _window.draw(*countdown_text);
+    _window.draw(countdown_text);
 
     for (auto& drawable : drawables)
     {
@@ -94,7 +93,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
 void ClientStateGame::updateCountdownText()
 {
     int timer_value = client_data->game_manager->getCountdownDigit();
-    countdown_text->setString(std::to_string(timer_value + 1));
+    countdown_text.setString(std::to_string(timer_value + 1));
 
     if (timer_value < last_tick_value)
     {
@@ -105,7 +104,7 @@ void ClientStateGame::updateCountdownText()
 
     if (client_data->game_manager->simulationRunning())
     {
-        countdown_text->setFillColor(sf::Color::Transparent);
+        countdown_text.setFillColor(sf::Color::Transparent);
     }
 }
 

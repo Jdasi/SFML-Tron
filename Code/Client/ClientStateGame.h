@@ -29,7 +29,7 @@ private:
     void handleBikeControls(const GameAction _action, const ActionState _action_state) const;
 
     Visualisation visualisation;
-    std::unique_ptr<sf::Text> countdown_text;
+    sf::Text countdown_text;
     int last_tick_value;
 
 };

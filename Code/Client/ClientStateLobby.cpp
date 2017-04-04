@@ -19,8 +19,7 @@ ClientStateLobby::ClientStateLobby(ClientData* _client_data)
         *client_data->asset_manager->loadTexture(BACKDROP));
     drawables.push_back(std::move(backdrop));
 
-    server_bulletin = std::make_unique<sf::Text>("",
-        *client_data->asset_manager->loadFont(DEFAULT_FONT));
+    server_bulletin.setFont(*client_data->asset_manager->loadFont(DEFAULT_FONT));
 
     initServerBulletin();
 }
@@ -62,7 +61,7 @@ void ClientStateLobby::draw(sf::RenderWindow& _window)
         _window.draw(*drawable);
     }
 
-    _window.draw(*server_bulletin);
+    _window.draw(server_bulletin);
     lobby_ui.draw(_window);
 }
 
@@ -89,22 +88,22 @@ void ClientStateLobby::onCommand(const GameAction _action, const ActionState _ac
 
 
 
-void ClientStateLobby::initServerBulletin() const
+void ClientStateLobby::initServerBulletin()
 {
-    server_bulletin->setCharacterSize(40);
-    server_bulletin->setStyle(sf::Text::Bold);
-    server_bulletin->setFillColor(sf::Color::White);
-    server_bulletin->setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.1f });
-    server_bulletin->setOutlineColor(sf::Color::Black);
-    server_bulletin->setOutlineThickness(2.0f);
+    server_bulletin.setCharacterSize(40);
+    server_bulletin.setStyle(sf::Text::Bold);
+    server_bulletin.setFillColor(sf::Color::White);
+    server_bulletin.setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.1f });
+    server_bulletin.setOutlineColor(sf::Color::Black);
+    server_bulletin.setOutlineThickness(2.0f);
 }
 
 
 
-void ClientStateLobby::updateServerBulletin() const
+void ClientStateLobby::updateServerBulletin()
 {
-    server_bulletin->setString(client_data->server_bulletin_str);
-    JHelper::centerSFOrigin(*server_bulletin);
+    server_bulletin.setString(client_data->server_bulletin_str);
+    JHelper::centerSFOrigin(server_bulletin);
 }
 
 
