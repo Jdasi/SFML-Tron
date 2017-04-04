@@ -14,7 +14,6 @@ enum class PacketID
         GAME_STATE,
         FLOW_CONTROL,
         VICTOR,
-        LATENCY,
         MESSAGE,
         BULLETIN,
         BIKE_DIRECTION,

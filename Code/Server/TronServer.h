@@ -54,7 +54,6 @@ private:
     void handlePacket(sf::Packet& _packet, ClientPtr& _sender);
     void handleDisconnectPacket(const sf::Packet& _packet, ClientPtr& _sender);
     void handlePingPacket(const sf::Packet& _packet, ClientPtr& _sender);
-    void handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender) const;
     void handleMessagePacket(sf::Packet& _packet, ClientPtr& _sender);
     void handlePlayerStatePacket(sf::Packet& _packet, ClientPtr& _sender);
     void handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender);

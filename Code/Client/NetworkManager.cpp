@@ -226,7 +226,6 @@ void NetworkManager::handlePongPacket(sf::Packet& _packet)
         steady_clock::now() - pre_ping).count()) / 2;
 
     client.onUpdatePingTime(latency);
-    sendClientLatency(latency);
 
     scheduler.invoke([this](){ sendPing(); }, 1.0);
 }
@@ -414,18 +413,6 @@ void NetworkManager::handleExtraBoostChargePacket(sf::Packet& _packet) const
 void NetworkManager::sendPacket(sf::Packet& _packet)
 {
     while (socket.send(_packet) == sf::Socket::Partial){}
-}
-
-
-
-void NetworkManager::sendClientLatency(const double _latency)
-{
-    sf::Packet packet;
-    setPacketID(packet, PacketID::LATENCY);
-
-    packet << _latency;
-    
-    sendPacket(packet);
 }
 
 

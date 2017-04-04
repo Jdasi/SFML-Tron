@@ -57,7 +57,6 @@ private:
     void handleServerBulletinPacket(sf::Packet& _packet) const;
 
     void sendPacket(sf::Packet& _packet);
-    void sendClientLatency(const double _latency);
     void sendPing();
 
     // TronClient network interface.

@@ -50,7 +50,6 @@ void TronServer::registerPacketHandlers()
 {
     registerPacketHandler(PacketID::DISCONNECT,        handleDisconnectPacket);
     registerPacketHandler(PacketID::PING,              handlePingPacket);
-    registerPacketHandler(PacketID::LATENCY,           handleLatencyPacket);
     registerPacketHandler(PacketID::MESSAGE,           handleMessagePacket);
     registerPacketHandler(PacketID::PLAYER_STATE,      handlePlayerStatePacket);
     registerPacketHandler(PacketID::BIKE_DIRECTION,    handleDirectionPacket);
@@ -448,26 +447,10 @@ void TronServer::handleDisconnectPacket(const sf::Packet& _packet, ClientPtr& _s
 // Send a PONG packet back to _sender to inform their latency.
 void TronServer::handlePingPacket(const sf::Packet& _packet, ClientPtr& _sender)
 {
-    std::cout << "Ping Packet Received" << std::endl;
-
     sf::Packet packet;
     setPacketID(packet, PacketID::PONG);
 
-    std::cout << "Sending Pong Packet" << std::endl;
-
     sendPacketToClient(packet, _sender);
-}
-
-
-
-void TronServer::handleLatencyPacket(sf::Packet& _packet, ClientPtr& _sender) const
-{
-    double latency;
-    _packet >> latency;
-
-    _sender->setLatency(latency);
-    std::cout << "Client " << static_cast<int>(_sender->getID()) << ": " 
-              << latency << "us" << std::endl;
 }
 
 
