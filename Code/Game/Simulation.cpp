@@ -165,7 +165,7 @@ void Simulation::reset()
 
     for (auto& listener : listeners)
     {
-        listener->clearAllCells();
+        listener->simulationReset();
     }
 }
 
@@ -291,11 +291,6 @@ void Simulation::handleExtraBoostTimer(Bike& _bike, const double _dt)
         {
             _bike.resetExtraBoostTimer();
             grantBoostCharge(_bike.getID());
-
-            for (auto& listener : listeners)
-            {
-                listener->boostChargeGranted(_bike.getID());
-            }
         }
     }
 }
@@ -312,6 +307,11 @@ void Simulation::grantBoostCharge(const unsigned _bike_id)
     if (bike.missingBoostCharges())
     {
         bike.grantBoostCharge();
+    }
+
+    for (auto& listener : listeners)
+    {
+        listener->boostChargeGranted(bike.getID());
     }
 }
 

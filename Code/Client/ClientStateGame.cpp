@@ -10,10 +10,10 @@
 
 ClientStateGame::ClientStateGame(ClientData* _client_data)
     : ClientState(_client_data)
-    , pretty_grid(_client_data->asset_manager)
+    , visualisation(_client_data)
     , last_tick_value(0)
 {
-    client_data->game_manager->attachSimulationListener(&pretty_grid);
+    client_data->game_manager->attachSimulationListener(&visualisation);
 
     countdown_text = std::make_unique<sf::Text>("",
         *client_data->asset_manager->loadFont(DEFAULT_FONT));
@@ -25,6 +25,8 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
     JHelper::centerSFOrigin(*countdown_text);
 }
 
+
+
 void ClientStateGame::onStateEnter()
 {
     client_data->network_manager->sendPlayerStateChange(PlayerState::PLAYING);
@@ -32,9 +34,10 @@ void ClientStateGame::onStateEnter()
     countdown_text->setFillColor(sf::Color::White);
     last_tick_value = static_cast<int>(COUNTDOWN_BEGIN);
 
-    pretty_grid.updateBorderColor(
-        JHelper::evaluateSFColorFromPlayerID(client_data->client_id));
+    visualisation.updateClientColor();
 }
+
+
 
 void ClientStateGame::onStateLeave()
 {
@@ -44,16 +47,20 @@ void ClientStateGame::onStateLeave()
     countdown_text->setString("");
 }
 
+
+
 void ClientStateGame::tick()
 {
     updateCountdownText();
 
-    pretty_grid.tick(client_data->delta_time);
+    visualisation.tick(client_data->delta_time);
 }
+
+
 
 void ClientStateGame::draw(sf::RenderWindow& _window)
 {
-    pretty_grid.draw(_window);
+    visualisation.draw(_window);
 
     _window.draw(*countdown_text);
 
@@ -62,6 +69,8 @@ void ClientStateGame::draw(sf::RenderWindow& _window)
         _window.draw(*drawable);
     }
 }
+
+
 
 void ClientStateGame::onCommand(const GameAction _action, const ActionState _action_state)
 {

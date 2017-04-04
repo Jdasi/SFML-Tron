@@ -190,7 +190,7 @@ bool Bike::missingBoostCharges() const
 
 void Bike::grantBoostCharge()
 {
-    state.boost_charges += 1;
+    ++state.boost_charges;
 }
 
 

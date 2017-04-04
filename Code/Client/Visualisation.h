@@ -9,25 +9,31 @@
 #include "PlayerMarker.h"
 
 struct Vector2i;
-class AssetManager;
+struct ClientData;
 
 class Visualisation final : public SimulationListener
 {
 public:
-    explicit Visualisation(AssetManager* _asset_manager);
+    explicit Visualisation(ClientData* _client_data);
     ~Visualisation() = default;
 
     void tick(const double _dt);
     void draw(sf::RenderWindow& _window);
 
-    void updateBorderColor(const sf::Color& _color);
+    void updateClientColor();
+
+private:
+    void initGrid();
+    void initPlayerMarkers();
+    void initBoostChargesText();
+    void updateBoostChargesText();
 
     void clearCell(const Vector2i& _pos) override;
     void clearCellRange(const std::vector<Vector2i>& _positions) override;
-    void clearAllCells() override;
+    void simulationReset() override;
 
     void overwriteCell(const Vector2i& _pos, const CellValue _value) override;
-    void overwriteCellRange(const std::vector<Vector2i>& _positions, 
+    void overwriteCellRange(const std::vector<Vector2i>& _positions,
         const CellValue _value) override;
     void overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells) override;
 
@@ -37,19 +43,18 @@ public:
     void bikeNotBoosted(const unsigned int _bike_id) override;
     void bikeRemoved(const unsigned int _bike_id) override;
     void bikesReset() override;
-
-private:
-    void initGrid();
-    void initPlayerMarkers();
+    void boostChargeGranted(const unsigned int _bike_id) override;
 
     void setTileColor(const unsigned int _index, const sf::Color& _color);
     void setTileColor(const Vector2i& _pos, const sf::Color& _color);
 
-    AssetManager* asset_manager;
+    ClientData* client_data;
 
     sf::Sprite backdrop;
     sf::RectangleShape border;
     std::array<std::unique_ptr<sf::RectangleShape>, GRID_AREA> tiles;
     std::array<PlayerMarker, MAX_PLAYERS> player_markers;
+    sf::Text boost_charges_text;
+    unsigned int displayed_charges;
 
 };

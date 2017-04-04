@@ -28,7 +28,7 @@ private:
     void updateCountdownText();
     void handleBikeControls(const GameAction _action, const ActionState _action_state) const;
 
-    Visualisation pretty_grid;
+    Visualisation visualisation;
     std::unique_ptr<sf::Text> countdown_text;
     int last_tick_value;
 

@@ -26,6 +26,8 @@ ClientStateEnd::ClientStateEnd(ClientData* _client_data)
     victor_text->setOutlineThickness(2.0f);
 }
 
+
+
 void ClientStateEnd::onStateEnter()
 {
     std::string victory_string;
@@ -50,13 +52,19 @@ void ClientStateEnd::onStateEnter()
     JHelper::centerSFOrigin(*victor_text);
 }
 
+
+
 void ClientStateEnd::onStateLeave()
 {
 }
 
+
+
 void ClientStateEnd::tick()
 {
 }
+
+
 
 void ClientStateEnd::draw(sf::RenderWindow& _window)
 {
@@ -67,6 +75,8 @@ void ClientStateEnd::draw(sf::RenderWindow& _window)
 
     _window.draw(*victor_text);
 }
+
+
 
 void ClientStateEnd::onCommand(const GameAction _action, const ActionState _action_state)
 {

@@ -17,7 +17,7 @@ public:
 
     virtual void clearCell(const Vector2i& _pos) {}
     virtual void clearCellRange(const std::vector<Vector2i>& _positions) {}
-    virtual void clearAllCells() {}
+    virtual void simulationReset() {}
 
     virtual void overwriteCell(const Vector2i& _pos, const CellValue _value) {}
     virtual void overwriteCellRange(const std::vector<Vector2i>& _positions,

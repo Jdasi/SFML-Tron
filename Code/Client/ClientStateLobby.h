@@ -6,7 +6,7 @@
 class ClientStateLobby final : public ClientState
 {
 public:
-    ClientStateLobby(ClientData* _client_data);
+    explicit ClientStateLobby(ClientData* _client_data);
     virtual ~ClientStateLobby() = default;
 
     void onStateEnter() override;
@@ -18,8 +18,9 @@ public:
     void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
-    void scheduleRefresh();
+    void initServerBulletin() const;
     void updateServerBulletin() const;
+    void scheduleRefresh();
 
     std::unique_ptr<sf::Text> server_bulletin;
 

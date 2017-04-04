@@ -10,7 +10,7 @@ namespace sf
 class ClientStateEnd final : public ClientState
 {
 public:
-    ClientStateEnd(ClientData* _client_data);
+    explicit ClientStateEnd(ClientData* _client_data);
     virtual ~ClientStateEnd() = default;
 
     void onStateEnter() override;

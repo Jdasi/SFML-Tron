@@ -22,13 +22,10 @@ ClientStateLobby::ClientStateLobby(ClientData* _client_data)
     server_bulletin = std::make_unique<sf::Text>("",
         *client_data->asset_manager->loadFont(DEFAULT_FONT));
 
-    server_bulletin->setCharacterSize(40);
-    server_bulletin->setStyle(sf::Text::Bold);
-    server_bulletin->setFillColor(sf::Color::White);
-    server_bulletin->setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.1f });
-    server_bulletin->setOutlineColor(sf::Color::Black);
-    server_bulletin->setOutlineThickness(2.0f);
+    initServerBulletin();
 }
+
+
 
 void ClientStateLobby::onStateEnter()
 {
@@ -39,11 +36,15 @@ void ClientStateLobby::onStateEnter()
     lobby_ui.refresh();
 }
 
+
+
 void ClientStateLobby::onStateLeave()
 {
     client_data->game_audio->stopMusic();
     refresh_needed = true;
 }
+
+
 
 void ClientStateLobby::tick()
 {
@@ -51,6 +52,8 @@ void ClientStateLobby::tick()
 
     scheduleRefresh();
 }
+
+
 
 void ClientStateLobby::draw(sf::RenderWindow& _window)
 {
@@ -62,6 +65,8 @@ void ClientStateLobby::draw(sf::RenderWindow& _window)
     _window.draw(*server_bulletin);
     lobby_ui.draw(_window);
 }
+
+
 
 void ClientStateLobby::onCommand(const GameAction _action, const ActionState _action_state)
 {
@@ -82,6 +87,28 @@ void ClientStateLobby::onCommand(const GameAction _action, const ActionState _ac
     }
 }
 
+
+
+void ClientStateLobby::initServerBulletin() const
+{
+    server_bulletin->setCharacterSize(40);
+    server_bulletin->setStyle(sf::Text::Bold);
+    server_bulletin->setFillColor(sf::Color::White);
+    server_bulletin->setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.1f });
+    server_bulletin->setOutlineColor(sf::Color::Black);
+    server_bulletin->setOutlineThickness(2.0f);
+}
+
+
+
+void ClientStateLobby::updateServerBulletin() const
+{
+    server_bulletin->setString(client_data->server_bulletin_str);
+    JHelper::centerSFOrigin(*server_bulletin);
+}
+
+
+
 void ClientStateLobby::scheduleRefresh()
 {
     if (refresh_needed)
@@ -96,12 +123,4 @@ void ClientStateLobby::scheduleRefresh()
             refresh_needed = true;
         }, 0.5);
     }
-}
-
-
-
-void ClientStateLobby::updateServerBulletin() const
-{
-    server_bulletin->setString(client_data->server_bulletin_str);
-    JHelper::centerSFOrigin(*server_bulletin);
 }
