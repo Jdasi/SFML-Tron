@@ -75,8 +75,7 @@ const std::string COUNTDOWN_FIN_CUE     { "countdown_fin.ogg" };
 const std::string BOOST_CUE             { "bike_boost.ogg" };
 const std::string EXTRA_BOOST_CUE       { "extra_boost.ogg" };
 const std::string DEATH_CUE             { "bike_death.ogg" };
-const std::string ROUND_OVER_CUE        { "round_over.ogg" };
-const std::string WINNER_CUE            { "winner.ogg" };
-const std::string LOSER_CUE             { "loser.ogg" };
+const std::string LAST_BIKE_CUE         { "last_bike.ogg" };
+const std::string GAME_OVER_CUE         { "game_over.ogg" };
 
 const std::string GAME_MUSIC            { "game_music.ogg" };

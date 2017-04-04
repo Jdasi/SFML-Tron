@@ -24,20 +24,18 @@ ClientStateEnd::ClientStateEnd(ClientData* _client_data)
 
 void ClientStateEnd::onStateEnter()
 {
+    client_data->game_audio->playSound(GAME_OVER_CUE);
+
     std::string victory_string;
     
     if (client_data->client_id == client_data->victor_id)
     {
         victory_string.append("You win!");
-
-        client_data->game_audio->playSound(WINNER_CUE);
     }
     else
     {
         victory_string.append("Player " + 
             std::to_string(client_data->victor_id + 1) + " Wins!");
-
-        client_data->game_audio->playSound(LOSER_CUE);
     }
 
     victor_text.setFillColor(JHelper::evaluateSFColorFromPlayerID(client_data->victor_id));

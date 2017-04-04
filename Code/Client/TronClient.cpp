@@ -87,9 +87,8 @@ void TronClient::preloadSoundBuffers()
     asset_manager.loadSoundBuffer(COUNTDOWN_FIN_CUE);
     asset_manager.loadSoundBuffer(BOOST_CUE);
     asset_manager.loadSoundBuffer(DEATH_CUE);
-    asset_manager.loadSoundBuffer(ROUND_OVER_CUE);
-    asset_manager.loadSoundBuffer(WINNER_CUE);
-    asset_manager.loadSoundBuffer(LOSER_CUE);
+    asset_manager.loadSoundBuffer(LAST_BIKE_CUE);
+    asset_manager.loadSoundBuffer(GAME_OVER_CUE);
 }
 
 void TronClient::initTextObjects()
@@ -291,7 +290,7 @@ void TronClient::onFlowControl(const FlowControl _control)
 
             case FlowControl::STOP:
             {
-                game_audio.playSound(ROUND_OVER_CUE);
+                game_audio.playSound(LAST_BIKE_CUE);
                 game_audio.stopMusic();
 
                 game_manager.stopSimulation();
