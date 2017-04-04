@@ -20,6 +20,8 @@ add_library(TronGame STATIC
     Code/Game/BikeState.h
     Code/Game/CellValue.h
     Code/Game/Constants.h
+    Code/Game/FileIO.cpp
+    Code/Game/FileIO.h
     Code/Game/FlowControl.h
     Code/Game/GameStateIDs.h
     Code/Game/Grid.cpp
@@ -34,6 +36,7 @@ add_library(TronGame STATIC
     Code/Game/PlayerState.h
     Code/Game/RandomEngine.cpp
     Code/Game/RandomEngine.h
+    Code/Game/ServerSettings.h
     Code/Game/ScheduledTask.h
     Code/Game/Scheduler.cpp
     Code/Game/Scheduler.h

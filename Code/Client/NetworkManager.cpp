@@ -14,13 +14,10 @@ using namespace std::placeholders;
 #define registerPacketHandler(id, func) \
     packet_handlers.emplace(id, std::bind(&NetworkManager::func, this, _1))
 
-NetworkManager::NetworkManager(INetworkClient& _client, const sf::IpAddress _ip_address, 
-    const unsigned int _tcp_port)
+NetworkManager::NetworkManager(INetworkClient& _client)
     : client(_client)
-    , packet_handlers()
-    , ip_address(_ip_address)
-    , tcp_port(_tcp_port)
     , socket()
+    , packet_handlers()
     , has_connected(false)
     , running(true)
     , scheduler()
@@ -29,9 +26,7 @@ NetworkManager::NetworkManager(INetworkClient& _client, const sf::IpAddress _ip_
 
     network_thread = std::thread([this]()
     {
-        std::cout << "Networking thread started." << std::endl;
         networkingThread();
-        std::cout << "Networking thread stopping." << std::endl;
     });
 }
 
@@ -44,16 +39,17 @@ NetworkManager::~NetworkManager()
 
 
 
-void NetworkManager::connect()
+void NetworkManager::connect(const sf::IpAddress& _ip_address,
+    const unsigned int _tcp_port)
 {
-    postEvent([this]()
+    postEvent([this, _ip_address, _tcp_port]()
     {
         socket.setBlocking(true);
 
         auto status = sf::Socket::Disconnected;
         do
         {
-            status = socket.connect(ip_address, tcp_port);
+            status = socket.connect(_ip_address, _tcp_port);
 
         } while (status != sf::Socket::Done && !client.isExiting());
 
@@ -63,8 +59,6 @@ void NetworkManager::connect()
         client.onConnected();
 
         sendPing();
-
-        std::cout << "Connected to server: " << ip_address << std::endl;
     });
 }
 
@@ -181,8 +175,6 @@ void NetworkManager::networkingThread()
             } break;
         }
     }
-
-    std::cout << "Networking thread ended" << std::endl;
 }
 
 
@@ -191,7 +183,6 @@ void NetworkManager::stopNetworkingThread()
 {
     running = false;
     network_thread.join();
-    std::cout << "Networking thread stopped." << std::endl;
 }
 
 
@@ -296,10 +287,10 @@ void NetworkManager::handlePlayerLeftPacket(sf::Packet& _packet) const
 
 void NetworkManager::handleMessagePacket(sf::Packet& _packet) const
 {
-    std::string str;
-    _packet >> str;
+    std::string message;
+    _packet >> message;
 
-    std::cout << str << std::endl;
+    std::cout << message << std::endl;
 }
 
 

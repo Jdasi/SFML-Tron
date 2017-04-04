@@ -55,6 +55,8 @@ public:
         }
     }
 
+
+
 protected:
     StateType* current_state;
 
@@ -89,6 +91,8 @@ private:
 
         current_state->onStateEnter();
     }
+
+
 
     std::map<int, std::unique_ptr<StateType>> states;
 

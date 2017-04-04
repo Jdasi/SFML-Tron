@@ -36,6 +36,9 @@
     <ClCompile Include="..\..\Code\Game\ThreadDispatcher.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Game\FileIO.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Game\StateHandler.h">
@@ -112,6 +115,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\ISimulation.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\ServerSettings.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\FileIO.h">
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

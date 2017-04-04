@@ -20,11 +20,10 @@ struct BikeState;
 class NetworkManager final : public ThreadDispatcher
 {
 public:
-    NetworkManager(INetworkClient& _client, const sf::IpAddress _ip_address,
-        const unsigned int _tcp_port);
+    explicit NetworkManager(INetworkClient& _client);
     ~NetworkManager();
 
-    void connect();
+    void connect(const sf::IpAddress& _ip_address, const unsigned int _tcp_port);
     void disconnect();
 
     void sendChatMessage(const std::string& _message);
@@ -64,12 +63,9 @@ private:
     // TronClient network interface.
     INetworkClient& client;
     std::thread network_thread;
+    sf::TcpSocket socket;
 
     std::map<PacketID, std::function<void(sf::Packet&)>> packet_handlers;
-
-    sf::IpAddress ip_address;
-    unsigned int tcp_port;
-    sf::TcpSocket socket;
 
     volatile bool has_connected;
     volatile bool running;

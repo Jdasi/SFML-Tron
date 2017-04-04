@@ -79,6 +79,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Code\Game\FileIO.cpp" />
     <ClCompile Include="..\..\Code\Game\Grid.cpp" />
     <ClCompile Include="..\..\Code\Game\Bike.cpp" />
     <ClCompile Include="..\..\Code\Game\JHelper.cpp" />
@@ -92,6 +93,7 @@
     <ClInclude Include="..\..\Code\Game\BikeState.h" />
     <ClInclude Include="..\..\Code\Game\CellValue.h" />
     <ClInclude Include="..\..\Code\Game\Constants.h" />
+    <ClInclude Include="..\..\Code\Game\FileIO.h" />
     <ClInclude Include="..\..\Code\Game\FlowControl.h" />
     <ClInclude Include="..\..\Code\Game\GameStateIDs.h" />
     <ClInclude Include="..\..\Code\Game\Grid.h" />
@@ -102,6 +104,7 @@
     <ClInclude Include="..\..\Code\Game\PlayerState.h" />
     <ClInclude Include="..\..\Code\Game\ScheduledTask.h" />
     <ClInclude Include="..\..\Code\Game\Scheduler.h" />
+    <ClInclude Include="..\..\Code\Game\ServerSettings.h" />
     <ClInclude Include="..\..\Code\Game\SimpleTimer.h" />
     <ClInclude Include="..\..\Code\Game\SimulationListener.h" />
     <ClInclude Include="..\..\Code\Game\SimulationState.h" />

@@ -22,16 +22,9 @@ constexpr float WINDOW_TOP_BOUNDARY     = WINDOW_MARGIN_Y;
 constexpr float WINDOW_BOTTOM_BOUNDARY  = WINDOW_HEIGHT - WINDOW_MARGIN_Y;
 
 // ======================================================================================
-// NETWORK SETTINGS
-// ======================================================================================
-//const std::string SERVER_IP             { "dgm.no-ip.org" };
-const std::string SERVER_IP             { "127.0.0.1" };
-//const std::string SERVER_IP             { "86.31.186.180" };
-const unsigned int SERVER_TCP_PORT      = 1337;
-
-// ======================================================================================
 // GAMEPLAY SETTINGS
 // ======================================================================================
+const int MIN_PLAYERS                   = 2; // Min players needed for game to start.
 const int MAX_PLAYERS                   = 4; // Max players supported.
 const int INITIAL_MOVES                 = 5; // Players start having made this many moves.
 const double COUNTDOWN_BEGIN            = 3.0; // Time before game starts.

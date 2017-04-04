@@ -27,14 +27,14 @@ TronServer::TronServer()
 
 
 
-bool TronServer::run()
+bool TronServer::run(const unsigned int _tcp_port)
 {
-    if (!bindServerPort())
+    if (!bindServerPort(_tcp_port))
     {
         return false;
     }
 
-    std::cout << "Server launched on port: " << SERVER_TCP_PORT << std::endl
+    std::cout << "Server launched on port: " << _tcp_port << std::endl
               << "> Awaiting clients . . ." << std::endl;
 
     socket_selector.add(tcp_listener);
@@ -59,11 +59,11 @@ void TronServer::registerPacketHandlers()
 
 
 
-bool TronServer::bindServerPort()
+bool TronServer::bindServerPort(const unsigned int _tcp_port)
 {
-    if (tcp_listener.listen(SERVER_TCP_PORT) != sf::Socket::Done)
+    if (tcp_listener.listen(_tcp_port) != sf::Socket::Done)
     {
-        std::cout << "Could not bind server port: " << SERVER_TCP_PORT << std::endl;
+        std::cout << "Could not bind server port: " << _tcp_port << std::endl;
 
         return false;
     }
@@ -147,7 +147,7 @@ void TronServer::performStateBehaviour()
 
 void TronServer::lobbyStateBehaviour()
 {
-    if (connected_clients <= 1 ||
+    if (connected_clients < MIN_PLAYERS ||
         clientExistsWithState(PlayerState::NOTREADY))
     {
         return;

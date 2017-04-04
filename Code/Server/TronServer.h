@@ -20,11 +20,11 @@ public:
     TronServer();
     ~TronServer() = default;
 
-    bool run();
+    bool run(const unsigned int _tcp_port);
 
 private:
     void registerPacketHandlers();
-    bool bindServerPort();
+    bool bindServerPort(const unsigned int _tcp_port);
 
     void mainLoop();
     void listen();

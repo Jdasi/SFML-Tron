@@ -8,15 +8,17 @@
 #include "ClientStateGame.h"
 #include "ClientStateEnd.h"
 
-TronClient::TronClient()
+TronClient::TronClient(const ServerSettings& _server_settings)
     : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_NAME)
-    , network_manager(*this, SERVER_IP, SERVER_TCP_PORT)
+    , network_manager(*this)
     , game_manager(&client_data)
     , input_handler(*this)
     , state_handler()
     , game_audio(&asset_manager, &in_focus)
     , client_data(&asset_manager, &network_manager, &game_manager, &input_handler, &game_audio)
     , in_focus(true)
+    , ip_address(_server_settings.ip_address)
+    , tcp_port(_server_settings.tcp_port)
 {
     preloadSoundBuffers();
     initTextObjects();
@@ -30,7 +32,7 @@ void TronClient::run()
     initControllerBindings();
     initClientStates();
 
-    network_manager.connect();
+    network_manager.connect(ip_address, tcp_port);
 
     mainLoop();
 
@@ -418,8 +420,8 @@ void TronClient::draw()
 
 void TronClient::updateServerReadout() const
 {
-    std::string server_str = SERVER_IP;
-    server_str.append(":" + std::to_string(SERVER_TCP_PORT) + " \\ ping: ");
+    std::string server_str = ip_address;
+    server_str.append(":" + std::to_string(tcp_port) + " \\ ping: ");
 
     std::string latency_str = std::to_string(client_data.latency);
     latency_str.erase(latency_str.find_first_of('.'), std::string::npos);

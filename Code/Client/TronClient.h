@@ -5,6 +5,7 @@
 #include <Game/SimpleTimer.h>
 #include <Game/Simulation.h>
 #include <Game/ThreadDispatcher.h>
+#include <Game/ServerSettings.h>
 #include "INetworkClient.h"
 #include "NetworkManager.h"
 #include "InputHandler.h"
@@ -17,7 +18,7 @@
 class TronClient final : public INetworkClient, public ThreadDispatcher
 {
 public:
-    TronClient();
+    explicit TronClient(const ServerSettings& _server_settings);
     ~TronClient() = default;
 
     void run();
@@ -74,5 +75,9 @@ private:
 
     bool in_focus;
     std::unique_ptr<sf::Text> server_readout;
+
+    // For the purposes of printing server info to the screen..
+    std::string ip_address;
+    unsigned int tcp_port;
 
 };
