@@ -64,7 +64,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-network-d.lib;sfml-main-d.lib;TronGameW32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-audio-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-network-d.lib;sfml-main-d.lib;TronGameW32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -83,7 +83,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-main.lib;sfml-network.lib;TronGameW32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-audio.lib;sfml-window.lib;sfml-system.lib;sfml-main.lib;sfml-network.lib;TronGameW32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -92,6 +92,7 @@
     <ClCompile Include="..\..\Code\Client\ClientStateGame.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateHandler.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateLobby.cpp" />
+    <ClCompile Include="..\..\Code\Client\GameAudio.cpp" />
     <ClCompile Include="..\..\Code\Client\LobbySlot.cpp" />
     <ClCompile Include="..\..\Code\Client\LobbyUI.cpp" />
     <ClCompile Include="..\..\Code\Client\Player.cpp" />
@@ -111,6 +112,7 @@
     <ClInclude Include="..\..\Code\Client\ClientStateHandler.h" />
     <ClInclude Include="..\..\Code\Client\ClientStateLobby.h" />
     <ClInclude Include="..\..\Code\Client\ClientData.h" />
+    <ClInclude Include="..\..\Code\Client\GameAudio.h" />
     <ClInclude Include="..\..\Code\Client\LobbySlot.h" />
     <ClInclude Include="..\..\Code\Client\LobbyUI.h" />
     <ClInclude Include="..\..\Code\Client\Player.h" />

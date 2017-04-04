@@ -75,6 +75,8 @@ add_executable(TronClient
     Code/Client/ClientStateLobby.cpp
     Code/Client/ClientStateLobby.h
     Code/Client/GameAction.h
+    Code/Client/GameAudio.cpp
+    Code/Client/GameAudio.h
     Code/Client/GameManager.cpp
     Code/Client/GameManager.h
     Code/Client/INetworkClient.h

@@ -15,9 +15,19 @@ TronClient::TronClient()
     , game_manager(&client_data)
     , input_handler(*this)
     , state_handler()
-    , client_data(&asset_manager, &network_manager, &game_manager, &input_handler)
+    , game_audio(&asset_manager, &in_focus)
+    , client_data(&asset_manager, &network_manager, &game_manager, &input_handler, &game_audio)
     , in_focus(true)
 {
+    // Pre-load large assets.
+    asset_manager.loadFont(DEFAULT_FONT);
+    asset_manager.loadSoundBuffer(COUNTDOWN_TICK_CUE);
+    asset_manager.loadSoundBuffer(COUNTDOWN_FIN_CUE);
+    asset_manager.loadSoundBuffer(BOOST_CUE);
+    asset_manager.loadSoundBuffer(DEATH_CUE);
+    asset_manager.loadSoundBuffer(SIM_OVER_CUE);
+    asset_manager.loadSoundBuffer(WINNER_CUE);
+    asset_manager.loadSoundBuffer(LOSER_CUE);
 }
 
 
@@ -121,13 +131,15 @@ void TronClient::handleEvent(const sf::Event& _event)
         return;
     }
 
-    if (_event.type == sf::Event::LostFocus)
-    {
-        in_focus = false;
-    }
-    else if (_event.type == sf::Event::GainedFocus)
+    if (_event.type == sf::Event::GainedFocus)
     {
         in_focus = true;
+        game_audio.toggleMusicPaused();
+    }
+    else if (_event.type == sf::Event::LostFocus)
+    {
+        in_focus = false;
+        game_audio.toggleMusicPaused();
     }
 
     if (in_focus)
@@ -297,6 +309,7 @@ void TronClient::onBikeRemoved(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
+        game_audio.playSound(DEATH_CUE);
         game_manager.getNetworkSimulation()->removeBike(_bike_id);
     });
 }
@@ -307,6 +320,7 @@ void TronClient::onBikeBoost(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
+        game_audio.playSound(BOOST_CUE);
         game_manager.getNetworkSimulation()->boostBike(_bike_id);
     });
 }

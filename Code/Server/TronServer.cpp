@@ -762,7 +762,7 @@ void TronServer::onSimulationReset()
 
 
 
-void TronServer::onSimulationVictor(const unsigned _bike_id)
+void TronServer::onSimulationVictor(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {

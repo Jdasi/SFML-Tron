@@ -12,6 +12,7 @@
 #include "ClientStateHandler.h"
 #include "GameManager.h"
 #include "AssetManager.h"
+#include "GameAudio.h"
 
 class TronClient final : public INetworkClient, public ThreadDispatcher
 {
@@ -62,6 +63,7 @@ private:
     InputHandler input_handler;
     ClientStateHandler state_handler;
     SimpleTimer timer;
+    GameAudio game_audio;
     ClientData client_data;
 
     bool in_focus;

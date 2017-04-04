@@ -52,18 +52,17 @@ const float MARKER_ROTATE_MODIFIER      = 2.0f; // rotation modifier of enlarged
 // ======================================================================================
 const float AXIS_DEADZONE               = 80.0f; // Min input axis required by controller.
 
-
 // ======================================================================================
 // COMMON PATH STRINGS
 // ======================================================================================
-
-
+const std::string FONTS_PATH            { "Resources/Fonts/" };
+const std::string TEXTURES_PATH         { "Resources/Images/" };
+const std::string AUDIO_PATH            { "Resources/Audio/" };
 
 // ======================================================================================
-// TEXTURE STRINGS
+// FONT STRINGS
 // ======================================================================================
 const std::string DEFAULT_FONT          { "arial.ttf" };
-
 
 // ======================================================================================
 // TEXTURE STRINGS
@@ -71,8 +70,17 @@ const std::string DEFAULT_FONT          { "arial.ttf" };
 const std::string BACKDROP              { "backdrop.png" };
 const std::string PLAYER_MARKER         { "player_marker.png" };
 
-
 // ======================================================================================
-// SOUND STRINGS
+// AUDIO STRINGS
 // ======================================================================================
+const std::string COUNTDOWN_TICK_CUE    { "countdown_tick.ogg" };
+const std::string COUNTDOWN_FIN_CUE     { "countdown_fin.ogg" };
 
+const std::string BOOST_CUE             { "bike_boost.ogg" };
+const std::string DEATH_CUE             { "bike_death.ogg" };
+const std::string SIM_OVER_CUE          { "end_of_round.ogg" };
+const std::string WINNER_CUE            { "winner.ogg" };
+const std::string LOSER_CUE             { "loser.ogg" };
+
+const std::string LOBBY_MUSIC           { "lobby_music.ogg" };
+const std::string GAME_MUSIC            { "game_music.ogg" };
