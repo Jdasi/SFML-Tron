@@ -5,10 +5,20 @@
 GameAudio::GameAudio(AssetManager* _asset_manager, bool* in_focus)
     : asset_manager(_asset_manager)
     , in_focus(*in_focus)
+    , music_volume(100.0f)
 {
 }
 
 
+void GameAudio::tick(const double _dt)
+{
+    if (!background_music)
+    {
+        return;
+    }
+
+    background_music->setVolume(in_focus ? music_volume : 0);
+}
 
 void GameAudio::playSound(const std::string& _file)
 {
@@ -33,7 +43,8 @@ void GameAudio::playSound(const std::string& _file)
 
 
 
-void GameAudio::playMusic(const std::string& _file, const bool _repeating)
+void GameAudio::playMusic(const std::string& _file, const float _volume, 
+    const bool _repeating)
 {
     if (background_music)
     {
@@ -41,17 +52,19 @@ void GameAudio::playMusic(const std::string& _file, const bool _repeating)
     }
 
     background_music = std::make_unique<sf::Music>();
+    background_music->setVolume(_volume);
+    background_music->setLoop(_repeating);
+
     if (background_music->openFromFile(AUDIO_PATH + _file))
     {
+        music_volume = _volume;
         background_music->play();
     }
-
-    background_music->setLoop(_repeating);
 }
 
 
 
-void GameAudio::toggleMusicPaused() const
+void GameAudio::pauseMusic() const
 {
     if (background_music)
     {
@@ -61,8 +74,23 @@ void GameAudio::toggleMusicPaused() const
 
 
 
+void GameAudio::resumeMusic() const
+{
+    if (background_music)
+    {
+        background_music->play();
+    }
+}
+
+
+
 void GameAudio::stopMusic()
 {
+    if (!background_music)
+    {
+        return;
+    }
+
     background_music->stop();
     background_music.reset();
 }

@@ -24,6 +24,7 @@ public:
     void mainLoop();
 
     void onCommand(GameAction _action, ActionState _action_state) const;
+    bool isExiting() const override;
 
 private:
     void initKeyboardBindings();

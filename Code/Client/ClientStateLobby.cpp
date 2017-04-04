@@ -7,6 +7,7 @@
 #include "NetworkManager.h"
 #include "AssetManager.h"
 #include "GameManager.h"
+#include "GameAudio.h"
 
 ClientStateLobby::ClientStateLobby(ClientData* _client_data)
     : ClientState(_client_data)
@@ -30,12 +31,15 @@ ClientStateLobby::ClientStateLobby(ClientData* _client_data)
 
 void ClientStateLobby::onStateEnter()
 {
+    client_data->game_audio->playMusic(LOBBY_MUSIC, 50.0f, true);
     client_data->game_manager->resetSimulation();
+
     lobby_ui.refresh();
 }
 
 void ClientStateLobby::onStateLeave()
 {
+    client_data->game_audio->stopMusic();
     refresh_needed = true;
 }
 

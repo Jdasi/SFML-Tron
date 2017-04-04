@@ -14,8 +14,6 @@ using namespace std::placeholders;
 #define registerPacketHandler(id, func) \
     packet_handlers.emplace(id, std::bind(&NetworkManager::func, this, _1))
 
-
-
 NetworkManager::NetworkManager(INetworkClient& _client, const sf::IpAddress _ip_address, 
     const unsigned int _tcp_port)
     : client(_client)
@@ -52,12 +50,12 @@ void NetworkManager::connect()
     {
         socket.setBlocking(true);
 
-        auto status = socket.connect(ip_address, tcp_port);
-        if (status != sf::Socket::Done)
+        auto status = sf::Socket::Disconnected;
+        do
         {
-            client.onDisconnected();
-            return;
-        }
+            status = socket.connect(ip_address, tcp_port);
+
+        } while (status != sf::Socket::Done && !client.isExiting());
 
         socket.setBlocking(false);
         has_connected = true;

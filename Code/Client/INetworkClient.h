@@ -21,6 +21,8 @@ public:
     INetworkClient() = default;
     virtual ~INetworkClient() = default;
 
+    virtual bool isExiting() const = 0;
+
     virtual void onConnected() = 0;
     virtual void onDisconnected() = 0;
 

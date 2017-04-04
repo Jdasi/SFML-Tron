@@ -713,7 +713,19 @@ void TronServer::onSimulationStopping()
 
         packet << static_cast<sf::Uint8>(FlowControl::STOP);
 
-        sendPacketToAll(packet);
+        for (auto& client : clients)
+        {
+            if (!client)
+            {
+                continue;
+            }
+
+            // Send packet only to clients who are playing.
+            if (client->getState() == PlayerState::PLAYING)
+            {
+                sendPacketToClient(packet, client);
+            }
+        }
     });
 }
 

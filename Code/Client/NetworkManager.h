@@ -6,14 +6,12 @@
 
 #include <SFML/Network.hpp>
 
-#include <Game/Constants.h>
 #include <Game/PacketID.h>
 #include <Game/Scheduler.h>
 #include <Game/ThreadDispatcher.h>
 #include <Game/MoveDirection.h>
 #include <Game/PlayerState.h>
 
-enum class FlowControl;
 class INetworkClient;
 class Player;
 struct SimulationState;

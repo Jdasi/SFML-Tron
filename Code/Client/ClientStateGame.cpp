@@ -20,7 +20,6 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
 
     countdown_text->setCharacterSize(60);
     countdown_text->setStyle(sf::Text::Bold);
-    countdown_text->setFillColor(sf::Color::White);
     countdown_text->setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 });
 
     JHelper::centerSFOrigin(*countdown_text);
@@ -29,6 +28,8 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
 void ClientStateGame::onStateEnter()
 {
     client_data->network_manager->sendPlayerStateChange(PlayerState::PLAYING);
+
+    countdown_text->setFillColor(sf::Color::White);
     last_tick_value = static_cast<int>(START_COUNTDOWN_TIME);
 
     pretty_grid.updateBorderColor(
@@ -37,6 +38,7 @@ void ClientStateGame::onStateEnter()
 
 void ClientStateGame::onStateLeave()
 {
+    client_data->game_audio->stopMusic();
     client_data->game_manager->stopSimulation();
 
     countdown_text->setString("");
@@ -53,13 +55,7 @@ void ClientStateGame::draw(sf::RenderWindow& _window)
 {
     pretty_grid.draw(_window);
 
-    if (!client_data->game_manager->simulationRunning())
-    {
-        if (client_data->game_manager->getCountdownDigit() > 0)
-        {
-            _window.draw(*countdown_text);
-        }
-    }
+    _window.draw(*countdown_text);
 
     for (auto& drawable : drawables)
     {
@@ -97,6 +93,11 @@ void ClientStateGame::updateCountdownText()
     }
 
     last_tick_value = timer_value;
+
+    if (client_data->game_manager->simulationRunning())
+    {
+        countdown_text->setFillColor(sf::Color::Transparent);
+    }
 }
 
 

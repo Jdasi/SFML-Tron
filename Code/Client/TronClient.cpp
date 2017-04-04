@@ -25,7 +25,7 @@ TronClient::TronClient()
     asset_manager.loadSoundBuffer(COUNTDOWN_FIN_CUE);
     asset_manager.loadSoundBuffer(BOOST_CUE);
     asset_manager.loadSoundBuffer(DEATH_CUE);
-    asset_manager.loadSoundBuffer(SIM_OVER_CUE);
+    asset_manager.loadSoundBuffer(ROUND_OVER_CUE);
     asset_manager.loadSoundBuffer(WINNER_CUE);
     asset_manager.loadSoundBuffer(LOSER_CUE);
 }
@@ -49,6 +49,9 @@ void TronClient::run()
 
 void TronClient::mainLoop()
 {
+    //game_audio.playMusic(GAME_MUSIC, 25.0f, true);
+    //game_audio.fadeOutMusic(2.0);
+
     while (!client_data.exit)
     {
         // Crude delta-time system.
@@ -76,6 +79,13 @@ void TronClient::mainLoop()
 void TronClient::onCommand(const GameAction _action, const ActionState _action_state) const
 {
     state_handler.onCommand(_action, _action_state);
+}
+
+
+
+bool TronClient::isExiting() const
+{
+    return client_data.exit;
 }
 
 
@@ -134,12 +144,10 @@ void TronClient::handleEvent(const sf::Event& _event)
     if (_event.type == sf::Event::GainedFocus)
     {
         in_focus = true;
-        game_audio.toggleMusicPaused();
     }
     else if (_event.type == sf::Event::LostFocus)
     {
         in_focus = false;
-        game_audio.toggleMusicPaused();
     }
 
     if (in_focus)
@@ -262,11 +270,16 @@ void TronClient::onFlowControl(const FlowControl _control)
             case FlowControl::START:
             {
                 game_audio.playSound(COUNTDOWN_FIN_CUE);
+                game_audio.playMusic(GAME_MUSIC, 25.0f, true);
+
                 game_manager.startSimulation();
             } break;
 
             case FlowControl::STOP:
             {
+                game_audio.playSound(ROUND_OVER_CUE);
+                game_audio.stopMusic();
+
                 game_manager.stopSimulation();
             } break;
 
@@ -341,6 +354,8 @@ void TronClient::onVictor(const unsigned int _player_id)
 void TronClient::tick()
 {
     game_manager.tick();
+    game_audio.tick(client_data.delta_time);
+
     state_handler.tick();
 }
 

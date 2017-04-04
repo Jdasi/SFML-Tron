@@ -6,6 +6,7 @@
 #include "ClientData.h"
 #include "NetworkManager.h"
 #include "AssetManager.h"
+#include "GameAudio.h"
 
 ClientStateEnd::ClientStateEnd(ClientData* _client_data)
     : ClientState(_client_data)
@@ -21,6 +22,14 @@ ClientStateEnd::ClientStateEnd(ClientData* _client_data)
 
 void ClientStateEnd::onStateEnter()
 {
+    if (client_data->client_id == client_data->victor_id)
+    {
+        client_data->game_audio->playSound(WINNER_CUE);
+    }
+    else
+    {
+        client_data->game_audio->playSound(LOSER_CUE);
+    }
 }
 
 void ClientStateEnd::onStateLeave()
