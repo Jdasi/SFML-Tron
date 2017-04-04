@@ -49,7 +49,7 @@ void SimulationThread::eventStartSimulation()
         {
             simulation_running = true;
             server.onSimulationStarted();
-        }, COUNTDOWN_TIME);
+        }, START_COUNTDOWN_TIME);
     });
 }
 
@@ -66,7 +66,7 @@ void SimulationThread::eventStopSimulation()
         {
             resetSimulation();
             server.onSimulationEnded();
-        }, COUNTDOWN_TIME);
+        }, END_COUNTDOWN_TIME);
     });
 }
 

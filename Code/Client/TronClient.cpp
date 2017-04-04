@@ -261,6 +261,7 @@ void TronClient::onFlowControl(const FlowControl _control)
 
             case FlowControl::START:
             {
+                game_audio.playSound(COUNTDOWN_FIN_CUE);
                 game_manager.startSimulation();
             } break;
 

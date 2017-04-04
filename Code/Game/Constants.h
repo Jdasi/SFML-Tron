@@ -34,7 +34,8 @@ const unsigned int SERVER_TCP_PORT      = 1337;
 // ======================================================================================
 const int MAX_PLAYERS                   = 4; // Max players supported.
 const int INITIAL_MOVES                 = 5; // Players start having made this many moves.
-const double COUNTDOWN_TIME             = 3.5; // Time before game/sim starts & ends.
+const double START_COUNTDOWN_TIME       = 3.0; // Time before game starts.
+const double END_COUNTDOWN_TIME         = 3.0;  // Time before the game ends.
 
 const int GRID_SIZE_X                   = 125; // Width (in tiles) of the playing grid.
 const int GRID_SIZE_Y                   = 125; // Height (in tiles) of the playing grid.

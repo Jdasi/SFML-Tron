@@ -6,10 +6,12 @@
 #include "NetworkManager.h"
 #include "GameManager.h"
 #include "AssetManager.h"
+#include "GameAudio.h"
 
 ClientStateGame::ClientStateGame(ClientData* _client_data)
     : ClientState(_client_data)
     , pretty_grid(_client_data->asset_manager)
+    , last_tick_value(0)
 {
     client_data->game_manager->attachSimulationListener(&pretty_grid);
 
@@ -27,6 +29,7 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
 void ClientStateGame::onStateEnter()
 {
     client_data->network_manager->sendPlayerStateChange(PlayerState::PLAYING);
+    last_tick_value = static_cast<int>(START_COUNTDOWN_TIME);
 
     pretty_grid.updateBorderColor(
         JHelper::evaluateSFColorFromPlayerID(client_data->client_id));
@@ -41,8 +44,7 @@ void ClientStateGame::onStateLeave()
 
 void ClientStateGame::tick()
 {
-    int timer_value = client_data->game_manager->getCountdownDigit();
-    countdown_text->setString(std::to_string(timer_value));
+    updateCountdownText();
 
     pretty_grid.tick(client_data->delta_time);
 }
@@ -81,6 +83,23 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
         handleBikeControls(_action, _action_state);
     }
 }
+
+
+
+void ClientStateGame::updateCountdownText()
+{
+    int timer_value = client_data->game_manager->getCountdownDigit();
+    countdown_text->setString(std::to_string(timer_value + 1));
+
+    if (timer_value < last_tick_value)
+    {
+        client_data->game_audio->playSound(COUNTDOWN_TICK_CUE);
+    }
+
+    last_tick_value = timer_value;
+}
+
+
 
 void ClientStateGame::handleBikeControls(const GameAction _action, 
     const ActionState _action_state) const

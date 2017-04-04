@@ -25,9 +25,11 @@ public:
     void onCommand(const GameAction _action, const ActionState _action_state) override;
 
 private:
+    void updateCountdownText();
     void handleBikeControls(const GameAction _action, const ActionState _action_state) const;
 
     Visualisation pretty_grid;
     std::unique_ptr<sf::Text> countdown_text;
+    int last_tick_value;
 
 };
