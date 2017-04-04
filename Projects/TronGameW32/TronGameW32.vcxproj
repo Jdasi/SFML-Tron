@@ -95,7 +95,7 @@
     <ClInclude Include="..\..\Code\Game\FlowControl.h" />
     <ClInclude Include="..\..\Code\Game\GameStateIDs.h" />
     <ClInclude Include="..\..\Code\Game\Grid.h" />
-    <ClInclude Include="..\..\Code\Game\INetworkSimulation.h" />
+    <ClInclude Include="..\..\Code\Game\ISimulation.h" />
     <ClInclude Include="..\..\Code\Game\JHelper.h" />
     <ClInclude Include="..\..\Code\Game\MoveDirection.h" />
     <ClInclude Include="..\..\Code\Game\Noncopyable.h" />

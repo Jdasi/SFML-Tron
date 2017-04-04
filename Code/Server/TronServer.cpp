@@ -53,8 +53,8 @@ void TronServer::registerPacketHandlers()
     registerPacketHandler(PacketID::LATENCY,      handleLatencyPacket);
     registerPacketHandler(PacketID::MESSAGE,      handleMessagePacket);
     registerPacketHandler(PacketID::PLAYER_STATE, handlePlayerStatePacket);
-    registerPacketHandler(PacketID::DIRECTION,    handleDirectionPacket);
-    registerPacketHandler(PacketID::BOOST,        handleBoostPacket);
+    registerPacketHandler(PacketID::BIKE_DIRECTION,    handleDirectionPacket);
+    registerPacketHandler(PacketID::BIKE_BOOST,        handleBoostPacket);
 }
 
 
@@ -659,12 +659,27 @@ void TronServer::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_
 
 
 
+void TronServer::onBikeRemoved(const unsigned int _bike_id)
+{
+    postEvent([this, _bike_id]()
+    {
+        sf::Packet packet;
+        setPacketID(packet, PacketID::BIKE_REMOVED);
+
+        packet << static_cast<sf::Uint8>(_bike_id);
+
+        sendPacketToAll(packet);
+    });
+}
+
+
+
 void TronServer::onBikeBoost(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
         sf::Packet packet;
-        setPacketID(packet, PacketID::BOOST);
+        setPacketID(packet, PacketID::BIKE_BOOST);
 
         packet << static_cast<sf::Uint8>(_bike_id);
 
@@ -742,5 +757,20 @@ void TronServer::onSimulationReset()
     postEvent([this]()
     {
         server_state = STATE_LOBBY;
+    });
+}
+
+
+
+void TronServer::onSimulationVictor(const unsigned _bike_id)
+{
+    postEvent([this, _bike_id]()
+    {
+        sf::Packet packet;
+        setPacketID(packet, PacketID::VICTOR);
+
+        packet << static_cast<sf::Uint8>(_bike_id);
+
+        sendPacketToAll(packet);
     });
 }

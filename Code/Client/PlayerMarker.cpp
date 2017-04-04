@@ -56,16 +56,16 @@ bool PlayerMarker::isVisible() const
 
 
 
-void PlayerMarker::setVisible(const bool _value)
+void PlayerMarker::setVisible(const bool _visible)
 {
-    visible = _value;
+    visible = _visible;
 }
 
 
 
-void PlayerMarker::setEnlarged(const bool _value)
+void PlayerMarker::setEnlarged(const bool _enlarged)
 {
-    enlarged = _value;
+    enlarged = _enlarged;
 
     if (enlarged)
     {

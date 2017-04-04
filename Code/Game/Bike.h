@@ -44,7 +44,7 @@ public:
     void modifyMoveTimer(const double _dt);
     
     bool isAlive() const;
-    void setAlive(const bool _value);
+    void setAlive(const bool _alive);
 
     bool isBoosting() const;
     bool activateBoost();

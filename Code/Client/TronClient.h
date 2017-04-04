@@ -45,7 +45,9 @@ private:
     void onBikeSync(const BikeState& _bike_state) override;
     void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
     void onFullSync(const SimulationState& _simulation_state) override;
+    void onBikeRemoved(const unsigned int _bike_id) override;
     void onBikeBoost(const unsigned int _bike_id) override;
+    void onVictor(const unsigned int _player_id) override;
 
     void tick();
     void draw();

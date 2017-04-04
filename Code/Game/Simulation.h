@@ -2,7 +2,7 @@
 #include <array>
 
 #include "SimulationListener.h"
-#include "INetworkSimulation.h"
+#include "ISimulation.h"
 #include "Vector2i.h"
 #include "Grid.h"
 #include "ListenerSubject.h"
@@ -10,7 +10,7 @@
 #include "SimulationState.h"
 #include "Noncopyable.h"
 
-class Simulation final : public Noncopyable, public INetworkSimulation, 
+class Simulation final : public Noncopyable, public ISimulation, 
                          public ListenerSubject<SimulationListener>
 {
 public:
@@ -20,12 +20,13 @@ public:
     void tick(const double _dt);
     void reset();
 
-    void addBike(const unsigned int _id);
     Bike& getBike(const unsigned int _bike_id);
+    void addBike(const unsigned int _id);
+    void removeBike(const unsigned int _bike_id) override;
 
-    bool allBikesDead() const;
-    bool oneBikeLeft() const;
-    unsigned int lastBikeStanding() const;
+    void determineOutcome() const;
+    unsigned int bikesRemaining() const;
+    unsigned int getFirstAliveBikeID() const;
 
     const Grid& getGrid() const;
 

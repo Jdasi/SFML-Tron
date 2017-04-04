@@ -98,9 +98,6 @@
     <ClInclude Include="..\..\Code\Game\SimulationState.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Game\INetworkSimulation.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\Game\JHelper.h">
       <Filter>Utility</Filter>
     </ClInclude>
@@ -111,6 +108,9 @@
       <Filter>Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\FlowControl.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\ISimulation.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

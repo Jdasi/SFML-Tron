@@ -11,11 +11,11 @@
 struct Vector2i;
 class AssetManager;
 
-class PrettyGrid final : public SimulationListener
+class Visualisation final : public SimulationListener
 {
 public:
-    explicit PrettyGrid(AssetManager* _asset_manager);
-    ~PrettyGrid() = default;
+    explicit Visualisation(AssetManager* _asset_manager);
+    ~Visualisation() = default;
 
     void tick(const double _dt);
     void draw(sf::RenderWindow& _window);
@@ -31,9 +31,14 @@ public:
         const CellValue _value) override;
     void overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells) override;
 
-    void updatePlayerMarker(const BikeState& _bike_state) override;
-    void removeAllPlayerMarkers() override;
-    void updateBikePosition(const Vector2i& _pos, const unsigned int _bike_id) override;
+    void updateBikePosition(const unsigned int _bike_id, const Vector2i& _bike_pos,
+        const bool _bike_alive) override;
+    void bikeBoosted(const unsigned int _bike_id) override;
+    void bikeNotBoosted(const unsigned int _bike_id) override;
+    void bikeRemoved(const unsigned int _bike_id) override;
+    void bikesReset() override;
+
+    void simulationVictor(const unsigned int _bike_id) override;
 
 private:
     void initGrid();

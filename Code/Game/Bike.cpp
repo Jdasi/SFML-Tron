@@ -151,9 +151,9 @@ bool Bike::isAlive() const
 
 
 
-void Bike::setAlive(const bool _value)
+void Bike::setAlive(const bool _alive)
 {
-    state.alive = _value;
+    state.alive = _alive;
 }
 
 

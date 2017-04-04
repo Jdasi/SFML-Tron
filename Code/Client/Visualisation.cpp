@@ -1,11 +1,10 @@
 #include <Game/Constants.h>
 #include <Game/Vector2i.h>
-#include <Game/BikeState.h>
 #include <Game/JHelper.h>
-#include "PrettyGrid.h"
+#include "Visualisation.h"
 #include "AssetManager.h"
 
-PrettyGrid::PrettyGrid(AssetManager* _asset_manager)
+Visualisation::Visualisation(AssetManager* _asset_manager)
     : asset_manager(_asset_manager)
 {
     backdrop.setTexture(*_asset_manager->loadTexture(BACKDROP));
@@ -16,7 +15,7 @@ PrettyGrid::PrettyGrid(AssetManager* _asset_manager)
 
 
 
-void PrettyGrid::tick(const double _dt)
+void Visualisation::tick(const double _dt)
 {
     for (auto& marker : player_markers)
     {
@@ -26,7 +25,7 @@ void PrettyGrid::tick(const double _dt)
 
 
 
-void PrettyGrid::draw(sf::RenderWindow& _window)
+void Visualisation::draw(sf::RenderWindow& _window)
 {
     _window.draw(backdrop);
     _window.draw(border);
@@ -49,21 +48,21 @@ void PrettyGrid::draw(sf::RenderWindow& _window)
 
 
 
-void PrettyGrid::updateBorderColor(const sf::Color& _color)
+void Visualisation::updateBorderColor(const sf::Color& _color)
 {
     border.setOutlineColor(_color);
 }
 
 
 
-void PrettyGrid::clearCell(const Vector2i& _pos)
+void Visualisation::clearCell(const Vector2i& _pos)
 {
     setTileColor(_pos, sf::Color::Transparent);
 }
 
 
 
-void PrettyGrid::clearCellRange(const std::vector<Vector2i>& _positions)
+void Visualisation::clearCellRange(const std::vector<Vector2i>& _positions)
 {
     for (auto& pos : _positions)
     {
@@ -73,7 +72,7 @@ void PrettyGrid::clearCellRange(const std::vector<Vector2i>& _positions)
 
 
 
-void PrettyGrid::clearAllCells()
+void Visualisation::clearAllCells()
 {
     for (auto& tile : tiles)
     {
@@ -83,14 +82,14 @@ void PrettyGrid::clearAllCells()
 
 
 
-void PrettyGrid::overwriteCell(const Vector2i& _pos, const CellValue _value)
+void Visualisation::overwriteCell(const Vector2i& _pos, const CellValue _value)
 {
     setTileColor(_pos, JHelper::evaluateSFColor(_value));
 }
 
 
 
-void PrettyGrid::overwriteCellRange(const std::vector<Vector2i>& _positions, const CellValue _value)
+void Visualisation::overwriteCellRange(const std::vector<Vector2i>& _positions, const CellValue _value)
 {
     for (auto& pos : _positions)
     {
@@ -100,7 +99,7 @@ void PrettyGrid::overwriteCellRange(const std::vector<Vector2i>& _positions, con
 
 
 
-void PrettyGrid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells)
+void Visualisation::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells)
 {
     for (int i = 0; i < GRID_AREA; ++i)
     {
@@ -111,45 +110,66 @@ void PrettyGrid::overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cell
 
 
 
-void PrettyGrid::updatePlayerMarker(const BikeState& _bike_state)
+void Visualisation::bikesReset()
 {
-    auto& marker = player_markers[_bike_state.id];
+    for (auto& marker : player_markers)
+    {
+        marker.setVisible(false);
+        marker.setEnlarged(false);
+    }
+}
 
-    if (!_bike_state.alive)
+
+
+void Visualisation::simulationVictor(const unsigned int _bike_id)
+{
+    // Display game over text?
+}
+
+
+
+void Visualisation::updateBikePosition(const unsigned int _bike_id, const Vector2i& _bike_pos,
+    const bool _bike_alive)
+{
+    auto& marker = player_markers[_bike_id];
+
+    if (!_bike_alive)
     {
         marker.setVisible(false);
         return;
     }
 
     marker.setVisible(true);
-    marker.setEnlarged(_bike_state.boosting);
     marker.setPosition(
-        tiles[JHelper::calculateIndex(_bike_state.pos, GRID_SIZE_X)]->getPosition());
+        tiles[JHelper::calculateIndex(_bike_pos, GRID_SIZE_X)]->getPosition());
+
+    setTileColor(_bike_pos, sf::Color::White);
 }
 
 
 
-void PrettyGrid::removeAllPlayerMarkers()
+void Visualisation::bikeBoosted(const unsigned int _bike_id)
 {
-    for (auto& marker : player_markers)
-    {
-        marker.setVisible(false);
-    }
+    player_markers[_bike_id].setEnlarged(true);
 }
 
 
 
-void PrettyGrid::updateBikePosition(const Vector2i& _pos, const unsigned int _bike_id)
+void Visualisation::bikeNotBoosted(const unsigned _bike_id)
 {
-    player_markers[_bike_id].setPosition(
-        tiles[JHelper::calculateIndex(_pos, GRID_SIZE_X)]->getPosition());
-
-    setTileColor(_pos, sf::Color::White);
+    player_markers[_bike_id].setEnlarged(false);
 }
 
 
 
-void PrettyGrid::initGrid()
+void Visualisation::bikeRemoved(const unsigned int _bike_id)
+{
+    player_markers[_bike_id].setVisible(false);
+}
+
+
+
+void Visualisation::initGrid()
 {
     float pane_width = WINDOW_RIGHT_BOUNDARY - WINDOW_LEFT_BOUNDARY;
     float pane_height = WINDOW_BOTTOM_BOUNDARY - WINDOW_TOP_BOUNDARY;
@@ -182,7 +202,7 @@ void PrettyGrid::initGrid()
 
 
 
-void PrettyGrid::initPlayerMarkers()
+void Visualisation::initPlayerMarkers()
 {
     auto* tex = asset_manager->loadTexture(PLAYER_MARKER);
 
@@ -191,7 +211,7 @@ void PrettyGrid::initPlayerMarkers()
 
     for (int i = 0; i < MAX_PLAYERS; ++i)
     {
-        sprite.setColor(JHelper::evaluateSFColorFromCellValueID(i));
+        sprite.setColor(JHelper::evaluateSFColorFromPlayerID(i));
         auto& marker = player_markers[i];
 
         marker.setSprite(sprite);
@@ -201,14 +221,14 @@ void PrettyGrid::initPlayerMarkers()
 
 
 
-void PrettyGrid::setTileColor(const unsigned int _index, const sf::Color& _color)
+void Visualisation::setTileColor(const unsigned int _index, const sf::Color& _color)
 {
     tiles[_index]->setFillColor(_color);
 }
 
 
 
-void PrettyGrid::setTileColor(const Vector2i& _pos, const sf::Color& _color)
+void Visualisation::setTileColor(const Vector2i& _pos, const sf::Color& _color)
 {
     setTileColor(JHelper::calculateIndex(_pos.x, _pos.y, GRID_SIZE_X), _color);
 }

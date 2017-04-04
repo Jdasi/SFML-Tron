@@ -24,12 +24,11 @@ public:
     bool simulationRunning() const;
 
     void attachSimulationListener(SimulationListener* _listener);
-    INetworkSimulation* getNetworkSimulation();
-
-    void addPlayer(const unsigned int _id, const PlayerState _state = PlayerState::NOTREADY);
-    void removePlayer(const unsigned int _id);
+    ISimulation* getNetworkSimulation();
 
     Player* getPlayer(const unsigned int _id);
+    void addPlayer(const unsigned int _id, const PlayerState _state = PlayerState::NOTREADY);
+    void removePlayer(const unsigned int _id);
 
 private:
     ClientData* client_data;

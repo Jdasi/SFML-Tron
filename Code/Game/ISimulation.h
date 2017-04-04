@@ -10,16 +10,17 @@ struct BikeState;
  * This provides a simplified interface inside TronClient for dealing
  * with events that should be passed to the simulation for processing.
  */
-class INetworkSimulation
+class ISimulation
 {
 public:
-    INetworkSimulation() = default;
-    virtual ~INetworkSimulation() = default;
+    ISimulation() = default;
+    virtual ~ISimulation() = default;
 
     virtual void changeBikeDirection(const unsigned int _bike_id, const MoveDirection _dir) = 0;
     virtual void overwrite(const SimulationState& _simulation_state) = 0;
     virtual void overwriteBike(const BikeState& _bike_state) = 0;
     virtual void overwriteBikes(const std::array<BikeState, MAX_PLAYERS>& _bikes_states) = 0;
+    virtual void removeBike(const unsigned int _bike_id) = 0;
     virtual void boostBike(const unsigned int _bike_id) = 0;
 
 };

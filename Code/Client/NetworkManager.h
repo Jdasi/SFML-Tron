@@ -50,30 +50,16 @@ private:
     void handlePlayerStateChangePacket(sf::Packet& _packet) const;
     void handleGameStateChangePacket(sf::Packet& _packet) const;
     void handleFlowControlPacket(sf::Packet& _packet) const;
+    void handleVictorPacket(sf::Packet& _packet) const;
     void handleBikeSyncPacket(sf::Packet& _packet) const;
     void handleFullBikeSyncPacket(sf::Packet& _packet) const;
     void handleFullSyncPacket(sf::Packet& _packet) const;
+    void handleBikeRemovedPacket(sf::Packet& _packet) const;
     void handleBikeBoostPacket(sf::Packet& _packet) const;
 
     void sendPacket(sf::Packet& _packet);
     void sendClientLatency(const double _latency);
     void sendPing();
-
-    // Pass-through functions to talk to the client.
-    void onConnected() const;
-    void onDisconnected() const;
-    void onUpdatePingTime(const double _ping) const;
-    void onIdentity(const unsigned int _id) const;
-    void onPlayerList(const std::vector<Player>& _players) const;
-    void onPlayerJoined(const unsigned int _player_id) const;
-    void onPlayerLeft(const unsigned int _player_id) const;
-    void onPlayerStateChange(const unsigned int _player_id, const PlayerState _state) const;
-    void onGameStateChange(const int _state) const;
-    void onFlowControl(const FlowControl _control) const;
-    void onBikeSync(const BikeState& _bike_state) const;
-    void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) const;
-    void onFullSync(const SimulationState& _simulation_state) const;
-    void onBikeBoost(const unsigned int _bike_id) const;
 
     // TronClient network interface.
     INetworkClient& client;

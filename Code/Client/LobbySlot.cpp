@@ -35,9 +35,9 @@ void LobbySlot::setPlayerStateText(const std::string& _str)
 
 
 
-void LobbySlot::setOccupied(const bool _value)
+void LobbySlot::setOccupied(const bool _occupied)
 {
-    occupied = _value;
+    occupied = _occupied;
 
     rectangle.setOutlineColor(occupied ? occupied_color : vacant_color);
 

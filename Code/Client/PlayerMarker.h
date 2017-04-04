@@ -14,9 +14,9 @@ public:
     void setPosition(const sf::Vector2f& _pos);
 
     bool isVisible() const;
-    void setVisible(const bool _value);
+    void setVisible(const bool _visible);
 
-    void setEnlarged(const bool _value);
+    void setEnlarged(const bool _enlarged);
 
 private:
     sf::Sprite sprite;

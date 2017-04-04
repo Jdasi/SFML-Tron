@@ -30,9 +30,6 @@
     <ClCompile Include="..\..\Code\Client\ClientStateHandler.cpp">
       <Filter>Managerial</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Client\PrettyGrid.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Code\Client\main_client.cpp" />
     <ClCompile Include="..\..\Code\Client\ClientStateLobby.cpp">
       <Filter>States</Filter>
@@ -56,6 +53,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\Client\LobbySlot.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Client\Visualisation.cpp">
       <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,9 +84,6 @@
     <ClInclude Include="..\..\Code\Client\ClientState.h">
       <Filter>States</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Client\PrettyGrid.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\Client\ClientStateLobby.h">
       <Filter>States</Filter>
     </ClInclude>
@@ -112,6 +109,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Client\LobbySlot.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Client\Visualisation.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

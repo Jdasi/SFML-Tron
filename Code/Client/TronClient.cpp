@@ -293,11 +293,31 @@ void TronClient::onFullSync(const SimulationState& _simulation_state)
 
 
 
+void TronClient::onBikeRemoved(const unsigned int _bike_id)
+{
+    postEvent([this, _bike_id]()
+    {
+        game_manager.getNetworkSimulation()->removeBike(_bike_id);
+    });
+}
+
+
+
 void TronClient::onBikeBoost(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
         game_manager.getNetworkSimulation()->boostBike(_bike_id);
+    });
+}
+
+
+
+void TronClient::onVictor(const unsigned int _player_id)
+{
+    postEvent([this, _player_id]()
+    {
+        client_data.victor_id = _player_id;
     });
 }
 

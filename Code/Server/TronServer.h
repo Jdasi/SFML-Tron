@@ -9,12 +9,12 @@
 #include <Game/Scheduler.h>
 #include <Game/FlowControl.h>
 #include "Client.h"
-#include "ISimulationServer.h"
+#include "IServerSimulation.h"
 #include "SimulationThread.h"
 
 using ClientPtr = std::unique_ptr<Client>;
 
-class TronServer : public ISimulationServer, public ThreadDispatcher
+class TronServer : public IServerSimulation, public ThreadDispatcher
 {
 public:
     TronServer();
@@ -66,11 +66,13 @@ private:
     void onSyncSimulation(const SimulationState& _simulation_state) override;
     void onSyncBike(const BikeState& _bike_state) override;
     void onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
+    void onBikeRemoved(const unsigned int _bike_id) override;
     void onBikeBoost(const unsigned int _bike_id) override;
     void onSimulationStarted() override;
     void onSimulationStopping() override;
     void onSimulationEnded() override;
     void onSimulationReset() override;
+    void onSimulationVictor(const unsigned int _bike_id) override;
 
     sf::TcpListener tcp_listener;
     sf::SocketSelector socket_selector;

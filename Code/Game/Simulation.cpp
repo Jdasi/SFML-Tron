@@ -30,6 +30,15 @@ void Simulation::tick(const double _dt)
             moveBike(bike);
         }
     }
+
+    determineOutcome();
+}
+
+
+
+Bike& Simulation::getBike(const unsigned int _bike_id)
+{
+    return bikes[_bike_id];
 }
 
 
@@ -45,6 +54,7 @@ void Simulation::addBike(const unsigned int _id)
 
     configureBikeSide(bike);
     grid.setCellValue(bike.getPosition(), JHelper::idToCellValue(_id));
+    bike.setAlive(true);
 
     for (int i = 0; i < INITIAL_MOVES; ++i)
     {
@@ -53,17 +63,42 @@ void Simulation::addBike(const unsigned int _id)
 
     for (auto& listener : listeners)
     {
-        listener->updateBikePosition(bike.getPosition(), bike.getID());
+        listener->updateBikePosition(bike.getID(), bike.getPosition());
     }
-
-    bike.setAlive(true);
 }
 
 
 
-Bike& Simulation::getBike(const unsigned int _bike_id)
+void Simulation::removeBike(const unsigned int _bike_id)
 {
-    return bikes.at(_bike_id);
+    bikes[_bike_id].setAlive(false);
+
+    for (auto& listener : listeners)
+    {
+        listener->bikeRemoved(_bike_id);
+    }
+}
+
+
+
+void Simulation::determineOutcome() const
+{
+    // If either of these events are true, the simulation MUST be ended by an overseer.
+    auto bikes_remaining = bikesRemaining();
+    if (bikes_remaining == 1)
+    {
+        for (auto& listener : listeners)
+        {
+            listener->simulationVictor(getFirstAliveBikeID());
+        }
+    }
+    else if (bikes_remaining == 0)
+    {
+        for (auto& listener : listeners)
+        {
+            listener->simulationEmpty();
+        }
+    }
 }
 
 
@@ -74,11 +109,12 @@ void Simulation::overwrite(const SimulationState& _simulation_state)
 
     for (int i = 0; i < MAX_PLAYERS; ++i)
     {
-        bikes[i].overwriteState(_simulation_state.bikes[i]);
+        auto& bike = bikes[i];
+        bike.overwriteState(_simulation_state.bikes[i]);
 
         for (auto& listener : listeners)
         {
-            listener->updatePlayerMarker(_simulation_state.bikes[i]);
+            listener->updateBikePosition(bike.getID(), bike.getPosition(), bike.isAlive());
         }
     }
 
@@ -111,7 +147,7 @@ void Simulation::overwriteBike(const BikeState& _bike_state)
     for (auto& listener : listeners)
     {
         listener->overwriteCellRange(bike.getLine(), JHelper::idToCellValue(bike.getID()));
-        listener->updatePlayerMarker(_bike_state);
+        listener->updateBikePosition(bike.getID(), bike.getPosition(), bike.isAlive());
     }
 }
 
@@ -175,39 +211,24 @@ void Simulation::overwriteState(const SimulationState& _state)
 
 
 
-bool Simulation::allBikesDead() const
+unsigned int Simulation::bikesRemaining() const
 {
+    int count = 0;
+
     for (auto& bike : bikes)
     {
         if (bike.isAlive())
         {
-            return false;
+            ++count;
         }
     }
 
-    return true;
+    return count;
 }
 
 
 
-bool Simulation::oneBikeLeft() const
-{
-    int num_alive = 0;
-    
-    for (auto& bike : bikes)
-    {
-        if (bike.isAlive())
-        {
-            ++num_alive;
-        }
-    }
-
-    return num_alive == 1;
-}
-
-
-
-unsigned int Simulation::lastBikeStanding() const
+unsigned int Simulation::getFirstAliveBikeID() const
 {
     for (auto& bike : bikes)
     {
@@ -307,12 +328,12 @@ void Simulation::moveBike(Bike& _bike)
     if (!adjustmentWithinBounds(adjustment))
     {
         // Bike hit the edge of the grid.
-        _bike.setAlive(false);
+        removeBike(_bike.getID());
     }
     else if (adjustmentCollisionCheck(adjustment))
     {
         // Bike hit a line.
-        _bike.setAlive(false);
+        removeBike(_bike.getID());
     }
     else
     {
@@ -322,7 +343,12 @@ void Simulation::moveBike(Bike& _bike)
 
         for (auto& listener : listeners)
         {
-            listener->updateBikePosition(_bike.getPosition(), _bike.getID());
+            listener->updateBikePosition(_bike.getID(), _bike.getPosition());
+            
+            if (!_bike.isBoosting())
+            {
+                listener->bikeNotBoosted(_bike.getID());
+            }
         }
     }
 }
@@ -425,7 +451,7 @@ void Simulation::resetBikes()
 
     for (auto& listener : listeners)
     {
-        listener->removeAllPlayerMarkers();
+        listener->bikesReset();
     }
 }
 
@@ -433,10 +459,10 @@ void Simulation::resetBikes()
 
 void Simulation::boostBike(const unsigned int _bike_id)
 {
-    bikes.at(_bike_id).activateBoost();
+    bikes[_bike_id].activateBoost();
 
     for (auto& listener : listeners)
     {
-        listener->updatePlayerMarker(bikes.at(_bike_id).getState());
+        listener->bikeBoosted(_bike_id);
     }
 }

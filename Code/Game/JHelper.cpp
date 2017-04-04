@@ -43,7 +43,7 @@ sf::Color JHelper::evaluateSFColor(const CellValue _value)
     }
 }
 
-sf::Color JHelper::evaluateSFColorFromCellValueID(const unsigned _id)
+sf::Color JHelper::evaluateSFColorFromPlayerID(const unsigned int _id)
 {
     return evaluateSFColor(idToCellValue(_id));
 }

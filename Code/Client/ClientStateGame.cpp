@@ -29,7 +29,7 @@ void ClientStateGame::onStateEnter()
     client_data->network_manager->sendPlayerStateChange(PlayerState::PLAYING);
 
     pretty_grid.updateBorderColor(
-        JHelper::evaluateSFColorFromCellValueID(client_data->client_id));
+        JHelper::evaluateSFColorFromPlayerID(client_data->client_id));
 }
 
 void ClientStateGame::onStateLeave()

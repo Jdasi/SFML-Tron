@@ -6,12 +6,12 @@
 #include <Game/Simulation.h>
 #include <Game/Scheduler.h>
 
-class ISimulationServer;
+class IServerSimulation;
 
-class SimulationThread final : public ThreadDispatcher
+class SimulationThread final : public ThreadDispatcher, public SimulationListener
 {
 public:
-    explicit SimulationThread(ISimulationServer& _server);
+    explicit SimulationThread(IServerSimulation& _server);
     ~SimulationThread();
 
     void eventPrepareSimulation(const std::vector<int>& _bike_ids);
@@ -30,14 +30,10 @@ private:
     void scheduleAllBikeSync(const double _time);
     void scheduleSimulationSync(const double _time);
 
-    void onSyncSimulation(const SimulationState& _simulation_state) const;
-    void onSyncBike(const BikeState& _bike_state) const;
-    void onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) const;
-    void onBikeBoost(const unsigned int _bike_id) const;
-    void onSimulationStarted() const;
-    void onSimulationStopping() const;
-    void onSimulationEnded() const;
-    void onSimulationReset() const;
+    // SimulationListener events.
+    void bikeRemoved(const unsigned int _bike_id) override;
+    void simulationVictor(const unsigned int _bike_id) override;
+    void simulationEmpty() override;
 
     volatile bool thread_running;
     volatile bool simulation_running;
@@ -52,6 +48,6 @@ private:
     bool counting_down;
 
     // TronServer simulation interface.
-    ISimulationServer& server;
+    IServerSimulation& server;
 
 };

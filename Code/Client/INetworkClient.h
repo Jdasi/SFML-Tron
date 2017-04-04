@@ -35,6 +35,8 @@ public:
     virtual void onBikeSync(const BikeState& _bike_state) = 0;
     virtual void onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) = 0;
     virtual void onFullSync(const SimulationState& _simulation_state) = 0;
+    virtual void onBikeRemoved(const unsigned _bike_id) = 0;
     virtual void onBikeBoost(const unsigned int _bike_id) = 0;
+    virtual void onVictor(const unsigned int _player_id) = 0;
 
 };

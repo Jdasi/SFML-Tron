@@ -61,7 +61,7 @@ void LobbyUI::initSlots()
         slot->setPosition({ WINDOW_WIDTH / 2.0f, 150.0f + (100.0f * i) });
 
         slot->setPlayerIDText("Player " + std::to_string(i + 1));
-        slot->setOccupiedColor(JHelper::evaluateSFColorFromCellValueID(i));
+        slot->setOccupiedColor(JHelper::evaluateSFColorFromPlayerID(i));
 
         slot->setOccupied(false);
     }

@@ -10,7 +10,7 @@ public:
     void setPlayerIDText(const std::string& _str);
     void setPlayerStateText(const std::string& _str);
 
-    void setOccupied(const bool _value);
+    void setOccupied(const bool _occupied);
     void setOccupiedColor(const sf::Color& _color);
 
     void setPosition(const sf::Vector2f& _pos);

@@ -24,7 +24,7 @@ add_library(TronGame STATIC
     Code/Game/GameStateIDs.h
     Code/Game/Grid.cpp
     Code/Game/Grid.h
-    Code/Game/INetworkSimulation.h
+    Code/Game/ISimulation.h
     Code/Game/Jhelper.cpp
     Code/Game/Jhelper.h
     Code/Game/ListenerSubject.h
@@ -91,10 +91,10 @@ add_executable(TronClient
     Code/Client/Player.h
     Code/Client/PlayerMarker.cpp
     Code/Client/PlayerMarker.h
-    Code/Client/PrettyGrid.cpp
-    Code/Client/PrettyGrid.h
     Code/Client/TronClient.cpp
     Code/Client/TronClient.h
+    Code/Client/Visualisation.cpp
+    Code/Client/Visualisation.h
 )
 
 target_include_directories(TronClient
@@ -113,7 +113,7 @@ add_executable(TronServer
     Code/Server/main_server.cpp
     Code/Server/Client.cpp
     Code/Server/Client.h
-    Code/Server/ISimulationServer.h
+    Code/Server/IServerSimulation.h
     Code/Server/SimulationThread.cpp
     Code/Server/SimulationThread.h
     Code/Server/TronServer.cpp

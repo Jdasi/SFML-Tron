@@ -55,14 +55,14 @@ void NetworkManager::connect()
         auto status = socket.connect(ip_address, tcp_port);
         if (status != sf::Socket::Done)
         {
-            onDisconnected();
+            client.onDisconnected();
             return;
         }
 
         socket.setBlocking(false);
         has_connected = true;
 
-        onConnected();
+        client.onConnected();
 
         sendPing();
 
@@ -120,7 +120,7 @@ void NetworkManager::sendBikeDirectionChange(const MoveDirection _dir)
     postEvent([this, _dir]()
     {
         sf::Packet packet;
-        setPacketID(packet, PacketID::DIRECTION);
+        setPacketID(packet, PacketID::BIKE_DIRECTION);
 
         packet << static_cast<sf::Uint8>(_dir);
 
@@ -135,7 +135,7 @@ void NetworkManager::sendBikeBoost()
     postEvent([this]()
     {
         sf::Packet packet;
-        setPacketID(packet, PacketID::BOOST);
+        setPacketID(packet, PacketID::BIKE_BOOST);
 
         sendPacket(packet);
     });
@@ -172,7 +172,7 @@ void NetworkManager::networkingThread()
             case sf::Socket::Error:
             {
                 running = false;
-                onDisconnected();
+                client.onDisconnected();
                 return;
             }
 
@@ -212,7 +212,9 @@ void NetworkManager::registerPacketHandlers()
     registerPacketHandler(PacketID::SYNC_BIKE,          handleBikeSyncPacket);
     registerPacketHandler(PacketID::SYNC_ALL_BIKES,     handleFullBikeSyncPacket);
     registerPacketHandler(PacketID::SYNC_SIMULATION,    handleFullSyncPacket);
-    registerPacketHandler(PacketID::BOOST,              handleBikeBoostPacket);
+    registerPacketHandler(PacketID::BIKE_REMOVED,       handleBikeRemovedPacket);
+    registerPacketHandler(PacketID::BIKE_BOOST,         handleBikeBoostPacket);
+    registerPacketHandler(PacketID::VICTOR,             handleVictorPacket);
 }
 
 
@@ -232,7 +234,7 @@ void NetworkManager::handlePongPacket(sf::Packet& _packet)
     double latency = static_cast<double>(duration_cast<microseconds>(
         steady_clock::now() - pre_ping).count()) / 2;
 
-    onUpdatePingTime(latency);
+    client.onUpdatePingTime(latency);
     sendClientLatency(latency);
 
     scheduler.invoke([this](){ sendPing(); }, 1.0);
@@ -245,7 +247,7 @@ void NetworkManager::handleIdentityPacket(sf::Packet& _packet) const
     sf::Uint8 temp_id;
     _packet >> temp_id;
 
-    onIdentity(static_cast<int>(temp_id));
+    client.onIdentity(static_cast<int>(temp_id));
 }
 
 
@@ -267,7 +269,7 @@ void NetworkManager::handlePlayerListPacket(sf::Packet& _packet) const
         players.push_back(player);
     }
 
-    onPlayerList(players);
+    client.onPlayerList(players);
 }
 
 
@@ -277,7 +279,7 @@ void NetworkManager::handlePlayerJoinedPacket(sf::Packet& _packet) const
     sf::Uint8 temp_id;
     _packet >> temp_id;
 
-    onPlayerJoined(static_cast<int>(temp_id));
+    client.onPlayerJoined(static_cast<unsigned int>(temp_id));
 }
 
 
@@ -287,7 +289,7 @@ void NetworkManager::handlePlayerLeftPacket(sf::Packet& _packet) const
     sf::Uint8 temp_id;
     _packet >> temp_id;
 
-    onPlayerLeft(static_cast<int>(temp_id));
+    client.onPlayerLeft(static_cast<int>(temp_id));
 }
 
 
@@ -309,7 +311,7 @@ void NetworkManager::handlePlayerStateChangePacket(sf::Packet& _packet) const
 
     _packet >> temp_id >> temp_state;
 
-    onPlayerStateChange(temp_id, static_cast<PlayerState>(temp_state));
+    client.onPlayerStateChange(temp_id, static_cast<PlayerState>(temp_state));
 }
 
 
@@ -319,7 +321,7 @@ void NetworkManager::handleGameStateChangePacket(sf::Packet& _packet) const
     sf::Uint8 state;
     _packet >> state;
 
-    onGameStateChange(state);
+    client.onGameStateChange(state);
 }
 
 
@@ -329,7 +331,17 @@ void NetworkManager::handleFlowControlPacket(sf::Packet& _packet) const
     sf::Uint8 flow;
     _packet >> flow;
 
-    onFlowControl(static_cast<FlowControl>(flow));
+    client.onFlowControl(static_cast<FlowControl>(flow));
+}
+
+
+
+void NetworkManager::handleVictorPacket(sf::Packet& _packet) const
+{
+    sf::Uint8 bike_id;
+    _packet >> bike_id;
+
+    client.onVictor(bike_id);
 }
 
 
@@ -339,7 +351,7 @@ void NetworkManager::handleBikeSyncPacket(sf::Packet& _packet) const
     BikeState bike_state;
     _packet >> bike_state;
 
-    onBikeSync(bike_state);
+    client.onBikeSync(bike_state);
 }
 
 
@@ -353,7 +365,7 @@ void NetworkManager::handleFullBikeSyncPacket(sf::Packet& _packet) const
         _packet >> bike_states[i];
     }
 
-    onFullBikeSync(bike_states);
+    client.onFullBikeSync(bike_states);
 }
 
 
@@ -363,7 +375,17 @@ void NetworkManager::handleFullSyncPacket(sf::Packet& _packet) const
     SimulationState simulation_state;
     _packet >> simulation_state;
 
-    onFullSync(simulation_state);
+    client.onFullSync(simulation_state);
+}
+
+
+
+void NetworkManager::handleBikeRemovedPacket(sf::Packet& _packet) const
+{
+    sf::Uint8 bike_id;
+    _packet >> bike_id;
+
+    client.onBikeRemoved(bike_id);
 }
 
 
@@ -373,7 +395,7 @@ void NetworkManager::handleBikeBoostPacket(sf::Packet& _packet) const
     sf::Uint8 bike_id;
     _packet >> bike_id;
 
-    onBikeBoost(bike_id);
+    client.onBikeBoost(bike_id);
 }
 
 
@@ -405,102 +427,4 @@ void NetworkManager::sendPing()
     setPacketID(packet, PacketID::PING);
 
     sendPacket(packet);
-}
-
-
-
-void NetworkManager::onConnected() const
-{
-    client.onConnected();
-}
-
-
-
-void NetworkManager::onDisconnected() const
-{
-    client.onDisconnected();
-}
-
-
-
-void NetworkManager::onUpdatePingTime(const double _ping) const
-{
-    client.onUpdatePingTime(_ping);
-}
-
-
-
-void NetworkManager::onPlayerList(const std::vector<Player>& _players) const
-{
-    client.onPlayerList(_players);
-}
-
-
-
-void NetworkManager::onIdentity(const unsigned int _player_id) const
-{
-    client.onIdentity(_player_id);
-}
-
-
-
-void NetworkManager::onPlayerJoined(const unsigned int _player_id) const
-{
-    client.onPlayerJoined(_player_id);
-}
-
-
-
-void NetworkManager::onPlayerLeft(const unsigned int _player_id) const
-{
-    client.onPlayerLeft(_player_id);
-}
-
-
-
-void NetworkManager::onPlayerStateChange(const unsigned int _player_id, const PlayerState _state) const
-{
-    client.onPlayerStateChange(_player_id, _state);
-}
-
-
-
-void NetworkManager::onGameStateChange(const int _state) const
-{
-    client.onGameStateChange(_state);
-}
-
-
-
-void NetworkManager::onFlowControl(const FlowControl _control) const
-{
-    client.onFlowControl(_control);
-}
-
-
-
-void NetworkManager::onBikeSync(const BikeState& _bike) const
-{
-    client.onBikeSync(_bike);
-}
-
-
-
-void NetworkManager::onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states) const
-{
-    client.onFullBikeSync(_bike_states);
-}
-
-
-
-void NetworkManager::onFullSync(const SimulationState& _simulation_state) const
-{
-    client.onFullSync(_simulation_state);
-}
-
-
-
-void NetworkManager::onBikeBoost(const unsigned int _bike_id) const
-{
-    client.onBikeBoost(_bike_id);
 }
