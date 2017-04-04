@@ -37,6 +37,10 @@ public:
     void changeBikeDirection(const unsigned int _bike_id, const MoveDirection _dir) override;
 
 private:
+    void handleBikeMoveTimer(Bike& _bike, const double _dt);
+    void handleExtraBoostTimer(Bike& _bike, const double _dt);
+    void grantBoostCharge(const unsigned int _bike_id) override;
+
     void configureBikeSide(Bike& _bike) const;
     void moveBike(Bike& _bike);
     Vector2i generatePositionAdjustment(const MoveDirection _dir, 

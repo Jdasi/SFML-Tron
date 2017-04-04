@@ -207,12 +207,13 @@ void NetworkManager::registerPacketHandlers()
     registerPacketHandler(PacketID::PLAYER_STATE,       handlePlayerStateChangePacket);
     registerPacketHandler(PacketID::GAME_STATE,         handleGameStateChangePacket);
     registerPacketHandler(PacketID::FLOW_CONTROL,       handleFlowControlPacket);
+    registerPacketHandler(PacketID::VICTOR,             handleVictorPacket);
     registerPacketHandler(PacketID::SYNC_BIKE,          handleBikeSyncPacket);
     registerPacketHandler(PacketID::SYNC_ALL_BIKES,     handleFullBikeSyncPacket);
     registerPacketHandler(PacketID::SYNC_SIMULATION,    handleFullSyncPacket);
     registerPacketHandler(PacketID::BIKE_REMOVED,       handleBikeRemovedPacket);
     registerPacketHandler(PacketID::BIKE_BOOST,         handleBikeBoostPacket);
-    registerPacketHandler(PacketID::VICTOR,             handleVictorPacket);
+    registerPacketHandler(PacketID::EXTRA_BOOST,        handleExtraBoostChargePacket);
 }
 
 
@@ -394,6 +395,16 @@ void NetworkManager::handleBikeBoostPacket(sf::Packet& _packet) const
     _packet >> bike_id;
 
     client.onBikeBoost(bike_id);
+}
+
+
+
+void NetworkManager::handleExtraBoostChargePacket(sf::Packet& _packet) const
+{
+    sf::Uint8 bike_id;
+    _packet >> bike_id;
+
+    client.onBoostChargeGranted(bike_id);
 }
 
 

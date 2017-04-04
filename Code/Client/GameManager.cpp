@@ -33,7 +33,7 @@ void GameManager::tick()
 
 void GameManager::startCountdown()
 {
-    countdown_timer = START_COUNTDOWN_TIME;
+    countdown_timer = COUNTDOWN_BEGIN;
     countdown_started = true;
 }
 

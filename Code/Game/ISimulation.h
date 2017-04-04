@@ -22,5 +22,6 @@ public:
     virtual void overwriteBikes(const std::array<BikeState, MAX_PLAYERS>& _bikes_states) = 0;
     virtual void removeBike(const unsigned int _bike_id) = 0;
     virtual void boostBike(const unsigned int _bike_id) = 0;
+    virtual void grantBoostCharge(const unsigned int _bike_id) = 0;
 
 };

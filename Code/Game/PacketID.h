@@ -19,6 +19,7 @@ enum class PacketID
         BIKE_DIRECTION,
         BIKE_REMOVED,
         BIKE_BOOST,
+        EXTRA_BOOST,
         SYNC_BIKE,
         SYNC_ALL_BIKES,
         SYNC_SIMULATION

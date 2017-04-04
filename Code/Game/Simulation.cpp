@@ -21,14 +21,9 @@ void Simulation::tick(const double _dt)
         }
 
         bike.tick(_dt);
-        bike.modifyMoveTimer(_dt);
 
-        if (bike.getMoveTimer() > bike.getMoveSpeed())
-        {
-            bike.resetMoveTimer();
-
-            moveBike(bike);
-        }
+        handleBikeMoveTimer(bike, _dt);
+        handleExtraBoostTimer(bike, _dt);
     }
 
     determineOutcome();
@@ -268,6 +263,55 @@ void Simulation::changeBikeDirection(unsigned int _bike_id, const MoveDirection 
     if (directionChangeValid(bike, _dir))
     {
         bike.setDirection(_dir);
+    }
+}
+
+
+
+void Simulation::handleBikeMoveTimer(Bike& _bike, const double _dt)
+{
+    _bike.modifyMoveTimer(_dt);
+
+    if (_bike.getMoveTimer() > _bike.getMoveSpeed())
+    {
+        _bike.resetMoveTimer();
+        moveBike(_bike);
+    }
+}
+
+
+
+void Simulation::handleExtraBoostTimer(Bike& _bike, const double _dt)
+{
+    if (_bike.missingBoostCharges())
+    {
+        _bike.modifyExtraBoostTimer(_dt);
+
+        if (_bike.getExtraBoostTimer() > EXTRA_BOOST_INTERVAL)
+        {
+            _bike.resetExtraBoostTimer();
+            grantBoostCharge(_bike.getID());
+
+            for (auto& listener : listeners)
+            {
+                listener->boostChargeGranted(_bike.getID());
+            }
+        }
+    }
+}
+
+
+
+/* Function for Server & Client to use as boost charges are mainly granted by the server.
+ * But the client is able to do this itself if it laggs behind.
+ */
+void Simulation::grantBoostCharge(const unsigned _bike_id)
+{
+    auto& bike = bikes[_bike_id];
+
+    if (bike.missingBoostCharges())
+    {
+        bike.grantBoostCharge();
     }
 }
 

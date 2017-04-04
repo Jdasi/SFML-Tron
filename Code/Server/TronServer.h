@@ -68,6 +68,7 @@ private:
     void onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states) override;
     void onBikeRemoved(const unsigned int _bike_id) override;
     void onBikeBoost(const unsigned int _bike_id) override;
+    void onBoostChargeGranted(const unsigned int _bike_id) override;
     void onSimulationStarted() override;
     void onSimulationStopping() override;
     void onSimulationEnded() override;

@@ -32,6 +32,7 @@ private:
 
     // SimulationListener events.
     void bikeRemoved(const unsigned int _bike_id) override;
+    void boostChargeGranted(const unsigned int _bike_id) override;
     void simulationVictor(const unsigned int _bike_id) override;
     void simulationEmpty() override;
 

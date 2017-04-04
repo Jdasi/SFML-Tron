@@ -289,6 +289,17 @@ void TronClient::onFlowControl(const FlowControl _control)
 }
 
 
+
+void TronClient::onVictor(const unsigned int _player_id)
+{
+    postEvent([this, _player_id]()
+    {
+        client_data.victor_id = _player_id;
+    });
+}
+
+
+
 void TronClient::onBikeSync(const BikeState& _bike_state)
 {
     postEvent([this, _bike_state]()
@@ -341,11 +352,12 @@ void TronClient::onBikeBoost(const unsigned int _bike_id)
 
 
 
-void TronClient::onVictor(const unsigned int _player_id)
+void TronClient::onBoostChargeGranted(const unsigned int _bike_id)
 {
-    postEvent([this, _player_id]()
+    postEvent([this, _bike_id]()
     {
-        client_data.victor_id = _player_id;
+        game_audio.playSound(EXTRA_BOOST_CUE);
+        game_manager.getNetworkSimulation()->grantBoostCharge(_bike_id);
     });
 }
 

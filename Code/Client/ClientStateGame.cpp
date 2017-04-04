@@ -30,7 +30,7 @@ void ClientStateGame::onStateEnter()
     client_data->network_manager->sendPlayerStateChange(PlayerState::PLAYING);
 
     countdown_text->setFillColor(sf::Color::White);
-    last_tick_value = static_cast<int>(START_COUNTDOWN_TIME);
+    last_tick_value = static_cast<int>(COUNTDOWN_BEGIN);
 
     pretty_grid.updateBorderColor(
         JHelper::evaluateSFColorFromPlayerID(client_data->client_id));

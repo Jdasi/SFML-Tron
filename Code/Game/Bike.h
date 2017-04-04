@@ -42,12 +42,18 @@ public:
     void setMoveTimer(const double _value);
     void resetMoveTimer();
     void modifyMoveTimer(const double _dt);
-    
+
     bool isAlive() const;
     void setAlive(const bool _alive);
 
     bool isBoosting() const;
     bool activateBoost();
+    bool missingBoostCharges() const;
+    void grantBoostCharge();
+    
+    double getExtraBoostTimer() const;
+    void resetExtraBoostTimer();
+    void modifyExtraBoostTimer(const double _dt);
 
 private:
     BikeState state;

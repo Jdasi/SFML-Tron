@@ -31,6 +31,7 @@ public:
     virtual void bikeNotBoosted(const unsigned int _bike_id) {}
     virtual void bikeRemoved(const unsigned int _bike_id) {}
     virtual void bikesReset() {}
+    virtual void boostChargeGranted(const unsigned int _bike_id) {}
 
     virtual void simulationVictor(const unsigned int _bike_id) {}
     virtual void simulationEmpty() {}

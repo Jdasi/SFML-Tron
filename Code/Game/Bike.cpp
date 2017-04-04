@@ -178,3 +178,38 @@ bool Bike::activateBoost()
 
     return true;
 }
+
+
+
+bool Bike::missingBoostCharges() const
+{
+    return state.boost_charges < STARTING_BOOST_CHARGES;
+}
+
+
+
+void Bike::grantBoostCharge()
+{
+    state.boost_charges += 1;
+}
+
+
+
+double Bike::getExtraBoostTimer() const
+{
+    return state.extra_boost_timer;
+}
+
+
+
+void Bike::resetExtraBoostTimer()
+{
+    state.extra_boost_timer = 0;
+}
+
+
+
+void Bike::modifyExtraBoostTimer(const double _dt)
+{
+    state.extra_boost_timer += _dt;
+}

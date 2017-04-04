@@ -49,7 +49,7 @@ void SimulationThread::eventStartSimulation()
         {
             simulation_running = true;
             server.onSimulationStarted();
-        }, START_COUNTDOWN_TIME);
+        }, COUNTDOWN_BEGIN);
     });
 }
 
@@ -66,7 +66,7 @@ void SimulationThread::eventStopSimulation()
         {
             resetSimulation();
             server.onSimulationEnded();
-        }, END_COUNTDOWN_TIME);
+        }, COUNTDOWN_END);
     });
 }
 
@@ -217,6 +217,13 @@ void SimulationThread::bikeRemoved(const unsigned int _bike_id)
 {
     server.onBikeRemoved(_bike_id);
     server.onSyncBike(simulation.getBike(_bike_id).getState());
+}
+
+
+
+void SimulationThread::boostChargeGranted(const unsigned int _bike_id)
+{
+    server.onBoostChargeGranted(_bike_id);
 }
 
 
