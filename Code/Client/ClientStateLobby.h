@@ -19,6 +19,9 @@ public:
 
 private:
     void scheduleRefresh();
+    void updateServerBulletin() const;
+
+    std::unique_ptr<sf::Text> server_bulletin;
 
     Scheduler scheduler;
     LobbyUI lobby_ui;

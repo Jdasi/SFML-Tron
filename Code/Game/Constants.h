@@ -86,5 +86,4 @@ const std::string ROUND_OVER_CUE        { "round_over.ogg" };
 const std::string WINNER_CUE            { "winner.ogg" };
 const std::string LOSER_CUE             { "loser.ogg" };
 
-const std::string LOBBY_MUSIC           { "lobby_music.ogg" };
 const std::string GAME_MUSIC            { "game_music.ogg" };

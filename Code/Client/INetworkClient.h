@@ -41,5 +41,6 @@ public:
     virtual void onBikeRemoved(const unsigned _bike_id) = 0;
     virtual void onBikeBoost(const unsigned int _bike_id) = 0;
     virtual void onBoostChargeGranted(const unsigned int _bike_id) = 0;
+    virtual void onBulletinUpdate(const std::string& _bulletin) = 0;
 
 };

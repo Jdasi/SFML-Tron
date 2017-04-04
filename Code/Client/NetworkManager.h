@@ -55,6 +55,7 @@ private:
     void handleBikeRemovedPacket(sf::Packet& _packet) const;
     void handleBikeBoostPacket(sf::Packet& _packet) const;
     void handleExtraBoostChargePacket(sf::Packet& _packet) const;
+    void handleServerBulletinPacket(sf::Packet& _packet) const;
 
     void sendPacket(sf::Packet& _packet);
     void sendClientLatency(const double _latency);

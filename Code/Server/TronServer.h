@@ -42,12 +42,14 @@ private:
     std::vector<int> getIDsInUse() const;
 
     void sendClientIdentity(ClientPtr& _client);
+    void sendClientBulletin(ClientPtr& _client);
     void sendClientList(ClientPtr& _client);
     void sendClientJoined(const ClientPtr& _client);
     void sendClientLeft(ClientPtr& _client);
     void sendUpdatedClientState(const ClientPtr& _client);
     void sendUpdatedServerState();
     void sendUpdatedFlowControl(const FlowControl _control);
+    void sendUpdatedServerBulletin();
 
     void handlePacket(sf::Packet& _packet, ClientPtr& _sender);
     void handleDisconnectPacket(const sf::Packet& _packet, ClientPtr& _sender);
@@ -62,6 +64,7 @@ private:
     void sendPacketToClient(sf::Packet& _packet, ClientPtr& _client);
     void sendPacketToAll(sf::Packet& _packet);
     void sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& _sender);
+    void sendPacketToAllPlaying(sf::Packet& _packet);
 
     void onSyncSimulation(const SimulationState& _simulation_state) override;
     void onSyncBike(const BikeState& _bike_state) override;

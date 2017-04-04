@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <SFML/Graphics.hpp>
 
 #include <Game/Constants.h>
@@ -20,17 +18,8 @@ TronClient::TronClient()
     , client_data(&asset_manager, &network_manager, &game_manager, &input_handler, &game_audio)
     , in_focus(true)
 {
-    auto font = asset_manager.loadFont(DEFAULT_FONT);
-
-    server_readout = std::make_unique<sf::Text>("", *font);
-    server_readout->setCharacterSize(20);
-    server_readout->setStyle(sf::Text::Bold);
-    server_readout->setFillColor(sf::Color::White);
-    server_readout->setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.05f });
-    server_readout->setOutlineColor(sf::Color::Black);
-    server_readout->setOutlineThickness(1.5f);
-
     preloadSoundBuffers();
+    initTextObjects();
 }
 
 
@@ -52,9 +41,6 @@ void TronClient::run()
 
 void TronClient::mainLoop()
 {
-    //game_audio.playMusic(GAME_MUSIC, 25.0f, true);
-    //game_audio.fadeOutMusic(2.0);
-
     while (!client_data.exit)
     {
         // Crude delta-time system.
@@ -104,6 +90,18 @@ void TronClient::preloadSoundBuffers()
     asset_manager.loadSoundBuffer(LOSER_CUE);
 }
 
+void TronClient::initTextObjects()
+{
+    auto font = asset_manager.loadFont(DEFAULT_FONT);
+
+    server_readout = std::make_unique<sf::Text>("", *font);
+    server_readout->setCharacterSize(20);
+    server_readout->setStyle(sf::Text::Bold);
+    server_readout->setFillColor(sf::Color::White);
+    server_readout->setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.05f });
+    server_readout->setOutlineColor(sf::Color::Black);
+    server_readout->setOutlineThickness(1.5f);
+}
 
 
 void TronClient::initKeyboardBindings()
@@ -179,7 +177,7 @@ void TronClient::onConnected()
 {
     postEvent([this]()
     {
-        std::cout << "Connected." << std::endl;
+        client_data.server_bulletin_str = "Connected";
     });
 }
 
@@ -190,7 +188,8 @@ void TronClient::onDisconnected()
 {
     postEvent([this]()
     {
-        std::cout << "Disconnected." << std::endl;
+        state_handler.queueState(STATE_LOBBY);
+        client_data.server_bulletin_str = "Disconnected";
     });
 }
 
@@ -202,7 +201,6 @@ void TronClient::onUpdatePingTime(const double _ping)
     postEvent([this, _ping]()
     {
         client_data.latency = _ping;
-        std::cout << "Ping: " << _ping << std::endl;
     });
 }
 
@@ -214,8 +212,6 @@ void TronClient::onIdentity(const unsigned int _player_id)
     {
         client_data.client_id = _player_id;
         game_manager.addPlayer(_player_id);
-
-        std::cout << "Identity assigned: " << _player_id << std::endl;
     });
 }
 
@@ -271,6 +267,8 @@ void TronClient::onGameStateChange(const int _state)
         state_handler.queueState(_state);
     });
 }
+
+
 
 void TronClient::onFlowControl(const FlowControl _control)
 {
@@ -379,6 +377,16 @@ void TronClient::onBoostChargeGranted(const unsigned int _bike_id)
         }
 
         game_manager.getNetworkSimulation()->grantBoostCharge(_bike_id);
+    });
+}
+
+
+
+void TronClient::onBulletinUpdate(const std::string& _bulletin)
+{
+    postEvent([this, _bulletin]()
+    {
+        client_data.server_bulletin_str = _bulletin;
     });
 }
 

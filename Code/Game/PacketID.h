@@ -16,6 +16,7 @@ enum class PacketID
         VICTOR,
         LATENCY,
         MESSAGE,
+        BULLETIN,
         BIKE_DIRECTION,
         BIKE_REMOVED,
         BIKE_BOOST,

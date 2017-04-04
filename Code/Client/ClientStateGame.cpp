@@ -39,7 +39,7 @@ void ClientStateGame::onStateEnter()
 void ClientStateGame::onStateLeave()
 {
     client_data->game_audio->stopMusic();
-    client_data->game_manager->stopSimulation();
+    client_data->game_manager->resetSimulation();
 
     countdown_text->setString("");
 }

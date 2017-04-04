@@ -204,6 +204,7 @@ void NetworkManager::registerPacketHandlers()
     registerPacketHandler(PacketID::PLAYER_JOINED,      handlePlayerJoinedPacket);
     registerPacketHandler(PacketID::PLAYER_LEFT,        handlePlayerLeftPacket);
     registerPacketHandler(PacketID::MESSAGE,            handleMessagePacket);
+    registerPacketHandler(PacketID::BULLETIN,           handleServerBulletinPacket);
     registerPacketHandler(PacketID::PLAYER_STATE,       handlePlayerStateChangePacket);
     registerPacketHandler(PacketID::GAME_STATE,         handleGameStateChangePacket);
     registerPacketHandler(PacketID::FLOW_CONTROL,       handleFlowControlPacket);
@@ -299,6 +300,16 @@ void NetworkManager::handleMessagePacket(sf::Packet& _packet) const
     _packet >> str;
 
     std::cout << str << std::endl;
+}
+
+
+
+void NetworkManager::handleServerBulletinPacket(sf::Packet& _packet) const
+{
+    std::string bulletin;
+    _packet >> bulletin;
+
+    client.onBulletinUpdate(bulletin);
 }
 
 

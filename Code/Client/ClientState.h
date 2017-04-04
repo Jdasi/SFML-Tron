@@ -38,7 +38,4 @@ protected:
     ClientData* client_data;
     std::vector<std::unique_ptr<sf::Drawable>> drawables;
 
-private:
-
-
 };

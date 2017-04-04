@@ -28,6 +28,7 @@ public:
 
 private:
     void preloadSoundBuffers();
+    void initTextObjects();
     void initKeyboardBindings();
     void initControllerBindings();
     void initClientStates();
@@ -52,6 +53,7 @@ private:
     void onBikeRemoved(const unsigned int _bike_id) override;
     void onBikeBoost(const unsigned int _bike_id) override;
     void onBoostChargeGranted(const unsigned int _bike_id) override;
+    void onBulletinUpdate(const std::string& _bulletin) override;
 
     void tick();
     void draw();
@@ -59,7 +61,6 @@ private:
     void updateServerReadout() const;
 
     sf::RenderWindow window;
-    sf::Font font;
 
     // Core systems.
     AssetManager asset_manager;
