@@ -27,6 +27,7 @@ public:
     bool isExiting() const override;
 
 private:
+    void preloadSoundBuffers();
     void initKeyboardBindings();
     void initControllerBindings();
     void initClientStates();
@@ -55,6 +56,8 @@ private:
     void tick();
     void draw();
 
+    void updateServerReadout() const;
+
     sf::RenderWindow window;
     sf::Font font;
 
@@ -69,5 +72,6 @@ private:
     ClientData client_data;
 
     bool in_focus;
+    std::unique_ptr<sf::Text> server_readout;
 
 };

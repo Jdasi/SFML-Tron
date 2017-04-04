@@ -38,8 +38,6 @@ public:
     void bikeRemoved(const unsigned int _bike_id) override;
     void bikesReset() override;
 
-    void simulationVictor(const unsigned int _bike_id) override;
-
 private:
     void initGrid();
     void initPlayerMarkers();

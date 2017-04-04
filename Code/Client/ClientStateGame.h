@@ -13,7 +13,7 @@ namespace sf
 class ClientStateGame final : public ClientState
 {
 public:
-    ClientStateGame(ClientData* _client_data);
+    explicit ClientStateGame(ClientData* _client_data);
     virtual ~ClientStateGame() = default;
 
     void onStateEnter() override;

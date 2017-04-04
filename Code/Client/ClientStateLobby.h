@@ -3,12 +3,6 @@
 #include "ClientState.h"
 #include "LobbyUI.h"
 
-namespace sf
-{
-    class Text;
-    class Drawable;
-}
-
 class ClientStateLobby final : public ClientState
 {
 public:
@@ -26,9 +20,7 @@ public:
 private:
     void scheduleRefresh();
 
-    sf::Text* latency_text;
     Scheduler scheduler;
-
     LobbyUI lobby_ui;
     bool refresh_needed;
 

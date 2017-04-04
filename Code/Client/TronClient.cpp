@@ -4,6 +4,7 @@
 
 #include <Game/Constants.h>
 #include <Game/GameStateIDs.h>
+#include <Game/JHelper.h>
 #include "TronClient.h"
 #include "ClientStateLobby.h"
 #include "ClientStateGame.h"
@@ -19,15 +20,17 @@ TronClient::TronClient()
     , client_data(&asset_manager, &network_manager, &game_manager, &input_handler, &game_audio)
     , in_focus(true)
 {
-    // Pre-load large assets.
-    asset_manager.loadFont(DEFAULT_FONT);
-    asset_manager.loadSoundBuffer(COUNTDOWN_TICK_CUE);
-    asset_manager.loadSoundBuffer(COUNTDOWN_FIN_CUE);
-    asset_manager.loadSoundBuffer(BOOST_CUE);
-    asset_manager.loadSoundBuffer(DEATH_CUE);
-    asset_manager.loadSoundBuffer(ROUND_OVER_CUE);
-    asset_manager.loadSoundBuffer(WINNER_CUE);
-    asset_manager.loadSoundBuffer(LOSER_CUE);
+    auto font = asset_manager.loadFont(DEFAULT_FONT);
+
+    server_readout = std::make_unique<sf::Text>("", *font);
+    server_readout->setCharacterSize(20);
+    server_readout->setStyle(sf::Text::Bold);
+    server_readout->setFillColor(sf::Color::White);
+    server_readout->setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.05f });
+    server_readout->setOutlineColor(sf::Color::Black);
+    server_readout->setOutlineThickness(1.5f);
+
+    preloadSoundBuffers();
 }
 
 
@@ -86,6 +89,19 @@ void TronClient::onCommand(const GameAction _action, const ActionState _action_s
 bool TronClient::isExiting() const
 {
     return client_data.exit;
+}
+
+
+
+void TronClient::preloadSoundBuffers()
+{
+    asset_manager.loadSoundBuffer(COUNTDOWN_TICK_CUE);
+    asset_manager.loadSoundBuffer(COUNTDOWN_FIN_CUE);
+    asset_manager.loadSoundBuffer(BOOST_CUE);
+    asset_manager.loadSoundBuffer(DEATH_CUE);
+    asset_manager.loadSoundBuffer(ROUND_OVER_CUE);
+    asset_manager.loadSoundBuffer(WINNER_CUE);
+    asset_manager.loadSoundBuffer(LOSER_CUE);
 }
 
 
@@ -356,7 +372,12 @@ void TronClient::onBoostChargeGranted(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
-        game_audio.playSound(EXTRA_BOOST_CUE);
+        // Don't bother player with recharging other bike boost charges.
+        if (_bike_id == client_data.client_id)
+        {
+            game_audio.playSound(EXTRA_BOOST_CUE);
+        }
+
         game_manager.getNetworkSimulation()->grantBoostCharge(_bike_id);
     });
 }
@@ -365,6 +386,8 @@ void TronClient::onBoostChargeGranted(const unsigned int _bike_id)
 
 void TronClient::tick()
 {
+    updateServerReadout();
+
     game_manager.tick();
     game_audio.tick(client_data.delta_time);
 
@@ -378,6 +401,25 @@ void TronClient::draw()
     window.clear();
 
     state_handler.draw(window);
+    window.draw(*server_readout);
 
     window.display();
 }
+
+
+
+void TronClient::updateServerReadout() const
+{
+    std::string server_str = SERVER_IP;
+    server_str.append(":" + std::to_string(SERVER_TCP_PORT) + " \\ ping: ");
+
+    std::string latency_str = std::to_string(client_data.latency);
+    latency_str.erase(latency_str.find_first_of('.'), std::string::npos);
+    latency_str.append("us");
+
+    server_str.append(latency_str);
+
+    server_readout->setString(server_str);
+    JHelper::centerSFOrigin(*server_readout);
+}
+

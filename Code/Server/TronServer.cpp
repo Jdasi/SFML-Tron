@@ -798,6 +798,7 @@ void TronServer::onSimulationVictor(const unsigned int _bike_id)
 
         packet << static_cast<sf::Uint8>(_bike_id);
 
+        std::cout << "Sim victor: " << _bike_id << std::endl;
         sendPacketToAll(packet);
     });
 }

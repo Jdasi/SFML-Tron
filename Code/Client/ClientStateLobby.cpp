@@ -14,19 +14,9 @@ ClientStateLobby::ClientStateLobby(ClientData* _client_data)
     , lobby_ui(_client_data)
     , refresh_needed(true)
 {
-    auto font = client_data->asset_manager->loadFont(DEFAULT_FONT);
-
     auto backdrop = std::make_unique<sf::Sprite>(
         *client_data->asset_manager->loadTexture(BACKDROP));
     drawables.push_back(std::move(backdrop));
-
-    auto l_text = std::make_unique<sf::Text>("", *font);
-    l_text->setCharacterSize(30);
-    l_text->setStyle(sf::Text::Bold);
-    l_text->setFillColor(sf::Color::Red);
-    l_text->setPosition({ 0, 0 });
-    latency_text = l_text.get();
-    drawables.push_back(std::move(l_text));
 }
 
 void ClientStateLobby::onStateEnter()
@@ -48,11 +38,6 @@ void ClientStateLobby::tick()
     scheduler.update();
 
     scheduleRefresh();
-
-    auto str = std::to_string(client_data->latency);
-    str.erase(str.find_first_of('.'), std::string::npos);
-
-    latency_text->setString(str + "us");
 }
 
 void ClientStateLobby::draw(sf::RenderWindow& _window)

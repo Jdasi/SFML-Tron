@@ -45,9 +45,9 @@ const float BIKE_MOVE_SPEED             = 0.04f; // Rate at which the bike moves
 const float BIKE_BOOST_DURATION         = 1.5f; // Duration of boost.
 const int BIKE_BOOST_DIVISOR            = 2; // Boost speed divisor. Larger = faster.
 const int STARTING_BOOST_CHARGES        = 3; // Starting number of boost charges.
-const float EXTRA_BOOST_INTERVAL        = 5.0f; // Seconds before boost charge replenish.
+const float EXTRA_BOOST_INTERVAL        = 6.0f; // Seconds before boost charge replenish.
 
-const float MARKER_ROTATE_SPEED         = 30.0f; // Speed of the player marker rotation.
+const float MARKER_ROTATE_SPEED         = 40.0f; // Speed of the player marker rotation.
 const float MARKER_ROTATE_MODIFIER      = 2.0f; // rotation modifier of enlarged marker.
 
 // ======================================================================================

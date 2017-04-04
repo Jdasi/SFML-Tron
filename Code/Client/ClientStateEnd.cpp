@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <Game/Constants.h>
+#include <Game/JHelper.h>
 #include "ClientStateEnd.h"
 #include "ClientStateHandler.h"
 #include "ClientData.h"
@@ -11,25 +12,36 @@
 ClientStateEnd::ClientStateEnd(ClientData* _client_data)
     : ClientState(_client_data)
 {
-    auto title_text = std::make_unique<sf::Text>("StateEnd", 
+    victor_text = std::make_unique<sf::Text>("",
         *client_data->asset_manager->loadFont(DEFAULT_FONT));
 
-    title_text->setCharacterSize(30);
-    title_text->setStyle(sf::Text::Bold);
-    title_text->setFillColor(sf::Color::Red);
-    drawables.push_back(std::move(title_text));
+    victor_text->setCharacterSize(60);
+    victor_text->setStyle(sf::Text::Bold);
+    victor_text->setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 });
 }
 
 void ClientStateEnd::onStateEnter()
 {
+    std::string victory_string;
+    
     if (client_data->client_id == client_data->victor_id)
     {
+        victory_string.append("You win!");
+
         client_data->game_audio->playSound(WINNER_CUE);
     }
     else
     {
+        victory_string.append("Player " + 
+            std::to_string(client_data->victor_id + 1) + " Wins!");
+
         client_data->game_audio->playSound(LOSER_CUE);
     }
+
+    victor_text->setFillColor(JHelper::evaluateSFColorFromPlayerID(client_data->victor_id));
+    victor_text->setString(victory_string);
+
+    JHelper::centerSFOrigin(*victor_text);
 }
 
 void ClientStateEnd::onStateLeave()
@@ -42,6 +54,8 @@ void ClientStateEnd::tick()
 
 void ClientStateEnd::draw(sf::RenderWindow& _window)
 {
+    _window.draw(*victor_text);
+
     for (auto& drawable : drawables)
     {
         _window.draw(*drawable);

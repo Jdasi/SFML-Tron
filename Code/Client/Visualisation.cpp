@@ -121,13 +121,6 @@ void Visualisation::bikesReset()
 
 
 
-void Visualisation::simulationVictor(const unsigned int _bike_id)
-{
-    // Display game over text?
-}
-
-
-
 void Visualisation::updateBikePosition(const unsigned int _bike_id, const Vector2i& _bike_pos,
     const bool _bike_alive)
 {
@@ -155,7 +148,7 @@ void Visualisation::bikeBoosted(const unsigned int _bike_id)
 
 
 
-void Visualisation::bikeNotBoosted(const unsigned _bike_id)
+void Visualisation::bikeNotBoosted(const unsigned int _bike_id)
 {
     player_markers[_bike_id].setEnlarged(false);
 }
