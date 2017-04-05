@@ -1,6 +1,6 @@
 #include "ThreadDispatcher.h"
 
-// Mutex locked function to post an event to the queue.
+// Posts an event to the dispatcher's queue.
 void ThreadDispatcher::postEvent(const std::function<void()>& _method)
 {
     std::lock_guard<std::mutex> guard(mutex);
@@ -37,7 +37,7 @@ void ThreadDispatcher::clearQueue()
 
 
 
-// Mutex locked function to return a copy of the events queue.
+// Returns a copy of the queue.
 std::queue<std::function<void()>> ThreadDispatcher::getQueueCopy()
 {
     std::lock_guard<std::mutex> guard(mutex);
