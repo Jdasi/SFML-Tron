@@ -75,15 +75,9 @@ void ClientStateEnd::draw(sf::RenderWindow& _window)
 
 void ClientStateEnd::onCommand(const GameAction _action, const ActionState _action_state)
 {
-    if (_action == GameAction::QUIT)
-    {
-        if (_action_state == ActionState::PRESSED)
-        {
-            client_data->exit = true;
-        }
-    }
-
-    if (_action == GameAction::ACCEPT || _action == GameAction::BOOST)
+    if (_action == GameAction::ACCEPT ||
+        _action == GameAction::BOOST ||
+        _action == GameAction::QUIT)
     {
         if (_action_state == ActionState::PRESSED)
         {

@@ -73,7 +73,8 @@ void ClientStateLobby::onCommand(const GameAction _action, const ActionState _ac
         }
     }
 
-    if (_action == GameAction::ACCEPT)
+    if (_action == GameAction::ACCEPT ||
+        _action == GameAction::BOOST)
     {
         if (_action_state == ActionState::PRESSED)
         {
