@@ -43,34 +43,6 @@ void TronClient::run()
 
 
 
-/*
- *
- */
-void TronClient::mainLoop()
-{
-    while (!client_data.exit)
-    {
-        // Crude delta-time system.
-        client_data.delta_time = timer.getTimeDifference();
-        timer.reset();
-        client_data.play_time += client_data.delta_time;
-
-        executeDispatchedMethods();
-
-        tick();
-        draw();
-
-        // Handle events.
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            handleEvent(event);
-        }
-    }
-}
-
-
-
 // Forwards input from the InputHandler to the current state for processing.
 void TronClient::onCommand(const GameAction _action, const ActionState _action_state) const
 {
@@ -150,6 +122,30 @@ void TronClient::initTextObjects()
     server_readout.setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.05f });
     server_readout.setOutlineColor(sf::Color::Black);
     server_readout.setOutlineThickness(1.5f);
+}
+
+
+
+void TronClient::mainLoop()
+{
+    while (!client_data.exit)
+    {
+        // Crude delta-time system.
+        client_data.delta_time = timer.getTimeDifference();
+        timer.reset();
+        client_data.play_time += client_data.delta_time;
+
+        executeDispatchedMethods();
+
+        tick();
+        draw();
+
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            handleEvent(event);
+        }
+    }
 }
 
 

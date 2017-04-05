@@ -103,6 +103,5 @@ private:
     int server_state;
 
     SimulationThread simulation_thread;
-    Scheduler scheduler;
 
 };

@@ -30,9 +30,8 @@ public:
     ~TronClient() = default;
 
     void run();
-    void mainLoop();
 
-    void onCommand(GameAction _action, ActionState _action_state) const;
+    void onCommand(const GameAction _action, const ActionState _action_state) const;
     bool isExiting() const override;
 
 private:
@@ -41,6 +40,8 @@ private:
     void initControllerBindings();
     void initClientStates();
     void initTextObjects();
+
+    void mainLoop();
 
     // SFML events.
     void handleEvent(const sf::Event& _event);

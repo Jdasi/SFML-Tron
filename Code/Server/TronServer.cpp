@@ -86,7 +86,6 @@ void TronServer::mainLoop()
     while (!exit)
     {
         executeDispatchedMethods();
-        scheduler.update();
 
         listen();
 
