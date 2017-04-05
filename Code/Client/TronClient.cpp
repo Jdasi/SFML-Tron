@@ -67,6 +67,8 @@ void TronClient::preloadSoundBuffers()
     asset_manager.loadSoundBuffer(DEATH_CUE);
     asset_manager.loadSoundBuffer(LAST_BIKE_CUE);
     asset_manager.loadSoundBuffer(GAME_OVER_CUE);
+    asset_manager.loadSoundBuffer(CONNECT_CUE);
+    asset_manager.loadSoundBuffer(DISCONNECT_CUE);
 }
 
 
@@ -184,6 +186,8 @@ void TronClient::onConnected()
 {
     postEvent([this]()
     {
+        game_audio.playSound(CONNECT_CUE);
+
         client_data.server_bulletin = "Connected";
     });
 }
@@ -195,7 +199,9 @@ void TronClient::onDisconnected()
 {
     postEvent([this]()
     {
+        game_audio.playSound(DISCONNECT_CUE);
         state_handler.queueState(STATE_LOBBY);
+
         client_data.server_bulletin = "Disconnected";
     });
 }
@@ -244,6 +250,12 @@ void TronClient::onPlayerJoined(const unsigned int _player_id)
 {
     postEvent([this, _player_id]()
     {
+        // Don't bother player with connection sounds during gameplay.
+        if (!game_manager.simulationRunning())
+        {
+            game_audio.playSound(CONNECT_CUE);
+        }
+
         game_manager.addPlayer(_player_id);
     });
 }
@@ -255,6 +267,12 @@ void TronClient::onPlayerLeft(const unsigned int _player_id)
 {
     postEvent([this, _player_id]()
     {
+        // Don't bother player with connection sounds during gameplay.
+        if (!game_manager.simulationRunning())
+        {
+            game_audio.playSound(DISCONNECT_CUE);
+        }
+        
         game_manager.removePlayer(_player_id);
     });
 }

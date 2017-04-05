@@ -77,5 +77,7 @@ const std::string EXTRA_BOOST_CUE       { "extra_boost.ogg" };
 const std::string DEATH_CUE             { "bike_death.ogg" };
 const std::string LAST_BIKE_CUE         { "last_bike.ogg" };
 const std::string GAME_OVER_CUE         { "game_over.ogg" };
+const std::string CONNECT_CUE           { "connect.ogg" };
+const std::string DISCONNECT_CUE        { "disconnect.ogg" };
 
 const std::string GAME_MUSIC            { "game_music.ogg" };
