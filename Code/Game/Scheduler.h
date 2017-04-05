@@ -4,6 +4,12 @@
 #include "ScheduledTask.h"
 #include "SimpleTimer.h"
 
+/* Class for scheduling tasks that should take place after a specified
+ * amount of time.
+ *
+ * The Scheduler's update method must be called in order to ensure
+ * prompt activation of scheduled tasks.
+ */
 class Scheduler
 {
 public:

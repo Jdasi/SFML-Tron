@@ -27,6 +27,12 @@ TronServer::TronServer()
 
 
 
+/* Attempts to launch the server on the passed port.
+ * Returns true if the server was run successfully, otherwise returns false.
+ *
+ * If the server launches, this function won't return until after the
+ * main loop finishes.
+ */
 bool TronServer::run(const unsigned int _tcp_port)
 {
     if (!bindServerPort(_tcp_port))
@@ -48,12 +54,12 @@ bool TronServer::run(const unsigned int _tcp_port)
 
 void TronServer::registerPacketHandlers()
 {
-    registerPacketHandler(PacketID::DISCONNECT,        handleDisconnectPacket);
-    registerPacketHandler(PacketID::PING,              handlePingPacket);
-    registerPacketHandler(PacketID::MESSAGE,           handleMessagePacket);
-    registerPacketHandler(PacketID::PLAYER_STATE,      handlePlayerStatePacket);
-    registerPacketHandler(PacketID::BIKE_DIRECTION,    handleDirectionPacket);
-    registerPacketHandler(PacketID::BIKE_BOOST,        handleBoostPacket);
+    registerPacketHandler(PacketID::DISCONNECT,      handleDisconnectPacket);
+    registerPacketHandler(PacketID::PING,            handlePingPacket);
+    registerPacketHandler(PacketID::MESSAGE,         handleMessagePacket);
+    registerPacketHandler(PacketID::PLAYER_STATE,    handlePlayerStatePacket);
+    registerPacketHandler(PacketID::BIKE_DIRECTION,  handleDirectionPacket);
+    registerPacketHandler(PacketID::BIKE_BOOST,      handleBoostPacket);
 }
 
 
@@ -72,6 +78,9 @@ bool TronServer::bindServerPort(const unsigned int _tcp_port)
 
 
 
+/* Executes dispatched methods and performs state behaviour.
+ * The server automatically resets if no clients are connected.
+ */
 void TronServer::mainLoop()
 {
     while (!exit)
@@ -94,7 +103,7 @@ void TronServer::mainLoop()
 
 void TronServer::listen()
 {
-    if (socket_selector.wait(sf::milliseconds(1)))
+    if (socket_selector.wait(sf::microseconds(100)))
     {
         if (socket_selector.isReady(tcp_listener))
         {
@@ -126,17 +135,20 @@ void TronServer::performStateBehaviour()
         case STATE_LOBBY:
         {
             lobbyStateBehaviour();
-        } break;
+            break;
+        }
 
         case STATE_GAME:
         {
             gameStateBehaviour();
-        } break;
+            break;
+        }
 
         case STATE_END:
         {
             endStateBehaviour();
-        } break;
+            break;
+        }
 
         default: {}
     }
@@ -144,6 +156,7 @@ void TronServer::performStateBehaviour()
 
 
 
+// Waits for players to ready up before starting the simulation.
 void TronServer::lobbyStateBehaviour()
 {
     if (connected_clients < MIN_PLAYERS ||
@@ -172,13 +185,14 @@ void TronServer::lobbyStateBehaviour()
 
 
 
-void TronServer::gameStateBehaviour()
+void TronServer::gameStateBehaviour() const
 {
     // Crickets ...
 }
 
 
 
+// Waits for all users to go back to back to lobby before changing server state.
 void TronServer::endStateBehaviour()
 {
     for (auto& client : clients)
@@ -200,26 +214,9 @@ void TronServer::endStateBehaviour()
 
 
 
-bool TronServer::clientExistsWithState(const PlayerState _state)
-{
-    for (auto& client : clients)
-    {
-        if (!client)
-        {
-            continue;
-        }
-
-        if (client->getState() == _state)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-
-
+/* Accepts a new client and informs them of server status.
+ * Also informs all other connected clients of the new client.
+ */
 void TronServer::acceptClient()
 {
     auto new_client = std::make_unique<Client>(generateUniqueClientID());
@@ -247,6 +244,7 @@ void TronServer::acceptClient()
 
 
 
+// Receives a packet if one is available and passes it through for handling.
 void TronServer::receivePacket()
 {
     for (auto& sender : clients)
@@ -309,6 +307,27 @@ std::vector<int> TronServer::getIDsInUse() const
 
 
 
+bool TronServer::clientExistsWithState(const PlayerState _state)
+{
+    for (auto& client : clients)
+    {
+        if (!client)
+        {
+            continue;
+        }
+
+        if (client->getState() == _state)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+
+// Inform client of their ID on the server.
 void TronServer::sendClientIdentity(ClientPtr& _client)
 {
     sf::Packet packet;
@@ -321,6 +340,7 @@ void TronServer::sendClientIdentity(ClientPtr& _client)
 
 
 
+// Inform client of the server's status.
 void TronServer::sendClientBulletin(ClientPtr& _client)
 {
     sf::Packet packet;
@@ -336,6 +356,7 @@ void TronServer::sendClientBulletin(ClientPtr& _client)
 
 
 
+// Inform the client of all other connected clients, if any.
 void TronServer::sendClientList(ClientPtr& _client)
 {
     sf::Packet packet;
@@ -356,6 +377,7 @@ void TronServer::sendClientList(ClientPtr& _client)
 
 
 
+// Inform all clients of a new client connecting.
 void TronServer::sendClientJoined(const ClientPtr& _client)
 {
     sf::Packet packet;
@@ -368,6 +390,7 @@ void TronServer::sendClientJoined(const ClientPtr& _client)
 
 
 
+// Inform all clients of a client disconnecting.
 void TronServer::sendClientLeft(ClientPtr& _client)
 {
     sf::Packet packet;
@@ -380,6 +403,7 @@ void TronServer::sendClientLeft(ClientPtr& _client)
 
 
 
+// Inform all clients of a change to a client's PlayerState.
 void TronServer::sendUpdatedClientState(const ClientPtr& _client)
 {
     sf::Packet packet;
@@ -390,6 +414,9 @@ void TronServer::sendUpdatedClientState(const ClientPtr& _client)
     sendPacketToAll(packet);
 }
 
+
+
+// Inform clients of a change to the server's state.
 void TronServer::sendUpdatedServerState()
 {
     sf::Packet packet;
@@ -402,6 +429,7 @@ void TronServer::sendUpdatedServerState()
 
 
 
+// Inform clients of a change to the server's simulation state.
 void TronServer::sendUpdatedFlowControl(const FlowControl _control)
 {
     sf::Packet packet;
@@ -414,6 +442,7 @@ void TronServer::sendUpdatedFlowControl(const FlowControl _control)
 
 
 
+// Inform all clients of the server's updated status.
 void TronServer::sendUpdatedServerBulletin()
 {
     for (auto& client : clients)
@@ -429,6 +458,9 @@ void TronServer::sendUpdatedServerBulletin()
 
 
 
+/* Generic pass-through function which determines the appropriate 
+ * packet handler function to call, based on those which have been registered.
+ */
 void TronServer::handlePacket(sf::Packet& _packet, ClientPtr& _sender)
 {
     PacketID pid = getPacketID(_packet);
@@ -467,6 +499,9 @@ void TronServer::handleMessagePacket(sf::Packet& _packet, ClientPtr& _sender)
 
 
 
+/* Resolves the change to the player state and sends the client's resolved state
+ * to all other clients.
+ */
 void TronServer::handlePlayerStatePacket(sf::Packet& _packet, ClientPtr& _sender)
 {
     switch (server_state)
@@ -476,7 +511,8 @@ void TronServer::handlePlayerStatePacket(sf::Packet& _packet, ClientPtr& _sender
             // Player readied / unreadied.
             _sender->setState(_sender->getState() == PlayerState::NOTREADY ?
                 PlayerState::READY : PlayerState::NOTREADY);
-        } break;
+            break;
+        }
 
         case STATE_GAME:
         {
@@ -485,46 +521,36 @@ void TronServer::handlePlayerStatePacket(sf::Packet& _packet, ClientPtr& _sender
 
             PlayerState state = static_cast<PlayerState>(temp_state);
 
-            switch (state)
+            if (state == PlayerState::NOTREADY)
             {
-                // Player went back to lobby.
-                case PlayerState::NOTREADY:
-                {
-                    _sender->setState(PlayerState::NOTREADY);
-                    simulation_thread.eventPlayerLeft(_sender->getID());
-                } break;
-
-                // Player loaded into STATE_GAME.
-                case PlayerState::PLAYING:
-                {
-                    _sender->setState(PlayerState::PLAYING);
-
-                    if (clientExistsWithState(PlayerState::STARTING_GAME))
-                    {
-                        return;
-                    }
-
-                    sendUpdatedFlowControl(FlowControl::COUNTDOWN);
-
-                    simulation_thread.eventStartSimulation();
-                } break;
-
-                default: {}
+                // Player exited early or went back to lobby.
+                _sender->setState(PlayerState::NOTREADY);
+                simulation_thread.eventPlayerLeft(_sender->getID());
             }
-        } break;
+            else if (state == PlayerState::PLAYING)
+            {
+                _sender->setState(state);
+
+                // Only continue if all clients have loaded in.
+                if (clientExistsWithState(PlayerState::STARTING_GAME))
+                {
+                    break;
+                }
+
+                sendUpdatedFlowControl(FlowControl::COUNTDOWN);
+                simulation_thread.eventStartSimulation();
+            }
+
+            break;
+        }
 
         case STATE_END:
         {
             // Player went back to lobby.
             _sender->setState(PlayerState::NOTREADY);
 
-            sf::Packet packet;
-            setPacketID(packet, PacketID::GAME_STATE);
-
-            packet << static_cast<sf::Uint8>(STATE_LOBBY);
-
-            sendPacketToClient(packet, _sender);
-        } break;
+            break;
+        }
 
         default: {}
     }
@@ -534,6 +560,7 @@ void TronServer::handlePlayerStatePacket(sf::Packet& _packet, ClientPtr& _sender
 
 
 
+// Pass on direction change request from client to the simulation thread.
 void TronServer::handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender)
 {
     if (server_state != STATE_GAME)
@@ -550,6 +577,7 @@ void TronServer::handleDirectionPacket(sf::Packet& _packet, ClientPtr& _sender)
 
 
 
+// Pass on boost request from client to the simulation thread.
 void TronServer::handleBoostPacket(const sf::Packet& _packet, ClientPtr& _sender)
 {
     if (server_state != STATE_GAME)
@@ -627,7 +655,6 @@ void TronServer::sendPacketToAllButSender(sf::Packet& _packet, const ClientPtr& 
 
 
 
-// Send packet only to clients who are playing.
 void TronServer::sendPacketToAllPlaying(sf::Packet& _packet)
 {
     for (auto& client : clients)
@@ -637,6 +664,7 @@ void TronServer::sendPacketToAllPlaying(sf::Packet& _packet)
             continue;
         }
 
+        // Ignore clients who aren't in-game.
         if (client->getState() == PlayerState::PLAYING)
         {
             sendPacketToClient(_packet, client);
@@ -646,6 +674,7 @@ void TronServer::sendPacketToAllPlaying(sf::Packet& _packet)
 
 
 
+// Called by SimulationThread when the simulation needs to be synchronised.
 void TronServer::onSyncSimulation(const SimulationState& _simulation)
 {
     postEvent([this, _simulation]()
@@ -661,6 +690,7 @@ void TronServer::onSyncSimulation(const SimulationState& _simulation)
 
 
 
+// Called by SimulationThread a bike needs to be synchronised.
 void TronServer::onSyncBike(const BikeState& _bike)
 {
     postEvent([this, _bike]()
@@ -670,12 +700,13 @@ void TronServer::onSyncBike(const BikeState& _bike)
 
         packet << _bike;
 
-        sendPacketToAllPlaying(packet);
+        sendPacketToAll(packet);
     });
 }
 
 
 
+// Called by SimulationThread when all bikes need to be synchronised.
 void TronServer::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_states)
 {
     postEvent([this, _bike_states]()
@@ -688,12 +719,13 @@ void TronServer::onSyncAllBikes(const std::array<BikeState, MAX_PLAYERS>& _bike_
             packet << bike;
         }
 
-        sendPacketToAllPlaying(packet);
+        sendPacketToAll(packet);
     });
 }
 
 
 
+// Called by SimulationThread when a bike has been removed from the simulation.
 void TronServer::onBikeRemoved(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
@@ -709,6 +741,7 @@ void TronServer::onBikeRemoved(const unsigned int _bike_id)
 
 
 
+// Called by SimulationThread when a bike has begun to boost.
 void TronServer::onBikeBoost(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
@@ -724,6 +757,7 @@ void TronServer::onBikeBoost(const unsigned int _bike_id)
 
 
 
+// Called by SimulationThread when a bike has been granted an additional boost charge.
 void TronServer::onBoostChargeGranted(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
@@ -739,6 +773,7 @@ void TronServer::onBoostChargeGranted(const unsigned int _bike_id)
 
 
 
+// Called by SimulationThread when the simulation has begun.
 void TronServer::onSimulationStarted()
 {
     postEvent([this]()
@@ -754,6 +789,7 @@ void TronServer::onSimulationStarted()
 
 
 
+// Called by SimulationThread when the simulation is about to stop.
 void TronServer::onSimulationStopping()
 {
     postEvent([this]()
@@ -769,6 +805,7 @@ void TronServer::onSimulationStopping()
 
 
 
+// Called by SimulationThread when the simulation has stopped.
 void TronServer::onSimulationEnded()
 {
     postEvent([this]()
@@ -802,6 +839,7 @@ void TronServer::onSimulationEnded()
 
 
 
+// Called by SimulationThread when the simulation has been reset.
 void TronServer::onSimulationReset()
 {
     postEvent([this]()
@@ -812,6 +850,7 @@ void TronServer::onSimulationReset()
 
 
 
+// Called by SimulationThread when the simulation has found a victor.
 void TronServer::onSimulationVictor(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()

@@ -9,6 +9,12 @@
 struct BikeState;
 struct Vector2i;
 
+/* Class for other classes to derive from if they wish to listen in
+ * on events from the simulation.
+ *
+ * Inherited functions are not pure virtual so derived classes must choose 
+ * which events they listen in on.
+ */
 class SimulationListener : public Noncopyable
 {
 public:
@@ -25,8 +31,8 @@ public:
 
     virtual void overwriteAllCells(const std::array<CellValue, GRID_AREA>& _cells) {}
 
-    virtual void updateBikePosition(const unsigned int _bike_id, const Vector2i& _bike_pos,
-        const bool _bike_alive = true) {}
+    virtual void updateBikePosition(const unsigned int _bike_id, 
+        const Vector2i& _bike_pos, const bool _bike_alive = true) {}
     virtual void bikeBoosted(const unsigned int _bike_id) {}
     virtual void bikeNotBoosted(const unsigned int _bike_id) {}
     virtual void bikeRemoved(const unsigned int _bike_id) {}

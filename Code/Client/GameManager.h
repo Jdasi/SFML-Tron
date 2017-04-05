@@ -7,6 +7,12 @@
 
 struct ClientData;
 
+/* Class for the client to manage the flow of the game and record the
+ * list of players based on information from the server.
+ *
+ * The GameManager owns the client's version of the simulation, and thus
+ * all network messages regarding the simulation must go through here.
+ */
 class GameManager final : public Noncopyable
 {
 public:

@@ -10,6 +10,9 @@ PlayerMarker::PlayerMarker()
 
 
 
+/* Rotates the marker each call if the marker is visible. 
+ * The rotation speed is determined by the enlarged bool.
+ */
 void PlayerMarker::tick(const double _dt)
 {
     if (!visible)
@@ -23,6 +26,7 @@ void PlayerMarker::tick(const double _dt)
 
 
 
+// Draws the marker if it is marked as visible.
 void PlayerMarker::draw(sf::RenderWindow& _window) const
 {
     if (!visible)
@@ -63,6 +67,7 @@ void PlayerMarker::setVisible(const bool _visible)
 
 
 
+// Updates the size and origin of the marker based on the passed bool.
 void PlayerMarker::setEnlarged(const bool _enlarged)
 {
     enlarged = _enlarged;

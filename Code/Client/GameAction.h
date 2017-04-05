@@ -1,5 +1,6 @@
 #pragma once
 
+// The available actions the user can perform in the game.
 enum class GameAction
 {
     ACCEPT,
@@ -13,6 +14,7 @@ enum class GameAction
     BOOST
 };
 
+// The state a GameAction can be in.
 enum class ActionState
 {
     PRESSED,

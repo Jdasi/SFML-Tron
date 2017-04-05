@@ -7,7 +7,10 @@ class GameManager;
 class InputHandler;
 class GameAudio;
 
-struct ClientData
+/* Contains all important data used by the client.
+ * ClientData can be passed between states to grant access to core systems.
+ */
+struct ClientData final
 {
     ClientData(AssetManager* _asset_manager, NetworkManager* _network_manager,
         GameManager* _game_manager, InputHandler* _input_handler, GameAudio* _game_audio)
@@ -19,7 +22,7 @@ struct ClientData
         , exit(false)
         , delta_time(0)
         , play_time(0)
-        , server_bulletin_str("Connecting...")
+        , server_bulletin("Connecting...")
         , latency(0)
         , client_id(0)
         , victor_id(0)
@@ -36,7 +39,7 @@ struct ClientData
     double delta_time;
     double play_time;
 
-    std::string server_bulletin_str;
+    std::string server_bulletin;
     double latency;
 
     unsigned int client_id;

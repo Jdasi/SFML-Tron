@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Network.hpp>
 
+// The types of messages that can be sent over the network.
 enum class PacketID
 {
         DISCONNECT,

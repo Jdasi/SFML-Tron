@@ -79,6 +79,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Code\Game\BikeState.cpp" />
     <ClCompile Include="..\..\Code\Game\FileIO.cpp" />
     <ClCompile Include="..\..\Code\Game\Grid.cpp" />
     <ClCompile Include="..\..\Code\Game\Bike.cpp" />
@@ -87,6 +88,7 @@
     <ClCompile Include="..\..\Code\Game\Scheduler.cpp" />
     <ClCompile Include="..\..\Code\Game\SimpleTimer.cpp" />
     <ClCompile Include="..\..\Code\Game\Simulation.cpp" />
+    <ClCompile Include="..\..\Code\Game\SimulationState.cpp" />
     <ClCompile Include="..\..\Code\Game\ThreadDispatcher.cpp" />
   </ItemGroup>
   <ItemGroup>

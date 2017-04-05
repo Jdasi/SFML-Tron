@@ -15,6 +15,14 @@
 #include "AssetManager.h"
 #include "GameAudio.h"
 
+/* Main class which owns the majority of client-side functionality.
+ * TronClient and most of its members reside in one thread, with the exception of
+ * NetworkManager, which resides in its own thread.
+ *
+ * The two threads post events to each other via the ThreadDispatcher class,
+ * allowing for messages to cross the thread boundary with minimal interruption
+ * to the runtime behaviour of either thread.
+ */
 class TronClient final : public INetworkClient, public ThreadDispatcher
 {
 public:
@@ -29,14 +37,15 @@ public:
 
 private:
     void preloadSoundBuffers();
-    void initTextObjects();
     void initKeyboardBindings();
     void initControllerBindings();
     void initClientStates();
+    void initTextObjects();
 
+    // SFML events.
     void handleEvent(const sf::Event& _event);
 
-    // Network events called by TronNetworkManager.
+    // ThreadDispatcher events called by NetworkManager.
     void onConnected() override;
     void onDisconnected() override;
     void onUpdatePingTime(const double _ping) override;
@@ -63,7 +72,7 @@ private:
 
     sf::RenderWindow window;
 
-    // Core systems.
+    // Core systems & data.
     AssetManager asset_manager;
     NetworkManager network_manager;
     GameManager game_manager;

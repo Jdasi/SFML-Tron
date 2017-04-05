@@ -3,13 +3,20 @@
 #include <memory>
 
 #include <Game/Constants.h>
+#include <Game/PlayerState.h>
 #include "LobbySlot.h"
 
 struct ClientData;
-enum class PlayerState;
 class AssetManager;
 class GameManager;
 
+/* Class for visualising the list of players on the server.
+ * LobbyUI owns and arranges an array of LobbySlots, which display the
+ * actual information.
+ *
+ * LobbyUI needs to be occassionally refreshed to ensure the displayed
+ * information is up to date.
+ */
 class LobbyUI final
 {
 public:

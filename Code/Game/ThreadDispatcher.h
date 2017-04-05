@@ -4,6 +4,15 @@
 
 #include <Game/Noncopyable.h>
 
+/* Class for posting events between classes in a multi-threaded application.
+ *
+ * Dervied classes must call executeDispatchedMethods() in their main loop
+ * to activate any methods that have been posted to them.
+ *
+ * A copy of the methods queue is made before the methods are iterated 
+ * through, meaning it is ok to post events even while the owning thread 
+ * is executing its posted events.
+ */
 class ThreadDispatcher : public Noncopyable
 {
 public:

@@ -17,7 +17,7 @@ public:
     virtual ~ISimulation() = default;
 
     virtual void changeBikeDirection(const unsigned int _bike_id, const MoveDirection _dir) = 0;
-    virtual void overwrite(const SimulationState& _simulation_state) = 0;
+    virtual void overwriteState(const SimulationState& _simulation_state) = 0;
     virtual void overwriteBike(const BikeState& _bike_state) = 0;
     virtual void overwriteBikes(const std::array<BikeState, MAX_PLAYERS>& _bikes_states) = 0;
     virtual void removeBike(const unsigned int _bike_id) = 0;

@@ -11,6 +11,12 @@
 struct Vector2i;
 struct ClientData;
 
+/* Class for visualising the current state of the simulation on the client.
+ * The Visualisation must be attached to the simulation to function properly.
+ *
+ * The Visualisation listens to events from the simulation and
+ * updates its visuals accordingly.
+ */
 class Visualisation final : public SimulationListener
 {
 public:
@@ -28,6 +34,10 @@ private:
     void initBoostChargesText();
     void updateBoostChargesText();
 
+    void setTileColor(const unsigned int _index, const sf::Color& _color);
+    void setTileColor(const Vector2i& _pos, const sf::Color& _color);
+
+    // SimulationListener events.
     void clearCell(const Vector2i& _pos) override;
     void clearCellRange(const std::vector<Vector2i>& _positions) override;
     void simulationReset() override;
@@ -45,16 +55,12 @@ private:
     void bikesReset() override;
     void boostChargeGranted(const unsigned int _bike_id) override;
 
-    void setTileColor(const unsigned int _index, const sf::Color& _color);
-    void setTileColor(const Vector2i& _pos, const sf::Color& _color);
-
     ClientData* client_data;
-
     sf::Sprite backdrop;
     sf::RectangleShape border;
     std::array<std::unique_ptr<sf::RectangleShape>, GRID_AREA> tiles;
     std::array<PlayerMarker, MAX_PLAYERS> player_markers;
-    sf::Text boost_charges_text;
-    unsigned int displayed_charges;
+    sf::Text boost_charges_display;
+    unsigned int boost_charges;
 
 };

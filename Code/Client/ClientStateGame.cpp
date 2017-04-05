@@ -1,3 +1,5 @@
+#include <SFML/Graphics.hpp>
+
 #include <Game/GameStateIDs.h>
 #include <Game/JHelper.h>
 #include "ClientStateGame.h"
@@ -13,26 +15,22 @@ ClientStateGame::ClientStateGame(ClientData* _client_data)
     , visualisation(_client_data)
     , last_tick_value(0)
 {
+    // The Visualisation must be attached to the simulation to function correctly.
     client_data->game_manager->attachSimulationListener(&visualisation);
 
-    countdown_text.setFont(*client_data->asset_manager->loadFont(DEFAULT_FONT));
-
-    countdown_text.setCharacterSize(60);
-    countdown_text.setStyle(sf::Text::Bold);
-    countdown_text.setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 });
-
-    JHelper::centerSFOrigin(countdown_text);
+    initCountdownDisplay();
 }
 
 
 
 void ClientStateGame::onStateEnter()
 {
+    // Inform the server the client has loaded in.
     client_data->network_manager->sendPlayerStateChange(PlayerState::PLAYING);
 
-    countdown_text.setFillColor(sf::Color::White);
-    last_tick_value = static_cast<int>(COUNTDOWN_BEGIN);
+    resetCountdownDisplay();
 
+    // The client doesn't start off knowing its ID.
     visualisation.updateClientColor();
 }
 
@@ -43,14 +41,14 @@ void ClientStateGame::onStateLeave()
     client_data->game_audio->stopMusic();
     client_data->game_manager->resetSimulation();
 
-    countdown_text.setString("");
+    countdown_display.setString("");
 }
 
 
 
 void ClientStateGame::tick()
 {
-    updateCountdownText();
+    updateCountdownDisplay();
 
     visualisation.tick(client_data->delta_time);
 }
@@ -61,7 +59,7 @@ void ClientStateGame::draw(sf::RenderWindow& _window)
 {
     visualisation.draw(_window);
 
-    _window.draw(countdown_text);
+    _window.draw(countdown_display);
 
     for (auto& drawable : drawables)
     {
@@ -77,6 +75,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
     {
         if (_action_state == ActionState::PRESSED)
         {
+            // Inform the server the client has gone back to lobby.
             client_data->network_manager->sendPlayerStateChange(PlayerState::NOTREADY);
             getHandler()->queueState(STATE_LOBBY);
         }
@@ -90,10 +89,30 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
 
 
 
-void ClientStateGame::updateCountdownText()
+void ClientStateGame::initCountdownDisplay()
+{
+    countdown_display.setFont(*client_data->asset_manager->loadFont(DEFAULT_FONT));
+    countdown_display.setCharacterSize(60);
+    countdown_display.setStyle(sf::Text::Bold);
+    countdown_display.setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 });
+
+    JHelper::centerSFOrigin(countdown_display);
+}
+
+
+
+void ClientStateGame::resetCountdownDisplay()
+{
+    countdown_display.setFillColor(sf::Color::White);
+    last_tick_value = static_cast<int>(COUNTDOWN_BEGIN);
+}
+
+
+
+void ClientStateGame::updateCountdownDisplay()
 {
     int timer_value = client_data->game_manager->getCountdownDigit();
-    countdown_text.setString(std::to_string(timer_value + 1));
+    countdown_display.setString(std::to_string(timer_value + 1));
 
     if (timer_value < last_tick_value)
     {
@@ -104,7 +123,7 @@ void ClientStateGame::updateCountdownText()
 
     if (client_data->game_manager->simulationRunning())
     {
-        countdown_text.setFillColor(sf::Color::Transparent);
+        countdown_display.setFillColor(sf::Color::Transparent);
     }
 }
 
@@ -113,13 +132,19 @@ void ClientStateGame::updateCountdownText()
 void ClientStateGame::handleBikeControls(const GameAction _action, 
     const ActionState _action_state) const
 {
+    if (_action == GameAction::BOOST)
+    {
+        if (_action_state == ActionState::PRESSED)
+        {
+            return client_data->network_manager->sendBikeBoost();
+        }
+    }
+
     if (_action == GameAction::MOVE_UP)
     {
         if (_action_state == ActionState::PRESSED)
         {
-            auto dir = MoveDirection::UP;
-
-            client_data->network_manager->sendBikeDirectionChange(dir);
+            client_data->network_manager->sendBikeDirectionChange(MoveDirection::UP);
         }
     }
 
@@ -127,9 +152,7 @@ void ClientStateGame::handleBikeControls(const GameAction _action,
     {
         if (_action_state == ActionState::PRESSED)
         {
-            auto dir = MoveDirection::DOWN;
-
-            client_data->network_manager->sendBikeDirectionChange(dir);
+            client_data->network_manager->sendBikeDirectionChange(MoveDirection::DOWN);
         }
     }
 
@@ -137,9 +160,7 @@ void ClientStateGame::handleBikeControls(const GameAction _action,
     {
         if (_action_state == ActionState::PRESSED)
         {
-            auto dir = MoveDirection::LEFT;
-
-            client_data->network_manager->sendBikeDirectionChange(dir);
+            client_data->network_manager->sendBikeDirectionChange(MoveDirection::LEFT);
         }
     }
 
@@ -147,17 +168,7 @@ void ClientStateGame::handleBikeControls(const GameAction _action,
     {
         if (_action_state == ActionState::PRESSED)
         {
-            auto dir = MoveDirection::RIGHT;
-
-            client_data->network_manager->sendBikeDirectionChange(dir);
-        }
-    }
-
-    if (_action == GameAction::BOOST)
-    {
-        if (_action_state == ActionState::PRESSED)
-        {
-            client_data->network_manager->sendBikeBoost();
+            client_data->network_manager->sendBikeDirectionChange(MoveDirection::RIGHT);
         }
     }
 }

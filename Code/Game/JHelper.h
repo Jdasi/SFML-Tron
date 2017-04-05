@@ -10,6 +10,9 @@ namespace sf
 #include "CellValue.h"
 #include "Vector2i.h"
 
+/* Various functions that don't belong in one specific place and are useful
+ * in many areas.
+ */
 namespace JHelper
 {
     int calculateIndex(const unsigned int _x, const unsigned int _y, const unsigned int _size_x);

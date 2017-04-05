@@ -14,6 +14,9 @@ LobbyUI::LobbyUI(ClientData* _client_data)
 
 
 
+/* Refreshes the displayed information of the UI based on the 
+ * current state of the game_manager's list of players.
+ */
 void LobbyUI::refresh()
 {
     for (int i = 0; i < MAX_PLAYERS; ++i)
@@ -49,13 +52,15 @@ void LobbyUI::draw(sf::RenderWindow& _window)
 
 
 
+// Configures each slot with (currently) hard-coded position/size values.
 void LobbyUI::initSlots()
 {
     for (int i = 0; i < MAX_PLAYERS; ++i)
     {
-        slots[i] = std::make_unique<LobbySlot>(
-            client_data->asset_manager->loadFont(DEFAULT_FONT));
         auto& slot = slots[i];
+
+        slot = std::make_unique<LobbySlot>(
+            client_data->asset_manager->loadFont(DEFAULT_FONT));
 
         slot->setRectangleSize({ 400.0f, 80.0f });
         slot->setPosition({ WINDOW_WIDTH / 2.0f, 150.0f + (100.0f * i) });
@@ -69,18 +74,19 @@ void LobbyUI::initSlots()
 
 
 
+// Helper function to translate a PlayerState into a readable string.
 std::string LobbyUI::playerStateToString(const PlayerState& _state) const
 {
     switch (_state)
     {
-        case PlayerState::NOTREADY:         return "Not Ready";
-        case PlayerState::READY:            return "Ready";
+        case PlayerState::NOTREADY:         { return "Not Ready";       }
+        case PlayerState::READY:            { return "Ready";           }
 
-        case PlayerState::STARTING_GAME:
-        case PlayerState::PLAYING:          return "Playing";
+        case PlayerState::STARTING_GAME:    { return "Starting Game";   }
+        case PlayerState::PLAYING:          { return "Playing";         }
 
-        case PlayerState::VIEWING_RESULTS:  return "Viewing Results";
+        case PlayerState::VIEWING_RESULTS:  { return "Viewing Results"; }
 
-        default: return "Empty";
+        default: { return "Empty"; }
     }
 }

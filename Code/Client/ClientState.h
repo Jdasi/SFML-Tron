@@ -26,7 +26,8 @@ public:
     
     ~ClientState() = default;
 
-    virtual void onCommand(const GameAction _action, const ActionState _action_state) = 0;
+    virtual void onCommand(const GameAction _action, 
+        const ActionState _action_state) = 0;
 
     void onStateEnter() override = 0;
     void onStateLeave() override = 0;

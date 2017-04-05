@@ -14,6 +14,7 @@ using namespace std::placeholders;
 #define registerPacketHandler(id, func) \
     packet_handlers.emplace(id, std::bind(&NetworkManager::func, this, _1))
 
+// Initialises data and starts up the network thread.
 NetworkManager::NetworkManager(INetworkClient& _client)
     : client(_client)
     , socket()
@@ -32,6 +33,7 @@ NetworkManager::NetworkManager(INetworkClient& _client)
 
 
 
+// The thread must be joined upon destruction of the NetworkManager.
 NetworkManager::~NetworkManager()
 {
     stopNetworkingThread();
@@ -39,6 +41,7 @@ NetworkManager::~NetworkManager()
 
 
 
+// Continually tries to connect to the server until the program exits.
 void NetworkManager::connect(const sf::IpAddress& _ip_address,
     const unsigned int _tcp_port)
 {
@@ -56,6 +59,7 @@ void NetworkManager::connect(const sf::IpAddress& _ip_address,
         socket.setBlocking(false);
         has_connected = true;
 
+        // Inform the client we have connected.
         client.onConnected();
 
         sendPing();
@@ -64,6 +68,7 @@ void NetworkManager::connect(const sf::IpAddress& _ip_address,
 
 
 
+// Inform the server when the client gracefully disconnects.
 void NetworkManager::disconnect()
 {
     postEvent([this]()
@@ -77,6 +82,7 @@ void NetworkManager::disconnect()
 
 
 
+// Call to send a message to the server.
 void NetworkManager::sendChatMessage(const std::string& _message)
 {
     postEvent([this, _message]()
@@ -92,6 +98,9 @@ void NetworkManager::sendChatMessage(const std::string& _message)
 
 
 
+/* Call to send a PlayerState associated with the client's id to the server.
+ * The server already knows the client's id, so it does not need to be sent.
+ */
 void NetworkManager::sendPlayerStateChange(const PlayerState _state)
 {
     postEvent([this, _state]()
@@ -107,6 +116,9 @@ void NetworkManager::sendPlayerStateChange(const PlayerState _state)
 
 
 
+/* Call to change the direction of the bike associated with the client's id.
+ * The server already knows the client's id, so it does not need to be sent.
+ */
 void NetworkManager::sendBikeDirectionChange(const MoveDirection _dir)
 {
     postEvent([this, _dir]()
@@ -122,6 +134,9 @@ void NetworkManager::sendBikeDirectionChange(const MoveDirection _dir)
 
 
 
+/* Call to activate the boost of the bike associated with the client's id.
+ * The server already knows the client's id, so it does not need to be sent.
+ */
 void NetworkManager::sendBikeBoost()
 {
     postEvent([this]()
@@ -135,6 +150,9 @@ void NetworkManager::sendBikeBoost()
 
 
 
+/* NetworkManager's verson of a 'main loop', on its own thread.
+ * Packets are listened for here and are passed on for handling.
+ */
 void NetworkManager::networkingThread()
 {
     while (running)
@@ -158,21 +176,22 @@ void NetworkManager::networkingThread()
             case sf::Socket::Done:
             {
                 handlePacket(packet);
-            } break;
+
+                break;
+            }
 
             case sf::Socket::Disconnected:
             case sf::Socket::Error:
             {
                 running = false;
                 client.onDisconnected();
-                return;
+
+                break;
             }
 
             case sf::Socket::NotReady:
             case sf::Socket::Partial:
-            default:
-            {
-            } break;
+            default: {}
         }
     }
 }
@@ -187,29 +206,33 @@ void NetworkManager::stopNetworkingThread()
 
 
 
+// The packet handlers required by the client to handle incoming server messages.
 void NetworkManager::registerPacketHandlers()
 {
-    registerPacketHandler(PacketID::PONG,               handlePongPacket);
-    registerPacketHandler(PacketID::IDENTITY,           handleIdentityPacket);
-    registerPacketHandler(PacketID::PLAYER_LIST,        handlePlayerListPacket);
-    registerPacketHandler(PacketID::PLAYER_JOINED,      handlePlayerJoinedPacket);
-    registerPacketHandler(PacketID::PLAYER_LEFT,        handlePlayerLeftPacket);
-    registerPacketHandler(PacketID::MESSAGE,            handleMessagePacket);
-    registerPacketHandler(PacketID::BULLETIN,           handleServerBulletinPacket);
-    registerPacketHandler(PacketID::PLAYER_STATE,       handlePlayerStateChangePacket);
-    registerPacketHandler(PacketID::GAME_STATE,         handleGameStateChangePacket);
-    registerPacketHandler(PacketID::FLOW_CONTROL,       handleFlowControlPacket);
-    registerPacketHandler(PacketID::VICTOR,             handleVictorPacket);
-    registerPacketHandler(PacketID::SYNC_BIKE,          handleBikeSyncPacket);
-    registerPacketHandler(PacketID::SYNC_ALL_BIKES,     handleFullBikeSyncPacket);
-    registerPacketHandler(PacketID::SYNC_SIMULATION,    handleFullSyncPacket);
-    registerPacketHandler(PacketID::BIKE_REMOVED,       handleBikeRemovedPacket);
-    registerPacketHandler(PacketID::BIKE_BOOST,         handleBikeBoostPacket);
-    registerPacketHandler(PacketID::EXTRA_BOOST,        handleExtraBoostChargePacket);
+    registerPacketHandler(PacketID::PONG,             handlePongPacket);
+    registerPacketHandler(PacketID::IDENTITY,         handleIdentityPacket);
+    registerPacketHandler(PacketID::PLAYER_LIST,      handlePlayerListPacket);
+    registerPacketHandler(PacketID::PLAYER_JOINED,    handlePlayerJoinedPacket);
+    registerPacketHandler(PacketID::PLAYER_LEFT,      handlePlayerLeftPacket);
+    registerPacketHandler(PacketID::MESSAGE,          handleMessagePacket);
+    registerPacketHandler(PacketID::BULLETIN,         handleServerBulletinPacket);
+    registerPacketHandler(PacketID::PLAYER_STATE,     handlePlayerStateChangePacket);
+    registerPacketHandler(PacketID::GAME_STATE,       handleGameStateChangePacket);
+    registerPacketHandler(PacketID::FLOW_CONTROL,     handleFlowControlPacket);
+    registerPacketHandler(PacketID::VICTOR,           handleVictorPacket);
+    registerPacketHandler(PacketID::SYNC_BIKE,        handleBikeSyncPacket);
+    registerPacketHandler(PacketID::SYNC_ALL_BIKES,   handleFullBikeSyncPacket);
+    registerPacketHandler(PacketID::SYNC_SIMULATION,  handleFullSyncPacket);
+    registerPacketHandler(PacketID::BIKE_REMOVED,     handleBikeRemovedPacket);
+    registerPacketHandler(PacketID::BIKE_BOOST,       handleBikeBoostPacket);
+    registerPacketHandler(PacketID::EXTRA_BOOST,      handleExtraBoostChargePacket);
 }
 
 
 
+/* Generic pass-through function which determines the appropriate 
+ * packet handler function to call, based on those which have been registered.
+ */
 void NetworkManager::handlePacket(sf::Packet& _packet)
 {
     PacketID pid = getPacketID(_packet);
@@ -218,6 +241,9 @@ void NetworkManager::handlePacket(sf::Packet& _packet)
 
 
 
+/* Client-side ping-pong behaviour.
+ * Once a pong has been sent and received, a new ping request is scheduled.
+ */
 void NetworkManager::handlePongPacket(sf::Packet& _packet)
 {
     using namespace std::chrono;
@@ -232,6 +258,7 @@ void NetworkManager::handlePongPacket(sf::Packet& _packet)
 
 
 
+// Informs the client's id which is used for bike controls and colouring.
 void NetworkManager::handleIdentityPacket(sf::Packet& _packet) const
 {
     sf::Uint8 temp_id;
@@ -242,6 +269,7 @@ void NetworkManager::handleIdentityPacket(sf::Packet& _packet) const
 
 
 
+// Informs the client of all players currently connected to the server.
 void NetworkManager::handlePlayerListPacket(sf::Packet& _packet) const
 {
     std::vector<Player> players;
@@ -264,6 +292,7 @@ void NetworkManager::handlePlayerListPacket(sf::Packet& _packet) const
 
 
 
+// Informs the client when a new player has joined the server.
 void NetworkManager::handlePlayerJoinedPacket(sf::Packet& _packet) const
 {
     sf::Uint8 temp_id;
@@ -274,6 +303,7 @@ void NetworkManager::handlePlayerJoinedPacket(sf::Packet& _packet) const
 
 
 
+// Informs the client when a player has left the server.
 void NetworkManager::handlePlayerLeftPacket(sf::Packet& _packet) const
 {
     sf::Uint8 temp_id;
@@ -294,6 +324,7 @@ void NetworkManager::handleMessagePacket(sf::Packet& _packet) const
 
 
 
+// Informs the client when the server's bulletin changes.
 void NetworkManager::handleServerBulletinPacket(sf::Packet& _packet) const
 {
     std::string bulletin;
@@ -304,6 +335,7 @@ void NetworkManager::handleServerBulletinPacket(sf::Packet& _packet) const
 
 
 
+// Informs the client when a user's state changes.
 void NetworkManager::handlePlayerStateChangePacket(sf::Packet& _packet) const
 {
     sf::Uint8 temp_id;
@@ -316,6 +348,7 @@ void NetworkManager::handlePlayerStateChangePacket(sf::Packet& _packet) const
 
 
 
+// Informs the client when the server's state changes.
 void NetworkManager::handleGameStateChangePacket(sf::Packet& _packet) const
 {
     sf::Uint8 state;
@@ -326,6 +359,7 @@ void NetworkManager::handleGameStateChangePacket(sf::Packet& _packet) const
 
 
 
+// Informs the client what state the server's simulation is in.
 void NetworkManager::handleFlowControlPacket(sf::Packet& _packet) const
 {
     sf::Uint8 flow;
@@ -336,6 +370,7 @@ void NetworkManager::handleFlowControlPacket(sf::Packet& _packet) const
 
 
 
+// Informs the client who won the last round.
 void NetworkManager::handleVictorPacket(sf::Packet& _packet) const
 {
     sf::Uint8 bike_id;
@@ -346,6 +381,7 @@ void NetworkManager::handleVictorPacket(sf::Packet& _packet) const
 
 
 
+// Informs the client of a bike that needs to be synchronised.
 void NetworkManager::handleBikeSyncPacket(sf::Packet& _packet) const
 {
     BikeState bike_state;
@@ -356,6 +392,7 @@ void NetworkManager::handleBikeSyncPacket(sf::Packet& _packet) const
 
 
 
+// Informs the client that all bikes need to be synchronised.
 void NetworkManager::handleFullBikeSyncPacket(sf::Packet& _packet) const
 {
     std::array<BikeState, MAX_PLAYERS> bike_states;
@@ -370,6 +407,7 @@ void NetworkManager::handleFullBikeSyncPacket(sf::Packet& _packet) const
 
 
 
+// Informs the client that the whole simulation needs to be synchronised.
 void NetworkManager::handleFullSyncPacket(sf::Packet& _packet) const
 {
     SimulationState simulation_state;
@@ -380,6 +418,9 @@ void NetworkManager::handleFullSyncPacket(sf::Packet& _packet) const
 
 
 
+/* Informs the client that a bike was removed from the simulation.
+ * Either because the controlling player left or the bike was destroyed.
+ */
 void NetworkManager::handleBikeRemovedPacket(sf::Packet& _packet) const
 {
     sf::Uint8 bike_id;
@@ -390,6 +431,7 @@ void NetworkManager::handleBikeRemovedPacket(sf::Packet& _packet) const
 
 
 
+// Informs the client a bike activated its boost.
 void NetworkManager::handleBikeBoostPacket(sf::Packet& _packet) const
 {
     sf::Uint8 bike_id;
@@ -400,6 +442,7 @@ void NetworkManager::handleBikeBoostPacket(sf::Packet& _packet) const
 
 
 
+// Informs the client a bike was given an additional boost charge.
 void NetworkManager::handleExtraBoostChargePacket(sf::Packet& _packet) const
 {
     sf::Uint8 bike_id;
@@ -410,6 +453,7 @@ void NetworkManager::handleExtraBoostChargePacket(sf::Packet& _packet) const
 
 
 
+// Convenience method for sending whole packets in non-blocking mode.
 void NetworkManager::sendPacket(sf::Packet& _packet)
 {
     while (socket.send(_packet) == sf::Socket::Partial){}
@@ -417,6 +461,7 @@ void NetworkManager::sendPacket(sf::Packet& _packet)
 
 
 
+// Convenience method for sending pings to the server.
 void NetworkManager::sendPing()
 {
     pre_ping = std::chrono::steady_clock::now();

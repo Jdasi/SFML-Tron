@@ -17,6 +17,13 @@ class Player;
 struct SimulationState;
 struct BikeState;
 
+/* Class for handling all of the network messages from the client to server
+ * and vice versa.
+ *
+ * NetworkManager owns the thread on which all network events are handled.
+ * TronClient and NetworkManager post events to each other to send data
+ * over the thread boundary, minimising the amount of disruption on either thread.
+ */
 class NetworkManager final : public ThreadDispatcher
 {
 public:
@@ -26,6 +33,7 @@ public:
     void connect(const sf::IpAddress& _ip_address, const unsigned int _tcp_port);
     void disconnect();
 
+    // Network events for the TronClient to call.
     void sendChatMessage(const std::string& _message);
     void sendPlayerStateChange(const PlayerState _state = PlayerState::READY);
     void sendBikeDirectionChange(const MoveDirection _dir);
@@ -56,6 +64,7 @@ private:
     void handleExtraBoostChargePacket(sf::Packet& _packet) const;
     void handleServerBulletinPacket(sf::Packet& _packet) const;
 
+    // Convenience methods.
     void sendPacket(sf::Packet& _packet);
     void sendPing();
 

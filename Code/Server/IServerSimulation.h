@@ -6,6 +6,12 @@
 struct BikeState;
 struct SimulationState;
 
+/* Interface class used by SimulationThread to decouple the simulation from
+ * the TronServer.
+ *
+ * This provides a simplified interface inside the SimulationThread for dealing
+ * with events that should be passed to the server for processing.
+ */
 class IServerSimulation
 {
 public:

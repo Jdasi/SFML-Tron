@@ -35,6 +35,9 @@ void LobbySlot::setPlayerStateText(const std::string& _str)
 
 
 
+/* Updates the slot's occupied status. 
+ * The border and text objects are updated automatically.
+ */
 void LobbySlot::setOccupied(const bool _occupied)
 {
     occupied = _occupied;
@@ -49,6 +52,7 @@ void LobbySlot::setOccupied(const bool _occupied)
 
 
 
+// Informs the slot of its border colour when the slot is marked as occupied.
 void LobbySlot::setOccupiedColor(const sf::Color& _color)
 {
     occupied_color = _color;
@@ -56,6 +60,9 @@ void LobbySlot::setOccupiedColor(const sf::Color& _color)
 
 
 
+/* Sets overall position of the slot. 
+ * The text objects are automatically arranged based on the new position.
+ */
 void LobbySlot::setPosition(const sf::Vector2f& _pos)
 {
     rectangle.setPosition(_pos);
@@ -65,6 +72,7 @@ void LobbySlot::setPosition(const sf::Vector2f& _pos)
 
 
 
+// Updates the size and origin of the rectangle. The text objects are unaffected.
 void LobbySlot::setRectangleSize(const sf::Vector2f& _size)
 {
     rectangle.setSize(_size);

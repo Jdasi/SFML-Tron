@@ -9,10 +9,10 @@ class Player;
 struct SimulationState;
 struct BikeState;
 
-/* Interface class used by TronNetworkManager to decouple networking from
+/* Interface class used by NetworkManager to decouple networking from
  * the TronClient.
  *
- * This provides a simplified interface inside TronNetworkManager for dealing
+ * This provides a simplified interface inside NetworkManager for dealing
  * with events that should be passed to the client for processing.
  */
 class INetworkClient

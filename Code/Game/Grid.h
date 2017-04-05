@@ -7,6 +7,11 @@
 
 struct Vector2i;
 
+/* Class for holding an array of values equal to the GRID_AREA
+ * defined in Constants.h.
+ *
+ * Used by the simulation to create the gameplay.
+ */
 class Grid
 {
 public:

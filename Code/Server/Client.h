@@ -5,6 +5,9 @@
 
 #include <Game/PlayerState.h>
 
+/* Class to store information regarding an entity (client) that has
+ * connected to the server.
+ */
 class Client
 {
 public:

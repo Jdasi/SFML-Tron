@@ -3,6 +3,7 @@
 #include "SimulationThread.h"
 #include "IServerSimulation.h"
 
+// Initialises member data and launches the simulation thread.
 SimulationThread::SimulationThread(IServerSimulation& _server)
     : thread_running(true)
     , simulation_running(false)
@@ -21,6 +22,7 @@ SimulationThread::SimulationThread(IServerSimulation& _server)
 
 
 
+// The thread must be joined on destruction of the SimulationThread.
 SimulationThread::~SimulationThread()
 {
     stopSimulationThread();
@@ -28,6 +30,9 @@ SimulationThread::~SimulationThread()
 
 
 
+/* Called when the simulation needs to be prepared for use.
+ * E.g. when all clients have readied up in the lobby.
+ */
 void SimulationThread::eventPrepareSimulation(const std::vector<int>& _bike_ids)
 {
     postEvent([this, _bike_ids]()
@@ -37,10 +42,15 @@ void SimulationThread::eventPrepareSimulation(const std::vector<int>& _bike_ids)
             simulation.addBike(id);
         }
 
-        server.onSyncSimulation(simulation.getState());
+        server.onSyncAllBikes(simulation.getBikeStates());
     });
 }
 
+
+
+/* Called when the simulation needs to be started 
+ * E.g. when all clients are loaded in to the game state.
+ */
 void SimulationThread::eventStartSimulation()
 {
     postEvent([this]()
@@ -54,13 +64,15 @@ void SimulationThread::eventStartSimulation()
 }
 
 
+
+// Called when the simulation needs to be stopped.
 void SimulationThread::eventStopSimulation()
 {
     postEvent([this]()
     {
         simulation_running = false;
         server.onSimulationStopping();
-        server.onSyncSimulation(simulation.getState());
+        server.onSyncAllBikes(simulation.getBikeStates());
 
         scheduler.invoke([this]()
         {
@@ -72,6 +84,7 @@ void SimulationThread::eventStopSimulation()
 
 
 
+// Called when the simulation needs to be reset.
 void SimulationThread::eventResetSimulation()
 {
     postEvent([this]()
@@ -80,30 +93,31 @@ void SimulationThread::eventResetSimulation()
 
         resetSimulation();
         server.onSimulationReset();
-
-        server.onSyncSimulation(simulation.getState());
     });
 }
 
 
 
-void SimulationThread::eventDirectionChanged(const unsigned int _bike_id, const MoveDirection _dir)
+// Called when a bike needs to change direction.
+void SimulationThread::eventDirectionChanged(const unsigned int _bike_id, 
+    const MoveDirection _dir)
 {
     postEvent([this, _bike_id, _dir]()
     {
         simulation.changeBikeDirection(_bike_id, _dir);
 
-        server.onSyncBike(simulation.getBike(_bike_id).getState());
+        server.onSyncBike(simulation.getBikeState(_bike_id));
     });
 }
 
 
 
+// Called when a bike needs to boost.
 void SimulationThread::eventBoost(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
-        if (simulation.getBike(_bike_id).activateBoost())
+        if (simulation.activateBikeBoost(_bike_id))
         {
             server.onBikeBoost(_bike_id);
         }
@@ -112,17 +126,12 @@ void SimulationThread::eventBoost(const unsigned int _bike_id)
 
 
 
+// Called when a player has left the game.
 void SimulationThread::eventPlayerLeft(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
-        auto& bike = simulation.getBike(_bike_id);
-
-        if (bike.isAlive())
-        {
-            bike.setAlive(false);
-            server.onSyncBike(bike.getState());
-        }
+        simulation.removeBike(_bike_id);
     });
 }
 
@@ -135,6 +144,10 @@ void SimulationThread::stopSimulationThread()
 
 
 
+/* Main loop for the simulation thread.
+ * Here the dispatched methods are executed, and a scheduled
+ * synchronisation of all the simulation's bikes is handled.
+ */
 void SimulationThread::simulationThreadLoop()
 {
     while (thread_running)
@@ -167,6 +180,9 @@ void SimulationThread::resetSimulation()
 
 
 
+/* Schedules a synchronisation event of all the simulation's bikes
+ * if one is needed.
+ */
 void SimulationThread::scheduleAllBikeSync(const double _time)
 {
     if (bike_sync_needed)
@@ -180,7 +196,7 @@ void SimulationThread::scheduleAllBikeSync(const double _time)
                 return;
             }
 
-            server.onSyncAllBikes(simulation.getBikes());
+            server.onSyncAllBikes(simulation.getBikeStates());
             bike_sync_needed = true;
 
             std::cout << "Sync all bikes event" << std::endl;
@@ -190,6 +206,9 @@ void SimulationThread::scheduleAllBikeSync(const double _time)
 
 
 
+/* Schedules a synchronisation event for the server to send the simulation
+ * through to all clients. Note: this is currently unused by the program.
+ */
 void SimulationThread::scheduleSimulationSync(const double _time)
 {
     if (full_sync_needed)
@@ -213,14 +232,16 @@ void SimulationThread::scheduleSimulationSync(const double _time)
 
 
 
+// Tell the server that a bike was just destroyed.
 void SimulationThread::bikeRemoved(const unsigned int _bike_id)
 {
     server.onBikeRemoved(_bike_id);
-    server.onSyncBike(simulation.getBike(_bike_id).getState());
+    server.onSyncBike(simulation.getBikeState(_bike_id));
 }
 
 
 
+// Tell the server that a bike has just boosted.
 void SimulationThread::boostChargeGranted(const unsigned int _bike_id)
 {
     server.onBoostChargeGranted(_bike_id);
@@ -228,6 +249,7 @@ void SimulationThread::boostChargeGranted(const unsigned int _bike_id)
 
 
 
+// Tell the server that the simulation has ended and there is a victor.
 void SimulationThread::simulationVictor(const unsigned int _bike_id)
 {
     server.onSimulationVictor(_bike_id);
@@ -236,6 +258,7 @@ void SimulationThread::simulationVictor(const unsigned int _bike_id)
 
 
 
+// Tell the server that the simulation has reset.
 void SimulationThread::simulationEmpty()
 {
     eventResetSimulation();

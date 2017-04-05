@@ -3,11 +3,15 @@
 
 Bike::Bike()
 {
+    /* We assume a bike will travel across one tenth of the playing area
+     * during its lifetime. If it travels further the vector will expand.
+     */
     state.line.reserve(GRID_AREA / 10);
 }
 
 
 
+// Update the bike's boost timer.
 void Bike::tick(const double _dt)
 {
     if (state.boost_timer > 0)
@@ -39,7 +43,10 @@ void Bike::setID(const unsigned int _id)
 
 
 
-BikeState Bike::getState() const
+/* Bikes can return a ref to their BikeState because it can only
+ * be accessed through a simulation, which returns a copy.
+ */
+const BikeState& Bike::getState() const
 {
     return state;
 }

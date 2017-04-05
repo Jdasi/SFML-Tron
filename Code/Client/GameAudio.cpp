@@ -10,7 +10,9 @@ GameAudio::GameAudio(AssetManager* _asset_manager, bool* in_focus)
 }
 
 
-void GameAudio::tick(const double _dt)
+
+// Mutes the background music whenever the window has lost focus.
+void GameAudio::tick(const double _dt) const
 {
     if (!background_music)
     {
@@ -20,6 +22,13 @@ void GameAudio::tick(const double _dt)
     background_music->setVolume(in_focus ? music_volume : 0);
 }
 
+
+
+/* Plays a sound from Resources/Audio. Example usage: playSound("my_sound.ogg")
+ * A sound is constructed and then played if it has not already been loaded.
+ *
+ * playSound will abort early if the window is not in focus to avoid sound pollution.
+ */
 void GameAudio::playSound(const std::string& _file)
 {
     if (!in_focus)
@@ -43,6 +52,11 @@ void GameAudio::playSound(const std::string& _file)
 
 
 
+/* Streams music from Resources/Audio. Example usage: playMusic("my_music.ogg")
+ * Calling this function while music is playing will cause the current music to stop.
+ *
+ * Optional params are volume and repeating.
+ */
 void GameAudio::playMusic(const std::string& _file, const float _volume, 
     const bool _repeating)
 {
@@ -64,6 +78,7 @@ void GameAudio::playMusic(const std::string& _file, const float _volume,
 
 
 
+// Pauses the current music, if any.
 void GameAudio::pauseMusic() const
 {
     if (background_music)
@@ -74,6 +89,7 @@ void GameAudio::pauseMusic() const
 
 
 
+// Resumes the current music, if any.
 void GameAudio::resumeMusic() const
 {
     if (background_music)
@@ -84,6 +100,7 @@ void GameAudio::resumeMusic() const
 
 
 
+// Stops the current music, if any.
 void GameAudio::stopMusic()
 {
     if (!background_music)

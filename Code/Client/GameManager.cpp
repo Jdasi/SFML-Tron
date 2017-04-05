@@ -13,6 +13,9 @@ GameManager::GameManager(ClientData* _client_data)
 
 
 
+/* Updates the countdown timer if it is running, or ticks the simulation
+ * once the countdown has finished.
+ */
 void GameManager::tick()
 {
     if (countdown_started)
@@ -31,6 +34,7 @@ void GameManager::tick()
 
 
 
+// Call when the client's simulation countdown should begin.
 void GameManager::startCountdown()
 {
     countdown_timer = COUNTDOWN_BEGIN;
@@ -39,6 +43,7 @@ void GameManager::startCountdown()
 
 
 
+// Call when the client's simulation should begin.
 void GameManager::startSimulation()
 {
     simulation_running = true;
@@ -47,6 +52,7 @@ void GameManager::startSimulation()
 
 
 
+// Call when the client's simulation should stop.
 void GameManager::stopSimulation()
 {
     simulation_running = false;
@@ -55,6 +61,7 @@ void GameManager::stopSimulation()
 
 
 
+// Call when the client's simulation should be reset.
 void GameManager::resetSimulation()
 {
     stopSimulation();
@@ -63,6 +70,7 @@ void GameManager::resetSimulation()
 
 
 
+// Used by ClientStateGame to display the countdown.
 int GameManager::getCountdownDigit() const
 {
     return static_cast<int>(countdown_timer);
@@ -70,6 +78,7 @@ int GameManager::getCountdownDigit() const
 
 
 
+// Returns true if the simulation is running, otherwise returns false.
 bool GameManager::simulationRunning() const
 {
     return simulation_running;
@@ -77,6 +86,7 @@ bool GameManager::simulationRunning() const
 
 
 
+// Convenience method for attaching a SimulationListener to the simulation.
 void GameManager::attachSimulationListener(SimulationListener* _listener)
 {
     simulation.attachListener(_listener);
@@ -84,6 +94,10 @@ void GameManager::attachSimulationListener(SimulationListener* _listener)
 
 
 
+/* Gets the streamlined network interface of the simulation.
+ * This is to avoid exposing certain functionality to other classes
+ * that don't own the simulation.
+ */
 ISimulation* GameManager::getNetworkSimulation()
 {
     return &simulation;

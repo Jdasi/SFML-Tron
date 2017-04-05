@@ -11,6 +11,14 @@ namespace sf
 
 class TronClient;
 
+/* Class for translating passed SFML events into GameActions.
+ * The InputHandler assumes that the window is in focus and is taking input.
+ *
+ * Lists of unique bindings are checked to determine if the key or button code
+ * translates into a GameAction.
+ *
+ * The same key cannot be registered with the InputHandler more than once.
+ */
 class InputHandler final
 {
 public:
@@ -30,7 +38,7 @@ public:
     void registerControllerButton(const unsigned int _button, const GameAction _game_action);
 
 private:
-    void handleJoystickMovement() const;
+    void handleJoystickMovement();
     bool axisFirstPushed(const float _axis, const float _prev_axis,
         const float _deadzone) const;
 

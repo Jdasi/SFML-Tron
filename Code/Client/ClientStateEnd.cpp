@@ -2,6 +2,7 @@
 
 #include <Game/Constants.h>
 #include <Game/JHelper.h>
+#include <Game/GameStateIDs.h>
 #include "ClientStateEnd.h"
 #include "ClientStateHandler.h"
 #include "ClientData.h"
@@ -22,6 +23,7 @@ ClientStateEnd::ClientStateEnd(ClientData* _client_data)
 
 
 
+// Display victory message and play victory sound on entry.
 void ClientStateEnd::onStateEnter()
 {
     client_data->game_audio->playSound(GAME_OVER_CUE);
@@ -81,11 +83,13 @@ void ClientStateEnd::onCommand(const GameAction _action, const ActionState _acti
         }
     }
 
-    if (_action == GameAction::ACCEPT)
+    if (_action == GameAction::ACCEPT || _action == GameAction::BOOST)
     {
         if (_action_state == ActionState::PRESSED)
         {
+            // Inform the server the client has gone back to lobby.
             client_data->network_manager->sendPlayerStateChange();
+            getHandler()->queueState(STATE_LOBBY);
         }
     }
 }

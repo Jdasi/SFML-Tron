@@ -12,6 +12,13 @@ namespace sf
 #include "MoveDirection.h"
 #include "Vector2i.h"
 
+/* Class that represents a player controlled movable object inside the simulation.
+ *
+ * The Bike itself is non-copyable, but the BikeState data that it uses can be
+ * copied for the purposes of synchronising a bike across clients.
+ *
+ * The Bike's move timer and extra boost timers are handled by the simulation.
+ */
 class Bike final : public Noncopyable
 {
 public:
@@ -23,7 +30,7 @@ public:
     unsigned int getID() const;
     void setID(const unsigned int _id);
 
-    BikeState getState() const;
+    const BikeState& getState() const;
     void overwriteState(const BikeState& _state);
 
     MoveDirection getDirection() const;

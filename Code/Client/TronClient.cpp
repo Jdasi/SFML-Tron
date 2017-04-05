@@ -22,16 +22,18 @@ TronClient::TronClient(const ServerSettings& _server_settings)
 {
     preloadSoundBuffers();
     initTextObjects();
+    initKeyboardBindings();
+    initControllerBindings();
+    initClientStates();
 }
 
 
 
+/* Posts a connect event to the NetworkManager and jumps into
+ * TronClient mainLoop until the program ends.
+ */
 void TronClient::run()
 {
-    initKeyboardBindings();
-    initControllerBindings();
-    initClientStates();
-
     network_manager.connect(ip_address, tcp_port);
 
     mainLoop();
@@ -41,6 +43,9 @@ void TronClient::run()
 
 
 
+/*
+ *
+ */
 void TronClient::mainLoop()
 {
     while (!client_data.exit)
@@ -66,7 +71,7 @@ void TronClient::mainLoop()
 
 
 
-// Forwards any input-based commands to the current state for processing.
+// Forwards input from the InputHandler to the current state for processing.
 void TronClient::onCommand(const GameAction _action, const ActionState _action_state) const
 {
     state_handler.onCommand(_action, _action_state);
@@ -81,6 +86,7 @@ bool TronClient::isExiting() const
 
 
 
+// Pre-loads the sound files into buffers so they are ready to be played.
 void TronClient::preloadSoundBuffers()
 {
     asset_manager.loadSoundBuffer(COUNTDOWN_TICK_CUE);
@@ -91,18 +97,9 @@ void TronClient::preloadSoundBuffers()
     asset_manager.loadSoundBuffer(GAME_OVER_CUE);
 }
 
-void TronClient::initTextObjects()
-{
-    server_readout.setFont(*asset_manager.loadFont(DEFAULT_FONT));
-    server_readout.setCharacterSize(20);
-    server_readout.setStyle(sf::Text::Bold);
-    server_readout.setFillColor(sf::Color::White);
-    server_readout.setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.05f });
-    server_readout.setOutlineColor(sf::Color::Black);
-    server_readout.setOutlineThickness(1.5f);
-}
 
 
+// Hard-coded key binding configuration. Ideally this would be data-driven.
 void TronClient::initKeyboardBindings()
 {
     input_handler.registerKeyboardKey(sf::Keyboard::Key::Escape, GameAction::QUIT);
@@ -132,6 +129,7 @@ void TronClient::initControllerBindings()
 
 
 
+// Prepares the states available to the client and queues the initial state.
 void TronClient::initClientStates()
 {
     state_handler.registerState(STATE_LOBBY, std::make_unique<ClientStateLobby>(&client_data));
@@ -139,6 +137,19 @@ void TronClient::initClientStates()
     state_handler.registerState(STATE_END, std::make_unique<ClientStateEnd>(&client_data));
 
     state_handler.queueState(STATE_LOBBY);
+}
+
+
+
+void TronClient::initTextObjects()
+{
+    server_readout.setFont(*asset_manager.loadFont(DEFAULT_FONT));
+    server_readout.setCharacterSize(20);
+    server_readout.setStyle(sf::Text::Bold);
+    server_readout.setFillColor(sf::Color::White);
+    server_readout.setPosition({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.05f });
+    server_readout.setOutlineColor(sf::Color::Black);
+    server_readout.setOutlineThickness(1.5f);
 }
 
 
@@ -154,6 +165,7 @@ void TronClient::handleEvent(const sf::Event& _event)
         return;
     }
 
+    // To ignore sound/input events if window is not in focus.
     if (_event.type == sf::Event::GainedFocus)
     {
         in_focus = true;
@@ -171,30 +183,30 @@ void TronClient::handleEvent(const sf::Event& _event)
 
 
 
-// Called by TronNetworkManager when a connection to the server has been made.
+// Called by NetworkManager when a connection to the server has been made.
 void TronClient::onConnected()
 {
     postEvent([this]()
     {
-        client_data.server_bulletin_str = "Connected";
+        client_data.server_bulletin = "Connected";
     });
 }
 
 
 
-// Called by TronNetworkManager when the client becomes disconnected from the server.
+// Called by NetworkManager when the client becomes disconnected from the server.
 void TronClient::onDisconnected()
 {
     postEvent([this]()
     {
         state_handler.queueState(STATE_LOBBY);
-        client_data.server_bulletin_str = "Disconnected";
+        client_data.server_bulletin = "Disconnected";
     });
 }
 
 
 
-// Called by TronNetworkManager when the server replies to ping requests.
+// Called by NetworkManager when the server replies to ping requests.
 void TronClient::onUpdatePingTime(const double _ping)
 {
     postEvent([this, _ping]()
@@ -205,6 +217,7 @@ void TronClient::onUpdatePingTime(const double _ping)
 
 
 
+// Called by NetworkManager when the server assigns the client's identity.
 void TronClient::onIdentity(const unsigned int _player_id)
 {
     postEvent([this, _player_id]()
@@ -216,6 +229,7 @@ void TronClient::onIdentity(const unsigned int _player_id)
 
 
 
+// Called by NetworkManager when the server sends the player list.
 void TronClient::onPlayerList(const std::vector<Player>& _players)
 {
     postEvent([this, _players]()
@@ -229,6 +243,7 @@ void TronClient::onPlayerList(const std::vector<Player>& _players)
 
 
 
+// Called by NetworkManager when a player joins the server.
 void TronClient::onPlayerJoined(const unsigned int _player_id)
 {
     postEvent([this, _player_id]()
@@ -239,6 +254,7 @@ void TronClient::onPlayerJoined(const unsigned int _player_id)
 
 
 
+// Called by NetworkManager when a player leaves the server.
 void TronClient::onPlayerLeft(const unsigned int _player_id)
 {
     postEvent([this, _player_id]()
@@ -249,7 +265,9 @@ void TronClient::onPlayerLeft(const unsigned int _player_id)
 
 
 
-void TronClient::onPlayerStateChange(const unsigned int _player_id, const PlayerState _state)
+// Called by NetworkManager when a player changes their PlayerState.
+void TronClient::onPlayerStateChange(const unsigned int _player_id, 
+    const PlayerState _state)
 {
     postEvent([this, _player_id, _state]()
     {
@@ -259,6 +277,7 @@ void TronClient::onPlayerStateChange(const unsigned int _player_id, const Player
 
 
 
+// Called by NetworkManager when the server changes state.
 void TronClient::onGameStateChange(const int _state)
 {
     postEvent([this, _state]()
@@ -269,6 +288,7 @@ void TronClient::onGameStateChange(const int _state)
 
 
 
+// Called by NetworkManager when the server starts/stops its simulation.
 void TronClient::onFlowControl(const FlowControl _control)
 {
     postEvent([this, _control]()
@@ -278,7 +298,9 @@ void TronClient::onFlowControl(const FlowControl _control)
             case FlowControl::COUNTDOWN:
             {
                 game_manager.startCountdown();
-            } break;
+
+                break;
+            }
 
             case FlowControl::START:
             {
@@ -286,7 +308,9 @@ void TronClient::onFlowControl(const FlowControl _control)
                 game_audio.playMusic(GAME_MUSIC, 25.0f, true);
 
                 game_manager.startSimulation();
-            } break;
+
+                break;
+            }
 
             case FlowControl::STOP:
             {
@@ -294,7 +318,9 @@ void TronClient::onFlowControl(const FlowControl _control)
                 game_audio.stopMusic();
 
                 game_manager.stopSimulation();
-            } break;
+
+                break;
+            }
 
             default: {}
         }
@@ -303,6 +329,7 @@ void TronClient::onFlowControl(const FlowControl _control)
 
 
 
+// Called by NetworkManager when the server informs the winner from last round.
 void TronClient::onVictor(const unsigned int _player_id)
 {
     postEvent([this, _player_id]()
@@ -313,6 +340,7 @@ void TronClient::onVictor(const unsigned int _player_id)
 
 
 
+// Called by NetworkManager when the server synchronises a single bike.
 void TronClient::onBikeSync(const BikeState& _bike_state)
 {
     postEvent([this, _bike_state]()
@@ -323,6 +351,7 @@ void TronClient::onBikeSync(const BikeState& _bike_state)
 
 
 
+// Called by NetworkManager when the server synchronises all bikes.
 void TronClient::onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_states)
 {
     postEvent([this, _bike_states]()
@@ -333,64 +362,64 @@ void TronClient::onFullBikeSync(const std::array<BikeState, MAX_PLAYERS>& _bike_
 
 
 
+// Called by NetworkManager when the server synchronises the whole simulation.
 void TronClient::onFullSync(const SimulationState& _simulation_state)
 {
     postEvent([this, _simulation_state]()
     {
-        game_manager.getNetworkSimulation()->overwrite(_simulation_state);
+        game_manager.getNetworkSimulation()->overwriteState(_simulation_state);
     });
 }
 
 
 
+// Called by NetworkManager when a bike dies or the controlling player leaves.
 void TronClient::onBikeRemoved(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
-        game_audio.playSound(DEATH_CUE);
         game_manager.getNetworkSimulation()->removeBike(_bike_id);
     });
 }
 
 
 
+// Called by NetworkManager when a bike boosts.
 void TronClient::onBikeBoost(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
-        game_audio.playSound(BOOST_CUE);
         game_manager.getNetworkSimulation()->boostBike(_bike_id);
     });
 }
 
 
 
+// Called by NetworkManager when a bike is granted an extra boost charge.
 void TronClient::onBoostChargeGranted(const unsigned int _bike_id)
 {
     postEvent([this, _bike_id]()
     {
-        // Don't bother player with recharging other bike boost charges.
-        if (_bike_id == client_data.client_id)
-        {
-            game_audio.playSound(EXTRA_BOOST_CUE);
-        }
-
         game_manager.getNetworkSimulation()->grantBoostCharge(_bike_id);
     });
 }
 
 
 
+// Called by NetworkManager when the server's state changes.
 void TronClient::onBulletinUpdate(const std::string& _bulletin)
 {
     postEvent([this, _bulletin]()
     {
-        client_data.server_bulletin_str = _bulletin;
+        client_data.server_bulletin = _bulletin;
     });
 }
 
 
 
+/* Calls update functionality by the systems that require it.
+ * The call then cascades through the state system to tick the current state.
+ */
 void TronClient::tick()
 {
     updateServerReadout();
@@ -415,6 +444,7 @@ void TronClient::draw()
 
 
 
+// Prints debug information about the server connection to the screen.
 void TronClient::updateServerReadout()
 {
     std::string server_str = ip_address;

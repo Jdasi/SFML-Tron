@@ -34,14 +34,16 @@ sf::Color JHelper::evaluateSFColor(const CellValue _value)
 {
     switch (_value)
     {
-        case CellValue::CYAN: return sf::Color::Cyan;
-        case CellValue::GREEN: return sf::Color::Green;
-        case CellValue::MAGENTA: return sf::Color::Magenta;
-        case CellValue::YELLOW: return sf::Color::Yellow;
+        case CellValue::CYAN:     { return sf::Color::Cyan;    }
+        case CellValue::GREEN:    { return sf::Color::Green;   }
+        case CellValue::MAGENTA:  { return sf::Color::Magenta; }
+        case CellValue::YELLOW:   { return sf::Color::Yellow;  }
 
-        default: return sf::Color::Transparent;
+        default: { return sf::Color::Transparent; }
     }
 }
+
+
 
 sf::Color JHelper::evaluateSFColorFromPlayerID(const unsigned int _id)
 {

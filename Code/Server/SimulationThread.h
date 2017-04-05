@@ -8,6 +8,16 @@
 
 class IServerSimulation;
 
+/* Class for running the simulation on the server in its own thread.
+ * This is essentially the reverse of the relationship in the client between
+ * TronClient and NetworkManager.
+ *
+ * The SimulationThread and TronServer communicate by posting events to each
+ * other via ThreadDispatcher functionality.
+ *
+ * SimulationThread also listens to the simulation and posts important
+ * events to the server when necessary, such as when the simulation has finished.
+ */
 class SimulationThread final : public ThreadDispatcher, public SimulationListener
 {
 public:

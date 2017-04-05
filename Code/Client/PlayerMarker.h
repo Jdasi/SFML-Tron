@@ -1,6 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+/* Class that contains an sf::Sprite which continuously rotates
+ * when it is ticked.
+ *
+ * Used by Visualisation to mark the current position of a bike
+ * within the simulation.
+ */
 class PlayerMarker
 {
 public:

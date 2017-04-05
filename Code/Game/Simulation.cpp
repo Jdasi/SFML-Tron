@@ -11,6 +11,13 @@ Simulation::Simulation()
 
 
 
+/* Update cycle of the simulation.
+ * Each alive bike is moved about the grid based on its current direction
+ * and has its boost charges incremented over time if any are missing.
+ *
+ * If a victor emerges or no bikes remain after a tick an event
+ * is sent out, which can then be picked up by an overseer to reset the simulation.
+ */
 void Simulation::tick(const double _dt)
 {
     for (auto& bike : bikes)
@@ -31,74 +38,23 @@ void Simulation::tick(const double _dt)
 
 
 
-Bike& Simulation::getBike(const unsigned int _bike_id)
+SimulationState Simulation::getState() const
 {
-    return bikes[_bike_id];
+    SimulationState state;
+
+    state.cells = grid.getCells();
+
+    for (int i = 0; i < MAX_PLAYERS; ++i)
+    {
+        state.bikes[i] = bikes[i].getState();
+    }
+
+    return state;
 }
 
 
 
-void Simulation::addBike(const unsigned int _id)
-{
-    if (_id >= MAX_PLAYERS)
-    {
-        return;
-    }
-
-    Bike& bike = bikes[_id];
-
-    configureBikeSide(bike);
-    grid.setCellValue(bike.getPosition(), JHelper::idToCellValue(_id));
-    bike.setAlive(true);
-
-    for (int i = 0; i < INITIAL_MOVES; ++i)
-    {
-        moveBike(bike);
-    }
-
-    for (auto& listener : listeners)
-    {
-        listener->updateBikePosition(bike.getID(), bike.getPosition());
-    }
-}
-
-
-
-void Simulation::removeBike(const unsigned int _bike_id)
-{
-    bikes[_bike_id].setAlive(false);
-
-    for (auto& listener : listeners)
-    {
-        listener->bikeRemoved(_bike_id);
-    }
-}
-
-
-
-void Simulation::determineOutcome() const
-{
-    // If either of these events are true, the simulation MUST be ended by an overseer.
-    auto bikes_remaining = bikesRemaining();
-    if (bikes_remaining == 1)
-    {
-        for (auto& listener : listeners)
-        {
-            listener->simulationVictor(getFirstAliveBikeID());
-        }
-    }
-    else if (bikes_remaining == 0)
-    {
-        for (auto& listener : listeners)
-        {
-            listener->simulationEmpty();
-        }
-    }
-}
-
-
-
-void Simulation::overwrite(const SimulationState& _simulation_state)
+void Simulation::overwriteState(const SimulationState& _simulation_state)
 {
     grid.overwriteAllCells(_simulation_state.cells);
 
@@ -171,36 +127,110 @@ void Simulation::reset()
 
 
 
-const Grid& Simulation::getGrid() const
+// Pass-through method for retreiving a bike's state from outside the simulation.
+BikeState Simulation::getBikeState(const unsigned int _bike_id) const
 {
-    return grid;
+    return bikes[_bike_id].getState();
 }
 
 
 
-SimulationState Simulation::getState() const
+std::array<BikeState, MAX_PLAYERS> Simulation::getBikeStates()
 {
-    SimulationState state;
+    std::array<BikeState, MAX_PLAYERS> bike_states;
 
-    state.cells = grid.getCells();
-    
     for (int i = 0; i < MAX_PLAYERS; ++i)
     {
-        state.bikes[i] = bikes[i].getState();
+        bike_states[i] = bikes[i].getState();
     }
 
-    return state;
+    return bike_states;
 }
 
 
 
-void Simulation::overwriteState(const SimulationState& _state)
+void Simulation::addBike(const unsigned int _id)
 {
-    grid.overwriteAllCells(_state.cells);
+    Bike& bike = bikes[_id];
 
-    for (int i = 0; i < MAX_PLAYERS; ++i)
+    configureBikeSide(bike);
+    grid.setCellValue(bike.getPosition(), JHelper::idToCellValue(_id));
+    bike.setAlive(true);
+
+    for (int i = 0; i < INITIAL_MOVES; ++i)
     {
-        bikes[i].overwriteState(bikes[i].getState());
+        moveBike(bike);
+    }
+
+    for (auto& listener : listeners)
+    {
+        listener->updateBikePosition(bike.getID(), bike.getPosition());
+    }
+}
+
+
+
+void Simulation::removeBike(const unsigned int _bike_id)
+{
+    auto& bike = bikes[_bike_id];
+
+    if (bike.isAlive())
+    {
+        bike.setAlive(false);
+
+        for (auto& listener : listeners)
+        {
+            listener->bikeRemoved(_bike_id);
+        }
+    }
+}
+
+
+
+// Pass-through method to enable a bike's boost from outside the simulation.
+bool Simulation::activateBikeBoost(const unsigned int _bike_id)
+{
+    return bikes[_bike_id].activateBoost();
+}
+
+
+
+void Simulation::changeBikeDirection(unsigned int _bike_id, const MoveDirection _dir)
+{
+    if (_bike_id > bikes.size() || bikes.empty())
+    {
+        return;
+    }
+
+    Bike& bike = bikes[_bike_id];
+    if (directionChangeValid(bike, _dir))
+    {
+        bike.setDirection(_dir);
+    }
+}
+
+
+
+void Simulation::determineOutcome() const
+{
+    /* If either of these events are true, 
+     * the simulation should be ended by an overseer.
+     */ 
+    auto bikes_remaining = bikesRemaining();
+
+    if (bikes_remaining == 1)
+    {
+        for (auto& listener : listeners)
+        {
+            listener->simulationVictor(getFirstAliveBikeID());
+        }
+    }
+    else if (bikes_remaining == 0)
+    {
+        for (auto& listener : listeners)
+        {
+            listener->simulationEmpty();
+        }
     }
 }
 
@@ -238,36 +268,6 @@ unsigned int Simulation::getFirstAliveBikeID() const
 
 
 
-std::array<BikeState, MAX_PLAYERS> Simulation::getBikes()
-{
-    std::array<BikeState, MAX_PLAYERS> bike_states;
-
-    for (int i = 0; i < MAX_PLAYERS; ++i)
-    {
-        bike_states[i] = bikes[i].getState();
-    }
-
-    return bike_states;
-}
-
-
-
-void Simulation::changeBikeDirection(unsigned int _bike_id, const MoveDirection _dir)
-{
-    if (_bike_id > bikes.size() || bikes.empty())
-    {
-        return;
-    }
-
-    Bike& bike = bikes[_bike_id];
-    if (directionChangeValid(bike, _dir))
-    {
-        bike.setDirection(_dir);
-    }
-}
-
-
-
 void Simulation::handleBikeMoveTimer(Bike& _bike, const double _dt)
 {
     _bike.modifyMoveTimer(_dt);
@@ -300,7 +300,7 @@ void Simulation::handleExtraBoostTimer(Bike& _bike, const double _dt)
 /* Function for Server & Client to use as boost charges are mainly granted by the server.
  * But the client is able to do this itself if it laggs behind.
  */
-void Simulation::grantBoostCharge(const unsigned _bike_id)
+void Simulation::grantBoostCharge(const unsigned int _bike_id)
 {
     auto& bike = bikes[_bike_id];
 
@@ -317,6 +317,9 @@ void Simulation::grantBoostCharge(const unsigned _bike_id)
 
 
 
+/* Works out where a bike shoulds start based on its ID and
+ * places it there.
+ */
 void Simulation::configureBikeSide(Bike& _bike) const
 {
     int x_pos_left = static_cast<int>(GRID_SIZE_Y * 0.15f);
@@ -325,80 +328,52 @@ void Simulation::configureBikeSide(Bike& _bike) const
     int y_pos_top = static_cast<int>(GRID_SIZE_Y * 0.15f);
     int y_pos_bottom = static_cast<int>(GRID_SIZE_Y * 0.85f);
 
-    switch (_bike.getID())
+    auto id = _bike.getID();
+
+    if (id == 0)
     {
-        case 0:
-        {
-            _bike.setPosition({ x_pos_left, y_pos_top });
-        } break;
-
-        case 1:
-        {
-            _bike.setPosition({ x_pos_right, y_pos_bottom });
-            _bike.setDirection(MoveDirection::LEFT);
-        } break;
-
-        case 2:
-        {
-            _bike.setPosition({ x_pos_left, y_pos_bottom });
-        } break;
-
-        case 3:
-        {
-            _bike.setPosition({ x_pos_right, y_pos_top });
-            _bike.setDirection(MoveDirection::LEFT);
-        } break;
-
-        default: {}
+        _bike.setPosition({ x_pos_left, y_pos_top });
+    }
+    else if (id == 1)
+    {
+        _bike.setPosition({ x_pos_right, y_pos_bottom });
+        _bike.setDirection(MoveDirection::LEFT);
+    }
+    else if (id == 2)
+    {
+        _bike.setPosition({ x_pos_left, y_pos_bottom });
+    }
+    else if (id == 3)
+    {
+        _bike.setPosition({ x_pos_right, y_pos_top });
+        _bike.setDirection(MoveDirection::LEFT);
     }
 }
 
 
 
+/* Moves a bike in its current direction and resolves the outcome
+ * of the adjustment to its position whilst informing listeners.
+ */
 void Simulation::moveBike(Bike& _bike)
 {
     grid.setCellValue(_bike.getPosition(), JHelper::idToCellValue(_bike.getID()));
     
     for (auto& listener : listeners)
     {
-        listener->overwriteCell(_bike.getPosition(), JHelper::idToCellValue(_bike.getID()));
+        listener->overwriteCell(_bike.getPosition(), 
+            JHelper::idToCellValue(_bike.getID()));
     }
 
-    MoveDirection dir = _bike.getDirection();
-    Vector2i pos = _bike.getPosition();
+    Vector2i adjustment = generatePositionAdjustment(_bike.getDirection(), 
+        _bike.getPosition());
 
-    Vector2i adjustment = generatePositionAdjustment(dir, pos);
-
-    if (!adjustmentWithinBounds(adjustment))
-    {
-        // Bike hit the edge of the grid.
-        removeBike(_bike.getID());
-    }
-    else if (adjustmentCollisionCheck(adjustment))
-    {
-        // Bike hit a line.
-        removeBike(_bike.getID());
-    }
-    else
-    {
-        // Path is clear.
-        _bike.setPosition(adjustment);
-        grid.setCellValue(adjustment, JHelper::idToCellValue(_bike.getID()));
-
-        for (auto& listener : listeners)
-        {
-            listener->updateBikePosition(_bike.getID(), _bike.getPosition());
-            
-            if (!_bike.isBoosting())
-            {
-                listener->bikeNotBoosted(_bike.getID());
-            }
-        }
-    }
+    resolvePositionAdjustment(_bike, adjustment);
 }
 
 
 
+// Generates a new position based on the passed position and direction.
 Vector2i Simulation::generatePositionAdjustment(const MoveDirection _dir, 
     const Vector2i& _current_pos) const
 {
@@ -406,15 +381,48 @@ Vector2i Simulation::generatePositionAdjustment(const MoveDirection _dir,
 
     switch (_dir)
     {
-        case MoveDirection::UP:     adjustment = {  0, -1 }; break;
-        case MoveDirection::DOWN:   adjustment = {  0,  1 }; break;
-        case MoveDirection::LEFT:   adjustment = { -1,  0 }; break;
-        case MoveDirection::RIGHT:  adjustment = {  1,  0 }; break;
+        case MoveDirection::UP:     { adjustment = {  0, -1 }; break; }
+        case MoveDirection::DOWN:   { adjustment = {  0,  1 }; break; }
+        case MoveDirection::LEFT:   { adjustment = { -1,  0 }; break; }
+        case MoveDirection::RIGHT:  { adjustment = {  1,  0 }; break; }
 
-        default: adjustment = { 0, 0 };
+        default: { adjustment = { 0, 0 }; }
     }
 
     return _current_pos + adjustment;
+}
+
+
+
+// Resolves the state of the bike after the position adjustment is made.
+void Simulation::resolvePositionAdjustment(Bike& _bike, const Vector2i& _adjustment)
+{
+    if (!adjustmentWithinBounds(_adjustment))
+    {
+        // Bike hit the edge of the grid.
+        removeBike(_bike.getID());
+    }
+    else if (adjustmentCollisionCheck(_adjustment))
+    {
+        // Bike hit a line.
+        removeBike(_bike.getID());
+    }
+    else
+    {
+        // Path is clear.
+        _bike.setPosition(_adjustment);
+        grid.setCellValue(_adjustment, JHelper::idToCellValue(_bike.getID()));
+
+        for (auto& listener : listeners)
+        {
+            listener->updateBikePosition(_bike.getID(), _bike.getPosition());
+
+            if (!_bike.isBoosting())
+            {
+                listener->bikeNotBoosted(_bike.getID());
+            }
+        }
+    }
 }
 
 
@@ -472,10 +480,10 @@ bool Simulation::oppositeDirection(const MoveDirection _lhs, const MoveDirection
 {
     switch (_lhs)
     {
-        case MoveDirection::UP: return _rhs == MoveDirection::DOWN;
-        case MoveDirection::DOWN: return _rhs == MoveDirection::UP;
-        case MoveDirection::LEFT: return _rhs == MoveDirection::RIGHT;
-        case MoveDirection::RIGHT: return _rhs == MoveDirection::LEFT;
+        case MoveDirection::UP:     { return _rhs == MoveDirection::DOWN;   }
+        case MoveDirection::DOWN:   { return _rhs == MoveDirection::UP;     }
+        case MoveDirection::LEFT:   { return _rhs == MoveDirection::RIGHT;  }
+        case MoveDirection::RIGHT:  { return _rhs == MoveDirection::LEFT;   }
 
         default: { return false; }
     }

@@ -11,6 +11,10 @@ namespace sf
     class Texture;
 }
 
+/* Class which maintains lists of all the assets used by the game.
+ * Assets are created when first requested, thereafter a pointer to
+ * the asset is returned, to avoid unecessary re-loading.
+ */
 class AssetManager final
 {
 public:

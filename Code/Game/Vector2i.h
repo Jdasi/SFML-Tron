@@ -8,15 +8,11 @@ struct Vector2i
     {
     }
 
-
-
     Vector2i(int _x, int _y)
         : x(_x)
         , y(_y)
     {
     }
-
-
 
     Vector2i& operator=(Vector2i rhs)
     {
@@ -25,8 +21,6 @@ struct Vector2i
                 
         return *this;
     }
-
-
 
     Vector2i operator+(const Vector2i& rhs) const
     {
@@ -37,8 +31,6 @@ struct Vector2i
 
         return vec;
     }
-
-
 
     Vector2i& operator+=(const Vector2i& rhs)
     {

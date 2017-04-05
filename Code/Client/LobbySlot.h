@@ -1,6 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+/* Class for displaying a rectangle shape with two text objects.
+ * Used by LobbyUI for visualising the list of players on the server.
+ */
 class LobbySlot final
 {
 public:

@@ -39,6 +39,12 @@
     <ClCompile Include="..\..\Code\Game\FileIO.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\Game\BikeState.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Game\SimulationState.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Game\StateHandler.h">

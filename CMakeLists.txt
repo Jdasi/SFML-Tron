@@ -17,6 +17,7 @@ find_package(SFML 2 REQUIRED system window graphics network audio)
 add_library(TronGame STATIC
     Code/Game/Bike.cpp
     Code/Game/Bike.h
+    Code/Game/BikeState.cpp
     Code/Game/BikeState.h
     Code/Game/CellValue.h
     Code/Game/Constants.h
@@ -45,6 +46,7 @@ add_library(TronGame STATIC
     Code/Game/Simulation.cpp
     Code/Game/Simulation.h
     Code/Game/SimulationListener.h
+    Code/Game/SimulationState.cpp
     Code/Game/SimulationState.h
     Code/Game/State.h
     Code/Game/StateHandler.h
