@@ -46,7 +46,6 @@ private:
 
     bool bike_sync_needed;
     bool full_sync_needed;
-    bool counting_down;
 
     // TronServer simulation interface.
     IServerSimulation& server;

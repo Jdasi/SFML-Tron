@@ -22,7 +22,7 @@ namespace JHelper
     template <typename T>
     void centerSFOrigin(T& _sfml_object)
     {
-        sf::FloatRect bounds = _sfml_object.getLocalBounds();
+        auto bounds = _sfml_object.getLocalBounds();
         _sfml_object.setOrigin(bounds.left + bounds.width / 2.0f,
             bounds.top + bounds.height / 2.0f);
     }
