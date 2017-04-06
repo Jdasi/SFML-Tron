@@ -89,8 +89,6 @@ void SimulationThread::eventResetSimulation()
 {
     postEvent([this]()
     {
-        simulation_running = false;
-
         resetSimulation();
         server.onSimulationReset();
     });

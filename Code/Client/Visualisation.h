@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <array>
-#include <memory>
 
 #include <SFML/Graphics.hpp>
 
@@ -58,7 +57,7 @@ private:
     ClientData* client_data;
     sf::Sprite backdrop;
     sf::RectangleShape border;
-    std::array<std::unique_ptr<sf::RectangleShape>, GRID_AREA> tiles;
+    std::array<sf::RectangleShape, GRID_AREA> tiles;
     std::array<PlayerMarker, MAX_PLAYERS> player_markers;
     sf::Text boost_charges_display;
     unsigned int boost_charges;

@@ -106,7 +106,7 @@ void GameManager::attachSimulationListener(SimulationListener* _listener)
  * This is to avoid exposing certain functionality to other classes
  * that don't own the simulation.
  */
-ISimulation* GameManager::getNetworkSimulation()
+INetworkSimulation* GameManager::getNetworkSimulation()
 {
     return &simulation;
 }

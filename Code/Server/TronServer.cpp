@@ -10,19 +10,12 @@
 using namespace std::placeholders;
 
 TronServer::TronServer()
-    : connected_clients(0)
-    , exit(false)
-    , server_name()
+    : exit(false)
     , server_state(STATE_LOBBY)
+    , connected_clients(0)
     , simulation_thread(*this)
 {
     registerPacketHandlers();
-
-    clients.reserve(MAX_PLAYERS);
-    for (int i = 0; i < MAX_PLAYERS; ++i)
-    {
-        clients.push_back(nullptr);
-    }
 }
 
 
@@ -229,6 +222,8 @@ void TronServer::acceptClient()
             return;
         }
 
+        std::cout << "Client " << static_cast<int>(new_client->getID()) 
+                  << " connected" << std::endl;
         socket_selector.add(*new_client->getSocket());
         
         sendClientIdentity(new_client);
@@ -594,6 +589,8 @@ void TronServer::disconnectClient(ClientPtr& _client)
     socket_selector.remove(*_client->getSocket());
     _client->getSocket()->disconnect();
 
+    std::cout << "Client " << static_cast<int>(_client->getID()) 
+              << " disconnected" << std::endl;
     sendClientLeft(_client);
 
     if (_client->getState() == PlayerState::PLAYING)

@@ -1,12 +1,11 @@
 #pragma once
 #include <memory>
-#include <vector>
+#include <array>
 #include <map>
 
 #include <SFML/Network.hpp>
 
 #include <Game/PacketID.h>
-#include <Game/Scheduler.h>
 #include <Game/FlowControl.h>
 #include "Client.h"
 #include "IServerSimulation.h"
@@ -92,15 +91,12 @@ private:
 
     sf::TcpListener tcp_listener;
     sf::SocketSelector socket_selector;
-    std::vector<ClientPtr> clients;
-    int connected_clients;
-
+    std::array<ClientPtr, MAX_PLAYERS> clients;
     std::map<PacketID, std::function<void(sf::Packet&, ClientPtr&)>> packet_handlers;
 
     bool exit;
-    std::string server_name;
-    std::string welcome_message;
     int server_state;
+    int connected_clients;
 
     SimulationThread simulation_thread;
 

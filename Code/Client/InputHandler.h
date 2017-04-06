@@ -35,7 +35,7 @@ public:
 
     bool handleEvent(const sf::Event& _event);
     void registerKeyboardKey(const sf::Keyboard::Key _key, const GameAction _game_action);
-    void registerControllerButton(const unsigned int _button, const GameAction _game_action);
+    void registerControllerButton(const XboxButton _button, const GameAction _game_action);
 
 private:
     void handleJoystickMovement();

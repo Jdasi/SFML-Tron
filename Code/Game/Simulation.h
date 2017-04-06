@@ -2,7 +2,7 @@
 #include <array>
 
 #include "SimulationListener.h"
-#include "ISimulation.h"
+#include "INetworkSimulation.h"
 #include "Vector2i.h"
 #include "Grid.h"
 #include "ListenerSubject.h"
@@ -18,7 +18,7 @@
  * while the simulation is running, thus allowing for other systems
  * to update their behaviour accordingly.
  */
-class Simulation final : public Noncopyable, public ISimulation, 
+class Simulation final : public Noncopyable, public INetworkSimulation,
                          public ListenerSubject<SimulationListener>
 {
 public:

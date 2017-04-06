@@ -93,11 +93,13 @@ void InputHandler::registerKeyboardKey(const sf::Keyboard::Key _key,
 
 
 // Register a unique Controller button with a GameAction.
-void InputHandler::registerControllerButton(const unsigned int _button,
+void InputHandler::registerControllerButton(const XboxButton _button,
     const GameAction _game_action)
 {
+    auto btn = static_cast<unsigned int>(_button);
+
     // Don't do anything with already existing entries.
-    auto entry = controller_bindings.find(_button);
+    auto entry = controller_bindings.find(btn);
     if (entry != controller_bindings.end())
     {
         return;

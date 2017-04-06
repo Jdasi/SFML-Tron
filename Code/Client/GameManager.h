@@ -31,7 +31,7 @@ public:
     bool hasCountdownStarted() const;
 
     void attachSimulationListener(SimulationListener* _listener);
-    ISimulation* getNetworkSimulation();
+    INetworkSimulation* getNetworkSimulation();
 
     Player* getPlayer(const unsigned int _id);
     void addPlayer(const unsigned int _id, const PlayerState _state = PlayerState::NOTREADY);

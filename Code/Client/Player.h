@@ -6,14 +6,14 @@
  *
  * Used by GameManager to record up to date information about each user.
  */
-class Player
+class Player final
 {
 public:
     explicit Player(const unsigned int _id, 
         const PlayerState _state = PlayerState::NOTREADY);
     ~Player() = default;
 
-    unsigned getID() const;
+    unsigned int getID() const;
     void setID(const unsigned int _id);
 
     PlayerState getState() const;

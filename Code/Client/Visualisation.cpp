@@ -41,12 +41,12 @@ void Visualisation::draw(sf::RenderWindow& _window)
 
     for (auto& tile : tiles)
     {
-        if (tile->getFillColor() == sf::Color::Transparent)
+        if (tile.getFillColor() == sf::Color::Transparent)
         {
             continue;
         }
 
-        _window.draw(*tile);
+        _window.draw(tile);
     }
 
     for (auto& marker : player_markers)
@@ -89,14 +89,13 @@ void Visualisation::initGrid()
     {
         for (int x_cycles = 0; x_cycles < GRID_SIZE_X; ++x_cycles)
         {
-            auto tile = std::make_unique<sf::RectangleShape>(rect);
+            auto& tile = tiles[JHelper::calculateIndex(x_cycles, y_cycles, GRID_SIZE_X)];
 
-            tile->setFillColor(sf::Color::Transparent);
-
-            tile->setPosition({ WINDOW_LEFT_BOUNDARY + (x_cycles * rect.x), 
+            tile.setSize(rect);
+            tile.setFillColor(sf::Color::Transparent);
+            tile.setPosition({ WINDOW_LEFT_BOUNDARY + (x_cycles * rect.x), 
                                      WINDOW_TOP_BOUNDARY + (y_cycles * rect.y) });
 
-            tiles[JHelper::calculateIndex(x_cycles, y_cycles, GRID_SIZE_X)] = std::move(tile);
         }
     }
 }
@@ -156,7 +155,7 @@ void Visualisation::updateBoostChargesText()
 
 void Visualisation::setTileColor(const unsigned int _index, const sf::Color& _color)
 {
-    tiles[_index]->setFillColor(_color);
+    tiles[_index].setFillColor(_color);
 }
 
 
@@ -192,7 +191,7 @@ void Visualisation::simulationReset()
 {
     for (auto& tile : tiles)
     {
-        tile->setFillColor(sf::Color::Transparent);
+        tile.setFillColor(sf::Color::Transparent);
     }
 
     boost_charges = STARTING_BOOST_CHARGES;
@@ -246,7 +245,7 @@ void Visualisation::updateBikePosition(const unsigned int _bike_id, const Vector
 
     marker.setVisible(true);
     marker.setPosition(
-        tiles[JHelper::calculateIndex(_bike_pos, GRID_SIZE_X)]->getPosition());
+        tiles[JHelper::calculateIndex(_bike_pos, GRID_SIZE_X)].getPosition());
 
     setTileColor(_bike_pos, sf::Color::White);
 }
