@@ -1,4 +1,5 @@
 #include <Game/Constants.h>
+#include <Game/JHelper.h>
 #include "GameAudio.h"
 #include "AssetManager.h"
 
@@ -36,7 +37,8 @@ void GameAudio::playSound(const std::string& _file)
         return;
     }
 
-    auto entry = sounds.find(_file);
+    auto entry = JHelper::findInVectorPair(sounds, _file);
+    
     if (entry != sounds.end())
     {
         return entry->second->play();
@@ -46,8 +48,10 @@ void GameAudio::playSound(const std::string& _file)
     sound->setBuffer(*asset_manager->loadSoundBuffer(_file));
     auto* p_sound = sound.get();
 
-    sounds[_file] = std::move(sound);
+    sounds.emplace_back(_file, std::move(sound));
     p_sound->play();
+
+    JHelper::sortVectorPair(sounds);
 }
 
 

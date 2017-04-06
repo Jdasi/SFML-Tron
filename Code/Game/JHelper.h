@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 
 namespace sf
 {
@@ -28,5 +29,27 @@ namespace JHelper
         auto bounds = _sfml_object.getLocalBounds();
         _sfml_object.setOrigin(bounds.left + bounds.width / 2.0f,
             bounds.top + bounds.height / 2.0f);
+    }
+
+    template <typename T, typename U>
+    auto findInVectorPair(T& _vector, U& _key)
+    {
+        auto entry = std::find_if(_vector.begin(), _vector.end(),
+            [_key](const auto& _elem)
+        {
+            return _elem.first == _key;
+        });
+
+        return entry;
+    }
+
+    template <typename T>
+    void sortVectorPair(T& _vector)
+    {
+        std::sort(_vector.begin(), _vector.end(),
+            [](const auto& _lhs, const auto& _rhs)
+        {
+            return _lhs.first < _rhs.first;
+        });
     }
 }

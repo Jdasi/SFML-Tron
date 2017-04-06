@@ -6,13 +6,14 @@
 #include <Game/PlayerState.h>
 #include <Game/Simulation.h>
 #include <Game/FlowControl.h>
+#include <Game/JHelper.h>
 #include "INetworkClient.h"
 #include "Player.h"
 
 using namespace std::placeholders;
 
 #define registerPacketHandler(id, func) \
-    packet_handlers.emplace(id, std::bind(&NetworkManager::func, this, _1))
+    packet_handlers.emplace_back(id, std::bind(&NetworkManager::func, this, _1))
 
 // Initialises data and starts up the network thread.
 NetworkManager::NetworkManager(INetworkClient& _client)
@@ -226,6 +227,8 @@ void NetworkManager::registerPacketHandlers()
     registerPacketHandler(PacketID::BIKE_REMOVED,     handleBikeRemovedPacket);
     registerPacketHandler(PacketID::BIKE_BOOST,       handleBikeBoostPacket);
     registerPacketHandler(PacketID::EXTRA_BOOST,      handleExtraBoostChargePacket);
+
+    JHelper::sortVectorPair(packet_handlers);
 }
 
 
@@ -236,7 +239,9 @@ void NetworkManager::registerPacketHandlers()
 void NetworkManager::handlePacket(sf::Packet& _packet)
 {
     PacketID pid = getPacketID(_packet);
-    packet_handlers.at(pid)(_packet);
+    auto handler = JHelper::findInVectorPair(packet_handlers, pid);
+
+    handler->second(_packet);
 }
 
 

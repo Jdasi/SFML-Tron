@@ -1,11 +1,13 @@
 #include <iostream>
+#include <algorithm>
 
 #include <Game/Constants.h>
 #include <Game/GameStateIDs.h>
+#include <Game/JHelper.h>
 #include "TronServer.h"
 
 #define registerPacketHandler(id, func) \
-    packet_handlers.emplace(id, std::bind(&TronServer::func, this, _1, _2))
+    packet_handlers.emplace_back(id, std::bind(&TronServer::func, this, _1, _2))
 
 using namespace std::placeholders;
 
@@ -53,6 +55,8 @@ void TronServer::registerPacketHandlers()
     registerPacketHandler(PacketID::PLAYER_STATE,    handlePlayerStatePacket);
     registerPacketHandler(PacketID::BIKE_DIRECTION,  handleDirectionPacket);
     registerPacketHandler(PacketID::BIKE_BOOST,      handleBoostPacket);
+
+    JHelper::sortVectorPair(packet_handlers);
 }
 
 
@@ -458,7 +462,9 @@ void TronServer::sendUpdatedServerBulletin()
 void TronServer::handlePacket(sf::Packet& _packet, ClientPtr& _sender)
 {
     PacketID pid = getPacketID(_packet);
-    packet_handlers.at(pid)(_packet, _sender);
+    auto handler = JHelper::findInVectorPair(packet_handlers, pid);
+    
+    handler->second(_packet, _sender);
 }
 
 

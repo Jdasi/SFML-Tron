@@ -1,11 +1,12 @@
 #include <SFML/Graphics.hpp>
 
 #include <Game/Constants.h>
+#include <Game/JHelper.h>
 #include "AssetManager.h"
 
 sf::Font* AssetManager::loadFont(const std::string& _file)
 {
-    auto entry = fonts.find(_file);
+    auto entry = JHelper::findInVectorPair(fonts, _file);
     if (entry != fonts.end())
     {
         return entry->second.get();
@@ -15,7 +16,9 @@ sf::Font* AssetManager::loadFont(const std::string& _file)
     font->loadFromFile(FONTS_PATH + _file);
     auto* p_font = font.get();
 
-    fonts[_file] = std::move(font);
+    fonts.emplace_back(_file, std::move(font));
+    JHelper::sortVectorPair(fonts);
+
     return p_font;
 }
 
@@ -23,7 +26,7 @@ sf::Font* AssetManager::loadFont(const std::string& _file)
 
 sf::Texture* AssetManager::loadTexture(const std::string& _file)
 {
-    auto entry = textures.find(_file);
+    auto entry = JHelper::findInVectorPair(textures, _file);
     if (entry != textures.end())
     {
         return entry->second.get();
@@ -33,7 +36,9 @@ sf::Texture* AssetManager::loadTexture(const std::string& _file)
     texture->loadFromFile(TEXTURES_PATH + _file);
     auto* p_texture = texture.get();
 
-    textures[_file] = std::move(texture);
+    textures.emplace_back(_file, std::move(texture));
+    JHelper::sortVectorPair(textures);
+
     return p_texture;
 }
 
@@ -41,7 +46,7 @@ sf::Texture* AssetManager::loadTexture(const std::string& _file)
 
 sf::SoundBuffer* AssetManager::loadSoundBuffer(const std::string& _file)
 {
-    auto entry = buffers.find(_file);
+    auto entry = JHelper::findInVectorPair(buffers, _file);
     if (entry != buffers.end())
     {
         return entry->second.get();
@@ -51,6 +56,8 @@ sf::SoundBuffer* AssetManager::loadSoundBuffer(const std::string& _file)
     sound_buffer->loadFromFile(AUDIO_PATH + _file);
     auto* p_sound_buffer = sound_buffer.get();
 
-    buffers[_file] = std::move(sound_buffer);
+    buffers.emplace_back(_file, std::move(sound_buffer));
+    JHelper::sortVectorPair(buffers);
+
     return p_sound_buffer;
 }

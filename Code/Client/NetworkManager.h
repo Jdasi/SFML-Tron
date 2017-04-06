@@ -1,5 +1,5 @@
 #pragma once
-#include <map>
+#include <vector>
 #include <functional>
 #include <thread>
 #include <chrono>
@@ -26,6 +26,8 @@ struct BikeState;
  */
 class NetworkManager final : public ThreadDispatcher
 {
+    using PacketHandler = std::pair<PacketID, std::function<void(sf::Packet&)>>;
+
 public:
     explicit NetworkManager(INetworkClient& _client);
     ~NetworkManager();
@@ -73,7 +75,7 @@ private:
     std::thread network_thread;
     sf::TcpSocket socket;
 
-    std::map<PacketID, std::function<void(sf::Packet&)>> packet_handlers;
+    std::vector<PacketHandler> packet_handlers;
 
     volatile bool has_connected;
     volatile bool running;

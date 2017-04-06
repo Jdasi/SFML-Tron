@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
-#include <map>
+#include <vector>
 
 namespace sf
 {
@@ -19,6 +19,8 @@ class AssetManager;
  */
 class GameAudio final
 {
+using Sound = std::pair<std::string, std::unique_ptr<sf::Sound>>;
+
 public:
     explicit GameAudio(AssetManager* _asset_manager, bool* in_focus);
     ~GameAudio() = default;
@@ -37,7 +39,7 @@ private:
     AssetManager* asset_manager;
     bool& in_focus;
 
-    std::map<std::string, std::unique_ptr<sf::Sound>> sounds;
+    std::vector<Sound> sounds;
     std::unique_ptr<sf::Music> background_music;
     float music_volume;
 

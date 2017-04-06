@@ -1,5 +1,5 @@
 #pragma once
-#include <map>
+#include <vector>
 #include <memory>
 #include <queue>
 #include <mutex>
@@ -17,6 +17,8 @@
 template <typename StateType, typename StateHandlerType>
 class StateHandler : public Noncopyable
 {
+using State = std::pair<int, std::unique_ptr<StateType>>;
+
 public:
     StateHandler()
         : current_state(nullptr)
@@ -32,7 +34,13 @@ public:
     void registerState(int _key, std::unique_ptr<StateType> _state)
     {
         _state->setHandler(this);
-        states[_key] = std::move(_state);
+        states.emplace_back(_key, std::move(_state));
+
+        std::sort(states.begin(), states.end(),
+            [](const State& _lhs, const State& _rhs)
+        {
+            return _lhs.first < _rhs.first;
+        });
     }
 
 
@@ -75,7 +83,11 @@ private:
 
     void triggerState(int _key)
     {
-        auto result = states.find(_key);
+        auto result = std::find_if(states.begin(), states.end(), 
+            [_key](const State& _elem)
+            {
+                return _elem.first == _key;
+            });
 
         if (result == states.end())
         {
@@ -88,13 +100,12 @@ private:
         }
 
         current_state = result->second.get();
-
         current_state->onStateEnter();
     }
 
 
 
-    std::map<int, std::unique_ptr<StateType>> states;
+    std::vector<State> states;
 
     std::queue<int> states_queue;
     std::mutex states_queue_mutex;

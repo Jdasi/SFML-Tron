@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <array>
-#include <map>
+#include <vector>
 
 #include <SFML/Network.hpp>
 
@@ -10,8 +10,6 @@
 #include "Client.h"
 #include "IServerSimulation.h"
 #include "SimulationThread.h"
-
-using ClientPtr = std::unique_ptr<Client>;
 
 /* Main class which owns the majority of server-side functionality.
  * TronServer and most of its members reside in one thread, with the exception of
@@ -23,6 +21,10 @@ using ClientPtr = std::unique_ptr<Client>;
  */
 class TronServer : public IServerSimulation, public ThreadDispatcher
 {
+    using ClientPtr = std::unique_ptr<Client>;
+    using PacketHandler = std::pair<PacketID,
+        std::function<void(sf::Packet&, ClientPtr&)>>;
+
 public:
     TronServer();
     ~TronServer() = default;
@@ -92,7 +94,7 @@ private:
     sf::TcpListener tcp_listener;
     sf::SocketSelector socket_selector;
     std::array<ClientPtr, MAX_PLAYERS> clients;
-    std::map<PacketID, std::function<void(sf::Packet&, ClientPtr&)>> packet_handlers;
+    std::vector<PacketHandler> packet_handlers;
 
     bool exit;
     int server_state;

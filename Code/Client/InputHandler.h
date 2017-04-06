@@ -1,5 +1,5 @@
 #pragma once
-#include <map>
+#include <vector>
 
 #include "GameAction.h"
 
@@ -21,6 +21,9 @@ class TronClient;
  */
 class InputHandler final
 {
+    using KeyboardBinding = std::pair<sf::Keyboard::Key, GameAction>;
+    using ControllerBinding = std::pair<unsigned int, GameAction>;
+
 public:
     enum XboxButton
     {
@@ -48,8 +51,8 @@ private:
     TronClient& tron_client;
     bool& in_focus;
 
-    std::map<sf::Keyboard::Key, GameAction> keyboard_bindings;
-    std::map<unsigned int, GameAction> controller_bindings;
+    std::vector<KeyboardBinding> keyboard_bindings;
+    std::vector<ControllerBinding> controller_bindings;
 
     float joystick_x;
     float joystick_y;

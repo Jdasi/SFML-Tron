@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <Game/Constants.h>
+#include <Game/JHelper.h>
 #include "InputHandler.h"
 #include "TronClient.h"
 
@@ -81,13 +82,14 @@ void InputHandler::registerKeyboardKey(const sf::Keyboard::Key _key,
     const GameAction _game_action)
 {
     // Don't do anything with already existing entries.
-    auto entry = keyboard_bindings.find(_key);
+    auto entry = JHelper::findInVectorPair(keyboard_bindings, _key);
     if (entry != keyboard_bindings.end())
     {
         return;
     }
 
-    keyboard_bindings.emplace(_key, _game_action);
+    keyboard_bindings.emplace_back(_key, _game_action);
+    JHelper::sortVectorPair(keyboard_bindings);
 }
 
 
@@ -99,13 +101,14 @@ void InputHandler::registerControllerButton(const XboxButton _button,
     auto btn = static_cast<unsigned int>(_button);
 
     // Don't do anything with already existing entries.
-    auto entry = controller_bindings.find(btn);
+    auto entry = JHelper::findInVectorPair(controller_bindings, _button);
     if (entry != controller_bindings.end())
     {
         return;
     }
 
-    controller_bindings.emplace(_button, _game_action);
+    controller_bindings.emplace_back(_button, _game_action);
+    JHelper::sortVectorPair(keyboard_bindings);
 }
 
 
@@ -178,7 +181,7 @@ void InputHandler::checkKeyboardBindings(const sf::Event& _event)
         action_state = ActionState::RELEASED;
     }
 
-    auto entry = keyboard_bindings.find(_event.key.code);
+    auto entry = JHelper::findInVectorPair(keyboard_bindings, _event.key.code);
     if (entry != keyboard_bindings.end())
     {
         tron_client.onCommand(entry->second, action_state);
@@ -198,7 +201,7 @@ void InputHandler::checkControllerBindings(const sf::Event& _event)
         action_state = ActionState::RELEASED;
     }
 
-    auto entry = controller_bindings.find(_event.joystickButton.button);
+    auto entry = JHelper::findInVectorPair(controller_bindings, _event.joystickButton.button);
     if (entry != controller_bindings.end())
     {
         tron_client.onCommand(entry->second, action_state);
