@@ -81,7 +81,7 @@ void ClientStateGame::onCommand(const GameAction _action, const ActionState _act
         }
     }
 
-    if (client_data->game_manager->simulationRunning())
+    if (client_data->game_manager->isSimulationRunning())
     {
         handleBikeControls(_action, _action_state);
     }
@@ -121,7 +121,7 @@ void ClientStateGame::updateCountdownDisplay()
 
     last_tick_value = timer_value;
 
-    if (client_data->game_manager->simulationRunning())
+    if (client_data->game_manager->isSimulationRunning())
     {
         countdown_display.setFillColor(sf::Color::Transparent);
     }

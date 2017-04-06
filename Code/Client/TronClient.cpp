@@ -12,7 +12,7 @@ TronClient::TronClient(const ServerSettings& _server_settings)
     : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_NAME)
     , network_manager(*this)
     , game_manager(&client_data)
-    , input_handler(*this)
+    , input_handler(*this, in_focus)
     , state_handler()
     , game_audio(&asset_manager, &in_focus)
     , client_data(&asset_manager, &network_manager, &game_manager, &input_handler, &game_audio)
@@ -173,10 +173,7 @@ void TronClient::handleEvent(const sf::Event& _event)
         in_focus = false;
     }
 
-    if (in_focus)
-    {
-        input_handler.handleEvent(_event);
-    }
+    input_handler.handleEvent(_event);
 }
 
 
@@ -251,7 +248,7 @@ void TronClient::onPlayerJoined(const unsigned int _player_id)
     postEvent([this, _player_id]()
     {
         // Don't bother player with connection sounds during gameplay.
-        if (!game_manager.simulationRunning())
+        if (!game_manager.hasCountdownStarted())
         {
             game_audio.playSound(CONNECT_CUE);
         }
@@ -268,7 +265,7 @@ void TronClient::onPlayerLeft(const unsigned int _player_id)
     postEvent([this, _player_id]()
     {
         // Don't bother player with connection sounds during gameplay.
-        if (!game_manager.simulationRunning())
+        if (!game_manager.hasCountdownStarted())
         {
             game_audio.playSound(DISCONNECT_CUE);
         }

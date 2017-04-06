@@ -5,8 +5,9 @@
 #include "TronClient.h"
 
 // Pass in the client which the InputHandler is attached to.
-InputHandler::InputHandler(TronClient& _attached_client)
+InputHandler::InputHandler(TronClient& _attached_client, bool& _in_focus)
     : tron_client(_attached_client)
+    , in_focus(_in_focus)
     , joystick_x(0)
     , joystick_y(0)
     , prev_joystick_x(0)
@@ -16,14 +17,18 @@ InputHandler::InputHandler(TronClient& _attached_client)
 
 
 
-/* Handles input-based SFML events.
- * This function assumes that the window is in focus and should be taking input.
+/* Handles input-based SFML events if the window is in focus.
  *
  * Not all input-events are currently handled. The function returns true if
  * the event was handled, otherwise it returns false.
  */
 bool InputHandler::handleEvent(const sf::Event& _event)
 {
+    if (!in_focus)
+    {
+        return false;
+    }
+
     bool event_handled = false;
 
     switch (_event.type)

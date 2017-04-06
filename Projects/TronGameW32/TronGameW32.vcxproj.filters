@@ -21,9 +21,6 @@
     <ClCompile Include="..\..\Code\Game\Grid.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Game\Scheduler.cpp">
-      <Filter>Managerial</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Code\Game\SimpleTimer.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
@@ -44,6 +41,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Code\Game\SimulationState.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Game\Scheduler.cpp">
+      <Filter>Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,9 +76,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\SimulationListener.h">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\Game\Scheduler.h">
-      <Filter>Managerial</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\SimpleTimer.h">
       <Filter>Utility</Filter>
@@ -113,9 +110,6 @@
     <ClInclude Include="..\..\Code\Game\GameStateIDs.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Game\ScheduledTask.h">
-      <Filter>Managerial</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\Game\FlowControl.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -126,6 +120,12 @@
       <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\Game\FileIO.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\Scheduler.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Game\ScheduledTask.h">
       <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>

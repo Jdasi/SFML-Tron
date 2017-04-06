@@ -79,9 +79,17 @@ int GameManager::getCountdownDigit() const
 
 
 // Returns true if the simulation is running, otherwise returns false.
-bool GameManager::simulationRunning() const
+bool GameManager::isSimulationRunning() const
 {
     return simulation_running;
+}
+
+
+
+// Returns true if the countdown has started, otherwise returns false.
+bool GameManager::hasCountdownStarted() const
+{
+    return countdown_started;
 }
 
 

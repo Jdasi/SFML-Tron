@@ -27,7 +27,8 @@ public:
     void resetSimulation();
 
     int getCountdownDigit() const;
-    bool simulationRunning() const;
+    bool isSimulationRunning() const;
+    bool hasCountdownStarted() const;
 
     void attachSimulationListener(SimulationListener* _listener);
     ISimulation* getNetworkSimulation();

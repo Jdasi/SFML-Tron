@@ -12,7 +12,7 @@ namespace sf
 class TronClient;
 
 /* Class for translating passed SFML events into GameActions.
- * The InputHandler assumes that the window is in focus and is taking input.
+ * The InputHandler only processes inputs if its in_focus bool is true.
  *
  * Lists of unique bindings are checked to determine if the key or button code
  * translates into a GameAction.
@@ -30,7 +30,7 @@ public:
         Y = 3
     };
 
-    explicit InputHandler(TronClient& _attached_client);
+    explicit InputHandler(TronClient& _attached_client, bool& _in_focus);
     ~InputHandler() = default;
 
     bool handleEvent(const sf::Event& _event);
@@ -46,6 +46,8 @@ private:
     void checkControllerBindings(const sf::Event& _event);
 
     TronClient& tron_client;
+    bool& in_focus;
+
     std::map<sf::Keyboard::Key, GameAction> keyboard_bindings;
     std::map<unsigned int, GameAction> controller_bindings;
 
