@@ -98,8 +98,6 @@ void InputHandler::registerKeyboardKey(const sf::Keyboard::Key _key,
 void InputHandler::registerControllerButton(const XboxButton _button,
     const GameAction _game_action)
 {
-    auto btn = static_cast<unsigned int>(_button);
-
     // Don't do anything with already existing entries.
     auto entry = JHelper::findInVectorPair(controller_bindings, _button);
     if (entry != controller_bindings.end())
