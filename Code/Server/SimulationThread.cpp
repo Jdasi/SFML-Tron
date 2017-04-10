@@ -150,11 +150,9 @@ void SimulationThread::stopSimulationThread()
  */
 void SimulationThread::simulationThreadLoop()
 {
-    using namespace std::chrono_literals;
-
     while (thread_running)
     {
-        std::this_thread::sleep_for(16ms);
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
 
         double dt = simple_timer.getTimeDifference();
         simple_timer.reset();
@@ -248,7 +246,7 @@ void SimulationThread::bikeRemoved(const unsigned int _bike_id)
 // Tell the server that a bike has just boosted.
 void SimulationThread::boostChargeGranted(const unsigned int _bike_id)
 {
-    server.onBoostChargeGranted(_bike_id);
+    //server.onBoostChargeGranted(_bike_id); // -- Just let the client do it ...
 }
 
 

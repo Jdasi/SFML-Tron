@@ -34,7 +34,6 @@ TronClient::TronClient(const ServerSettings& _server_settings)
  */
 void TronClient::run()
 {
-    window.setVerticalSyncEnabled(true);
     network_manager.connect(ip_address, tcp_port);
 
     mainLoop();
@@ -133,6 +132,8 @@ void TronClient::mainLoop()
 {
     while (!client_data.exit)
     {
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+
         // Crude delta-time system.
         client_data.delta_time = timer.getTimeDifference();
         timer.reset();
