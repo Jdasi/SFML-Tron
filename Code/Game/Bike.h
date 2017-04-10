@@ -47,7 +47,7 @@ public:
 
     double getMoveTimer() const;
     void setMoveTimer(const double _value);
-    void resetMoveTimer();
+    void decreaseMoveTimer();
     void modifyMoveTimer(const double _dt);
 
     bool isAlive() const;
@@ -63,14 +63,11 @@ public:
     void modifyExtraBoostTimer(const double _dt);
 
     bool moveQueueEmpty() const;
-    const Vector2i& getNextQueuedMove() const;
+    Vector2i getNextQueuedMove();
+    void queueMove(const Vector2i& _adjustment);
+    void clearMoveQueue();
 
 private:
-    // Synced variables.
     BikeState state;
-
-    // Unsynced variables.
-    double extra_boost_timer = 0;
-    std::queue<Vector2i> queued_moves;
 
 };

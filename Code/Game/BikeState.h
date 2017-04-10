@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <queue>
 
 #include <SFML/Network.hpp>
 
@@ -25,6 +26,8 @@ struct BikeState
     bool boosting               = false;
     double boost_timer          = 0;
     unsigned int boost_charges  = STARTING_BOOST_CHARGES;
+    double extra_boost_timer    = 0;
+    std::queue<Vector2i> queued_moves;
 
     friend sf::Packet& operator<<(sf::Packet& _packet,
         const BikeState& _bike_state);

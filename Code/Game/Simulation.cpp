@@ -29,7 +29,7 @@ void Simulation::tick(const double _dt)
 
         bike.tick(_dt);
 
-        handleBikeMoveTimer(bike, _dt);
+        handleBikeMovement(bike, _dt);
         handleExtraBoostTimer(bike, _dt);
     }
 
@@ -159,7 +159,7 @@ void Simulation::addBike(const unsigned int _id)
 
     for (int i = 0; i < INITIAL_MOVES; ++i)
     {
-        moveBike(bike);
+        moveBike(bike, generateAdjustment(bike.getDirection()));
     }
 
     for (auto& listener : listeners)
@@ -268,14 +268,35 @@ unsigned int Simulation::getFirstAliveBikeID() const
 
 
 
-void Simulation::handleBikeMoveTimer(Bike& _bike, const double _dt)
+void Simulation::handleBikeMovement(Bike& _bike, const double _dt)
 {
+    while (!_bike.moveQueueEmpty())
+    {
+        moveBike(_bike, _bike.getNextQueuedMove());
+    }
+
     _bike.modifyMoveTimer(_dt);
 
-    if (_bike.getMoveTimer() > _bike.getMoveSpeed())
+    while (_bike.getMoveTimer() >= _bike.getMoveSpeed())
     {
-        _bike.resetMoveTimer();
-        moveBike(_bike);
+        _bike.decreaseMoveTimer();
+        _bike.queueMove(generateAdjustment(_bike.getDirection()));
+    }
+}
+
+
+
+// Generates a position adjustment based on the passed direction.
+Vector2i Simulation::generateAdjustment(const MoveDirection _dir) const
+{
+    switch (_dir)
+    {
+        case MoveDirection::UP:     { return {  0, -1 }; }
+        case MoveDirection::DOWN:   { return {  0,  1 }; }
+        case MoveDirection::LEFT:   { return { -1,  0 }; }
+        case MoveDirection::RIGHT:  { return {  1,  0 }; }
+
+        default: { return{ 0, 0 }; }
     }
 }
 
@@ -355,7 +376,7 @@ void Simulation::configureBikeSide(Bike& _bike) const
 /* Moves a bike in its current direction and resolves the outcome
  * of the adjustment to its position whilst informing listeners.
  */
-void Simulation::moveBike(Bike& _bike)
+void Simulation::moveBike(Bike& _bike, const Vector2i& _adjustment)
 {
     grid.setCellValue(_bike.getPosition(), JHelper::idToCellValue(_bike.getID()));
     
@@ -365,31 +386,7 @@ void Simulation::moveBike(Bike& _bike)
             JHelper::idToCellValue(_bike.getID()));
     }
 
-    Vector2i adjustment = generatePositionAdjustment(_bike.getDirection(), 
-        _bike.getPosition());
-
-    resolvePositionAdjustment(_bike, adjustment);
-}
-
-
-
-// Generates a new position based on the passed position and direction.
-Vector2i Simulation::generatePositionAdjustment(const MoveDirection _dir, 
-    const Vector2i& _current_pos) const
-{
-    Vector2i adjustment;
-
-    switch (_dir)
-    {
-        case MoveDirection::UP:     { adjustment = {  0, -1 }; break; }
-        case MoveDirection::DOWN:   { adjustment = {  0,  1 }; break; }
-        case MoveDirection::LEFT:   { adjustment = { -1,  0 }; break; }
-        case MoveDirection::RIGHT:  { adjustment = {  1,  0 }; break; }
-
-        default: { adjustment = { 0, 0 }; }
-    }
-
-    return _current_pos + adjustment;
+    resolvePositionAdjustment(_bike, _bike.getPosition() + _adjustment);
 }
 
 
@@ -499,6 +496,7 @@ void Simulation::resetBikes()
     {
         bike.overwriteState(BikeState());
         bike.setID(id++);
+        bike.clearMoveQueue();
     }
 
     for (auto& listener : listeners)

@@ -138,7 +138,7 @@ void Bike::setMoveTimer(const double _value)
 
 
 
-void Bike::resetMoveTimer()
+void Bike::decreaseMoveTimer()
 {
     if (state.boosting)
     {
@@ -212,19 +212,51 @@ void Bike::grantBoostCharge()
 
 double Bike::getExtraBoostTimer() const
 {
-    return extra_boost_timer;
+    return state.extra_boost_timer;
 }
 
 
 
 void Bike::resetExtraBoostTimer()
 {
-    extra_boost_timer = 0;
+    state.extra_boost_timer = 0;
 }
 
 
 
 void Bike::modifyExtraBoostTimer(const double _dt)
 {
-    extra_boost_timer += _dt;
+    state.extra_boost_timer += _dt;
+}
+
+
+
+bool Bike::moveQueueEmpty() const
+{
+    return state.queued_moves.empty();
+}
+
+Vector2i Bike::getNextQueuedMove()
+{
+    Vector2i next_pos = state.queued_moves.front();
+    state.queued_moves.pop();
+
+    return next_pos;
+}
+
+
+
+void Bike::queueMove(const Vector2i& _adjustment)
+{
+    state.queued_moves.push(_adjustment);
+}
+
+
+
+void Bike::clearMoveQueue()
+{
+    while (!state.queued_moves.empty())
+    {
+        state.queued_moves.pop();
+    }
 }

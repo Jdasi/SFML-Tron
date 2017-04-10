@@ -44,14 +44,14 @@ private:
     unsigned int bikesRemaining() const;
     unsigned int getFirstAliveBikeID() const;
 
-    void handleBikeMoveTimer(Bike& _bike, const double _dt);
+    void handleBikeMovement(Bike& _bike, const double _dt);
+    Vector2i generateAdjustment(const MoveDirection _dir) const;
+
     void handleExtraBoostTimer(Bike& _bike, const double _dt);
     void grantBoostCharge(const unsigned int _bike_id) override;
 
     void configureBikeSide(Bike& _bike) const;
-    void moveBike(Bike& _bike);
-    Vector2i generatePositionAdjustment(const MoveDirection _dir, 
-        const Vector2i& _current_pos) const;
+    void moveBike(Bike& _bike, const Vector2i& _adjustment);
     void resolvePositionAdjustment(Bike& _bike, const Vector2i& _adjustment);
 
     bool adjustmentWithinBounds(const Vector2i& _adjustment) const;

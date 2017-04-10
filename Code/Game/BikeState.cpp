@@ -6,14 +6,24 @@ sf::Packet& operator<<(sf::Packet& _packet, const BikeState& _bike_state)
             << static_cast<sf::Uint8>(_bike_state.dir)
             << static_cast<sf::Uint32>(_bike_state.pos.x)
             << static_cast<sf::Uint32>(_bike_state.pos.y)
-            << _bike_state.move_timer
             << _bike_state.alive
             << _bike_state.boosting
-            << _bike_state.boost_timer
             << static_cast<sf::Int32>(_bike_state.boost_charges)
-            << static_cast<sf::Uint32>(_bike_state.line.size());
+            << _bike_state.boost_timer
+            << _bike_state.extra_boost_timer;
 
-    // Bike line is read in last.
+
+    _packet << static_cast<sf::Uint32>(_bike_state.queued_moves.size());
+    std::queue<Vector2i> queued_moves = _bike_state.queued_moves;
+    while (!queued_moves.empty())
+    {
+        _packet << static_cast<sf::Uint32>(queued_moves.front().x)
+                << static_cast<sf::Uint32>(queued_moves.front().y);
+
+        queued_moves.pop();
+    }
+    
+    _packet << static_cast<sf::Uint32>(_bike_state.line.size());
     for (auto& pos : _bike_state.line)
     {
         _packet << static_cast<sf::Uint32>(pos.x) << static_cast<sf::Uint32>(pos.y);
@@ -29,12 +39,13 @@ sf::Packet& operator>>(sf::Packet& _packet, BikeState& _bike_state)
     sf::Uint8   bike_id;
     sf::Uint8   bike_dir;
     Vector2i    bike_pos;
-    double      move_timer;
     bool        bike_alive;
     bool        bike_boosting;
-    double      boost_timer;
     sf::Int32   boost_charges;
-    sf::Uint32  line_length;
+    double      boost_timer;
+    double      extra_boost_timer;
+    sf::Uint32  queued_moves_size;
+    sf::Uint32  line_size;
 
     _bike_state.line.clear();
 
@@ -42,30 +53,39 @@ sf::Packet& operator>>(sf::Packet& _packet, BikeState& _bike_state)
             >> bike_dir
             >> bike_pos.x
             >> bike_pos.y
-            >> move_timer
             >> bike_alive
             >> bike_boosting
-            >> boost_timer
             >> boost_charges
-            >> line_length;
+            >> boost_timer
+            >> extra_boost_timer;
 
-    _bike_state.id              = bike_id;
-    _bike_state.dir             = static_cast<MoveDirection>(bike_dir);
-    _bike_state.pos             = bike_pos;
-    _bike_state.move_timer      = move_timer;
-    _bike_state.alive           = bike_alive;
-    _bike_state.boosting        = bike_boosting;
-    _bike_state.boost_timer     = boost_timer;
-    _bike_state.boost_charges   = boost_charges;
+    _packet >> queued_moves_size;
+    for (sf::Uint32 i = 0; i < queued_moves_size; ++i)
+    {
+        Vector2i move;
 
-    // Bine line is extracted last.
-    for (sf::Uint32 i = 0; i < line_length; ++i)
+        _packet >> move.x >> move.y;
+        _bike_state.queued_moves.push(move);
+    }
+
+    // Bike line is extracted last.
+    _packet >> line_size;
+    for (sf::Uint32 i = 0; i < line_size; ++i)
     {
         Vector2i pos;
 
         _packet >> pos.x >> pos.y;
         _bike_state.line.push_back(pos);
     }
+
+    _bike_state.id = bike_id;
+    _bike_state.dir = static_cast<MoveDirection>(bike_dir);
+    _bike_state.pos = bike_pos;
+    _bike_state.alive = bike_alive;
+    _bike_state.boosting = bike_boosting;
+    _bike_state.boost_timer = boost_timer;
+    _bike_state.boost_charges = boost_charges;
+    _bike_state.extra_boost_timer = extra_boost_timer;
 
     return _packet;
 }
