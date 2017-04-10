@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <queue>
 
 #include "BikeState.h"
 #include "Noncopyable.h"
@@ -62,7 +62,15 @@ public:
     void resetExtraBoostTimer();
     void modifyExtraBoostTimer(const double _dt);
 
+    bool moveQueueEmpty() const;
+    const Vector2i& getNextQueuedMove() const;
+
 private:
+    // Synced variables.
     BikeState state;
+
+    // Unsynced variables.
+    double extra_boost_timer = 0;
+    std::queue<Vector2i> queued_moves;
 
 };

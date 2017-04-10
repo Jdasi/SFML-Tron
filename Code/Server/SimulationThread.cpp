@@ -1,4 +1,6 @@
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #include "SimulationThread.h"
 #include "IServerSimulation.h"
@@ -148,8 +150,12 @@ void SimulationThread::stopSimulationThread()
  */
 void SimulationThread::simulationThreadLoop()
 {
+    using namespace std::chrono_literals;
+
     while (thread_running)
     {
+        std::this_thread::sleep_for(16ms);
+
         double dt = simple_timer.getTimeDifference();
         simple_timer.reset();
 

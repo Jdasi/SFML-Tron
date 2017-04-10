@@ -23,6 +23,7 @@ void Bike::tick(const double _dt)
         if (state.boosting)
         {
             state.boosting = false;
+            state.boost_timer = 0;
         }
     }
 }
@@ -139,7 +140,14 @@ void Bike::setMoveTimer(const double _value)
 
 void Bike::resetMoveTimer()
 {
-    state.move_timer = 0;
+    if (state.boosting)
+    {
+        state.move_timer -= BIKE_MOVE_SPEED / BIKE_BOOST_DIVISOR;
+    }
+    else
+    {
+        state.move_timer -= BIKE_MOVE_SPEED;
+    }
 }
 
 
@@ -204,19 +212,19 @@ void Bike::grantBoostCharge()
 
 double Bike::getExtraBoostTimer() const
 {
-    return state.extra_boost_timer;
+    return extra_boost_timer;
 }
 
 
 
 void Bike::resetExtraBoostTimer()
 {
-    state.extra_boost_timer = 0;
+    extra_boost_timer = 0;
 }
 
 
 
 void Bike::modifyExtraBoostTimer(const double _dt)
 {
-    state.extra_boost_timer += _dt;
+    extra_boost_timer += _dt;
 }

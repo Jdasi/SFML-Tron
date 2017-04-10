@@ -34,6 +34,7 @@ TronClient::TronClient(const ServerSettings& _server_settings)
  */
 void TronClient::run()
 {
+    window.setVerticalSyncEnabled(true);
     network_manager.connect(ip_address, tcp_port);
 
     mainLoop();

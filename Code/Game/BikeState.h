@@ -25,7 +25,6 @@ struct BikeState
     bool boosting               = false;
     double boost_timer          = 0;
     unsigned int boost_charges  = STARTING_BOOST_CHARGES;
-    double extra_boost_timer    = 0; // Server handles this, no need to transfer.
 
     friend sf::Packet& operator<<(sf::Packet& _packet,
         const BikeState& _bike_state);
