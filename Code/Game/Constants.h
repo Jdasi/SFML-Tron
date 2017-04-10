@@ -34,7 +34,7 @@ const int GRID_SIZE_X                   = 125; // Width (in tiles) of the playin
 const int GRID_SIZE_Y                   = 125; // Height (in tiles) of the playing grid.
 constexpr int GRID_AREA                 = GRID_SIZE_X * GRID_SIZE_Y;
 
-const float BIKE_MOVE_SPEED             = 0.04f; // Rate at which the bike moves.
+const float BIKE_MOVE_SPEED             = 0.037f; // Rate at which the bike moves.
 const float BIKE_BOOST_DURATION         = 1.5f; // Duration of boost.
 const int BIKE_BOOST_DIVISOR            = 2; // Boost speed divisor. Larger = faster.
 const int STARTING_BOOST_CHARGES        = 3; // Starting number of boost charges.
