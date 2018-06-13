@@ -10,7 +10,7 @@
  * to activate any methods that have been posted to them.
  *
  * A copy of the methods queue is made before the methods are iterated 
- * through, meaning it is ok to post events even while the owning thread 
+ * through, meaning it is safe to post events even while the owning thread 
  * is executing its posted events.
  */
 class ThreadDispatcher : public Noncopyable
